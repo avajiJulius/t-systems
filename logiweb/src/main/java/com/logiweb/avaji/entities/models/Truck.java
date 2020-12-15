@@ -1,6 +1,5 @@
 package com.logiweb.avaji.entities.models;
 
-import com.logiweb.avaji.entities.models.utils.City;
 
 import javax.persistence.*;
 

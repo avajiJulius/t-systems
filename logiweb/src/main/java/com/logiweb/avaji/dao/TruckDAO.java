@@ -30,12 +30,30 @@ public class TruckDAO {
 
     @Transactional
     public void saveTruck(Truck truck) {
-        entityManager.persist(truck);
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            entityManager.persist(truck);
+            transaction.commit();
+        } finally {
+            if(transaction.isActive()) {
+                transaction.rollback();
+            }
+        }
     }
 
     @Transactional
     public void updateTruck(Truck updatedTruck) {
-        entityManager.merge(updatedTruck);
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            entityManager.merge(updatedTruck);
+            transaction.commit();
+        } finally {
+            if(transaction.isActive()) {
+                transaction.rollback();
+            }
+        }
     }
 
 
