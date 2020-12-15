@@ -2,22 +2,42 @@ package com.logiweb.avaji.entities.models;
 
 import com.logiweb.avaji.entities.models.utils.City;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "trucks")
+@NamedQueries({
+        @NamedQuery(name = "Truck.findTrucks",
+                query = "select t from Truck t"),
+        @NamedQuery(name = "Truck.findTruckById",
+                query = "select t from Truck t where t.truckId = :truckId"),
+        @NamedQuery(name = "Truck.deleteTruck",
+                query = "delete from Truck t where t.truckId = :truckId"),
+})
 public class Truck {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "truck_id")
     private String truckId;
     //уточнить у куратора про размер смены водителей
-    private int driverSize;
-    private String capacity;
-    private boolean status;
-    private City currentCity;
+    @Column(name= "work_shift_size")
+    private double workShiftSize;
+    @Column(name = "capacity")
+    private double capacity;
+    @Column(name = "serviceable")
+    private boolean serviceable;
+    @Column(name = "current_city")
+    private String currentCity;
 
     public Truck() {
     }
 
-    public Truck(String truckId, int driverSize, String capacity, boolean status, City currentCity) {
+    public Truck(String truckId, double workShiftSize, double capacity,
+                 boolean serviceable, String currentCity) {
         this.truckId = truckId;
-        this.driverSize = driverSize;
+        this.workShiftSize = workShiftSize;
         this.capacity = capacity;
-        this.status = status;
+        this.serviceable = serviceable;
         this.currentCity = currentCity;
     }
 
@@ -29,35 +49,35 @@ public class Truck {
         this.truckId = truckId;
     }
 
-    public int getDriverSize() {
-        return driverSize;
+    public double getWorkShiftSize() {
+        return workShiftSize;
     }
 
-    public void setDriverSize(int driverSize) {
-        this.driverSize = driverSize;
+    public void setWorkShiftSize(double workShiftSize) {
+        this.workShiftSize = workShiftSize;
     }
 
-    public String getCapacity() {
+    public double getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(String capacity) {
+    public void setCapacity(double capacity) {
         this.capacity = capacity;
     }
 
-    public boolean isStatus() {
-        return status;
+    public boolean isServiceable() {
+        return serviceable;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setServiceable(boolean serviceable) {
+        this.serviceable = serviceable;
     }
 
-    public City getCurrentCity() {
+    public String getCurrentCity() {
         return currentCity;
     }
 
-    public void setCurrentCity(City currentCity) {
+    public void setCurrentCity(String currentCity) {
         this.currentCity = currentCity;
     }
 }

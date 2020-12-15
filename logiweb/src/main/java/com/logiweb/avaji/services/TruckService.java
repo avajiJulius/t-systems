@@ -25,6 +25,14 @@ public interface TruckService {
     List<Truck> readTrucks();
 
     /**
+     * The <code>readTruckById</code> read truck from database by id.
+     *
+     * @param truckID unique identifier for trucks.
+     * @return
+     */
+    Truck readTruckById(Long truckID);
+
+    /**
      * The <code>updateTruck</code> create updated truck entity
      * and replace existing entity with this updated entity.
      *

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Trucks</title>
+</head>
+<body>
+<div align="center">
+    <h1>Truck List</h1>
+    <a th:href="@{/trucks/new}">Create Turck</a>
+    <table border="1">
+        <thead>
+        <tr>
+            <th> Id</th>
+            <th> Work Shift Size</th>
+            <th> Capacity</th>
+            <th> Serviceable</th>
+            <th> Current City</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="truck : ${truckList}">
+            <td th:text="${truck.truckId}"></td>
+            <td th:text="${truck.workShiftSize}"></td>
+            <td th:text="${truck.capacity}"></td>
+            <td th:text="${truck.serviceable}"></td>
+            <td th:text="${truck.currentCity}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script th:replace="fragments/script.html :: jquery"></script>
+<script th:replace="fragments/script.html :: popper"></script>
+<script th:replace="fragments/script.html :: bootstrap"></script>
+</body>
+</html>
