@@ -1,46 +1,36 @@
 package com.logiweb.avaji.entities.models;
 
+import com.logiweb.avaji.entities.models.utils.Waypoint;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 import java.util.List;
 
+@Entity
+@Table(name = "orders")
+@NamedQueries({
+        @NamedQuery(name = "Order.findAllOrders",
+        query = "select o from Order o"),
+        @NamedQuery(name = "Order.deleteOrder",
+        query = "delete from Order o where o.orderId = :orderId" )
+})
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Order {
-    private Long orderID;
+    @Id
+    @Column(name = "order_id")
+    private Long orderId;
+    @Column(name = "completed")
     private boolean completed;
+    @OneToMany
+    @JoinTable(name = "waypoints")
+    private List<Waypoint> waypoints;
+    @OneToOne
+    @JoinColumn(name = "truck_id")
     private Truck designatedTruck;
-    //понять list or set
+    @ManyToMany
     private List<Driver> designatedDrivers;
-
-    public Order() {
-    }
-
-    public Long getOrderID() {
-        return orderID;
-    }
-
-    public void setOrderID(Long orderID) {
-        this.orderID = orderID;
-    }
-
-    public boolean isCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
-
-    public Truck getDesignatedTruck() {
-        return designatedTruck;
-    }
-
-    public void setDesignatedTruck(Truck designatedTruck) {
-        this.designatedTruck = designatedTruck;
-    }
-
-    public List<Driver> getDesignatedDrivers() {
-        return designatedDrivers;
-    }
-
-    public void setDesignatedDrivers(List<Driver> designatedDrivers) {
-        this.designatedDrivers = designatedDrivers;
-    }
 }

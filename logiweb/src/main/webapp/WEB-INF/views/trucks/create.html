@@ -10,14 +10,9 @@
 <body>
 <h2>Create Truck</h2>
 
-<form action="#" th:action="@{/trucks/}" th:object="${truck}" method="POST">
-    <input type="number" th:field="*{workShiftSize}" placeholder="Work Shift Size">
-    <input type="number" th:field="*{capacity}" placeholder="Capacity">
-    <div class="form-check">
-        <input type="checkbox" th:field="*{serviceable}" class="form-check-input" id="serviceable">
-        <label class="form-check-label" for="serviceable">Serviceable</label>
-    </div>
-    <input type="text" th:field="*{currentCity}" placeholder="Current City">
+<form action="#" th:action="@{/trucks/}" method="POST">
+    <input type="number" th:name="capacity" placeholder="Capacity">
+    <input type="text" th:name="currentCity" placeholder="Current City">
     <button type="submit" class="btn btn-primary">Create</button>
 </form>
 <hr>

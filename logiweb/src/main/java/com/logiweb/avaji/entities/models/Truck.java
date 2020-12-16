@@ -1,7 +1,13 @@
 package com.logiweb.avaji.entities.models;
 
 
+import com.logiweb.avaji.entities.models.utils.City;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "trucks")
@@ -13,6 +19,9 @@ import javax.persistence.*;
         @NamedQuery(name = "Truck.deleteTruck",
                 query = "delete from Truck t where t.truckId = :truckId"),
 })
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Truck {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,58 +34,12 @@ public class Truck {
     private double capacity;
     @Column(name = "serviceable")
     private boolean serviceable;
-    @Column(name = "current_city")
-    private String currentCity;
+    @OneToOne
+    @JoinColumn(name = "city_code")
+    private City currentCity;
 
-    public Truck() {
-    }
+    @OneToMany(mappedBy = "currentTruck")
+    private List<Driver> drivers;
 
-    public Truck(String truckId, double workShiftSize, double capacity,
-                 boolean serviceable, String currentCity) {
-        this.truckId = truckId;
-        this.workShiftSize = workShiftSize;
-        this.capacity = capacity;
-        this.serviceable = serviceable;
-        this.currentCity = currentCity;
-    }
 
-    public String getTruckId() {
-        return truckId;
-    }
-
-    public void setTruckId(String truckId) {
-        this.truckId = truckId;
-    }
-
-    public double getWorkShiftSize() {
-        return workShiftSize;
-    }
-
-    public void setWorkShiftSize(double workShiftSize) {
-        this.workShiftSize = workShiftSize;
-    }
-
-    public double getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(double capacity) {
-        this.capacity = capacity;
-    }
-
-    public boolean isServiceable() {
-        return serviceable;
-    }
-
-    public void setServiceable(boolean serviceable) {
-        this.serviceable = serviceable;
-    }
-
-    public String getCurrentCity() {
-        return currentCity;
-    }
-
-    public void setCurrentCity(String currentCity) {
-        this.currentCity = currentCity;
-    }
 }

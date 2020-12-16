@@ -1,6 +1,9 @@
 package com.logiweb.avaji.controllers;
 
+import com.logiweb.avaji.entities.models.CountryMap;
 import com.logiweb.avaji.entities.models.Truck;
+import com.logiweb.avaji.entities.models.utils.City;
+import com.logiweb.avaji.services.CountryMapService;
 import com.logiweb.avaji.services.TruckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,10 +17,12 @@ import java.util.List;
 public class TruckController {
 
     private final TruckService truckService;
+    private final CountryMapService countryMapService;
 
     @Autowired
-    public TruckController(TruckService truckService) {
+    public TruckController(TruckService truckService, CountryMapService countryMapService) {
         this.truckService = truckService;
+        this.countryMapService = countryMapService;
     }
 
     @GetMapping("")
@@ -29,7 +34,14 @@ public class TruckController {
     }
 
     @GetMapping("/new")
-    public String getTruckForm(@ModelAttribute("truck") Truck truck) {
+    public String getTruckForm(Model model,
+                               @RequestParam(name = "capacity") double capacity,
+                               @RequestParam(name = "currentCity") String currentCity) {
+        City city = countryMapService.readCityByName(currentCity);
+        Truck truck = new Truck();
+        truck.setCapacity(capacity);
+
+        model.addAttribute("truck", truck);
 
         return "trucks/create";
     }

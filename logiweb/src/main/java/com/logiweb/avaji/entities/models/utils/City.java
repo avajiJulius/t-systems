@@ -1,27 +1,22 @@
 package com.logiweb.avaji.entities.models.utils;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "cities")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class City{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "city_code")
     private Long cityCode;
+    @Column(name = "city_name")
     private String cityName;
 
-    public City(Long cityCode, String cityName) {
-        this.cityCode = cityCode;
-        this.cityName = cityName;
-    }
-
-    public Long getCityCode() {
-        return cityCode;
-    }
-
-    public void setCityCode(Long cityCode) {
-        this.cityCode = cityCode;
-    }
-
-    public String getCityName() {
-        return cityName;
-    }
-
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
-    }
 }
