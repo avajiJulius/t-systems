@@ -28,7 +28,7 @@ public interface TruckService {
      * The <code>readTruckById</code> read truck from database by id.
      *
      * @param truckID unique identifier for trucks.
-     * @return
+     * @return truck entity.
      */
     Truck readTruckById(Long truckID);
 

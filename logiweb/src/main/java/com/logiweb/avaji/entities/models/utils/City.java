@@ -19,8 +19,8 @@ public class City{
     private Long cityCode;
     @Column(name = "city_name")
     private String cityName;
-    @OneToMany(mappedBy = "cities")
-    private List<Road> roads;
+//    @OneToMany(mappedBy = "cities")
+//    private List<Road> roads;
 
 
 }

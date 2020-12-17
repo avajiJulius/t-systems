@@ -24,13 +24,12 @@ public class Waypoint {
     @OneToOne
     @JoinColumn(name = "city_code")
     private City waypointCity;
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "cargo_waypoints", joinColumns = {@JoinColumn(name = "waypoint_id")},
-    inverseJoinColumns = {@JoinColumn(name = "cargo_id")})
-    private List<Cargo> waypointCargo;
     @Column(name = "type")
     private WaypointType waypointType;
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order waypointOrder;
+    @OneToMany
+    @JoinColumn(name = "cargo_id")
+    private List<Cargo> waypointCargo;
 }

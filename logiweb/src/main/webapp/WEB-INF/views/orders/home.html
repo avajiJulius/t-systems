@@ -9,25 +9,20 @@
 </head>
 <body>
 <div align="center">
-    <h1>Truck List</h1>
-    <a th:href="@{/trucks/new}">Create Turck</a>
+    <h1>Order List</h1>
     <table border="1">
         <thead>
         <tr>
-            <th> Id</th>
-<!--            <th> Work Shift Size</th>-->
-            <th> Capacity</th>
-            <th> Serviceable</th>
-<!--            <th> Current City</th>-->
+            <th> ID</th>
+<!--            <th> Status</th>-->
+            <th> Cargo</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="truck : ${truckList}">
-            <td th:text="${truck.truckId}"></td>
-<!--            <td th:text="${truck.workShiftSize}"></td>-->
-            <td th:text="${truck.capacity}"></td>
-            <td th:text="${truck.serviceable}"></td>
-<!--            <td th:text="${truck.currentCity.cityName}"></td>-->
+        <tr th:each="order : ${orders}">
+            <td th:text="${order.orderId}"></td>
+<!--            <td th:text="${order.completed}"></td>-->
+            <td><a th:href="@{/orders/{id}/cargo(id=${order.orderId})}" th:text="${order.orderId}"></a> </td>
         </tr>
         </tbody>
     </table>

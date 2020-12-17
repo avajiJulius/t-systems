@@ -20,7 +20,8 @@ public class CargoDAO {
     }
 
     public List<Cargo> findCargoByOrderId(Long orderId) {
-        Query query = entityManager.createNamedQuery("Cargo.findCargoByOrderId");
+        Query query = entityManager.createNamedQuery("Cargo.findCargoByOrderId")
+                .setParameter("orderId", orderId);
         return query.getResultList();
     }
 

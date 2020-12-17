@@ -16,6 +16,8 @@ import java.util.List;
         @NamedQuery(name = "Order.findOrdersByWaypointId",
         query = "select o from Order o where o.waypoints in (" +
                 "select w from Waypoint w where w.waypointOrder = :waypointId)"),
+        @NamedQuery(name = "Order.findCargoByOrderId",
+                query = "select o from Order o"),
         @NamedQuery(name = "Order.deleteOrder",
         query = "delete from Order o where o.orderId = :orderId" )
 })
@@ -24,16 +26,15 @@ import java.util.List;
 @AllArgsConstructor
 public class Order {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
     private Long orderId;
     @Column(name = "completed")
     private boolean completed;
-    @OneToMany
-    @JoinTable(name = "waypoints")
+    @OneToMany(mappedBy = "waypointOrder")
     private List<Waypoint> waypoints;
     @OneToOne
     @JoinColumn(name = "truck_id")
     private Truck designatedTruck;
-    @ManyToMany
-    private List<Driver> designatedDrivers;
+
 }

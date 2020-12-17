@@ -1,12 +1,15 @@
 package com.logiweb.avaji.dao;
 
+import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Order;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.util.List;
 
+@Repository
 public class OrderDAO {
 
     private EntityManager entityManager;
@@ -21,8 +24,8 @@ public class OrderDAO {
         return query.getResultList();
     }
 
-    public List<Order> findOrdersByWaypointId(Long waypointId) {
-        Query query = entityManager.createNamedQuery("Order.findOrdersByWaypointId");
+    public List<Cargo> findCargoByOrderId(Long orderId) {
+        Query query = entityManager.createNamedQuery("Order.findCargoByOrderId");
         return query.getResultList();
     }
 

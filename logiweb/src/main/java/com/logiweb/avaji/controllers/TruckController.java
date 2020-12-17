@@ -17,12 +17,10 @@ import java.util.List;
 public class TruckController {
 
     private final TruckService truckService;
-    private final CountryMapService countryMapService;
 
     @Autowired
-    public TruckController(TruckService truckService, CountryMapService countryMapService) {
+    public TruckController(TruckService truckService) {
         this.truckService = truckService;
-        this.countryMapService = countryMapService;
     }
 
     @GetMapping("")
@@ -37,7 +35,7 @@ public class TruckController {
     public String getTruckForm(Model model,
                                @RequestParam(name = "capacity") double capacity,
                                @RequestParam(name = "currentCity") String currentCity) {
-        City city = countryMapService.readCityByName(currentCity);
+//        City city = countryMapService.readCityByName(currentCity);
         Truck truck = new Truck();
         truck.setCapacity(capacity);
 

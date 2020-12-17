@@ -12,9 +12,14 @@ import java.util.List;
 @Entity
 @Table(name = "cargo")
 @NamedQueries(value = {
+//        @NamedQuery(name = "Cargo.findCargoByOrderId",
+//        query = "select w.waypointCargo from Order o " +
+//                "join o.waypoints w " +
+//                "where o.orderId = 1")
         @NamedQuery(name = "Cargo.findCargoByOrderId",
-        query = "select c from Cargo c where waypoints in " +
-                "(select w from Waypoint w where w.waypointOrder = :orderId)")
+        query = "select c from Waypoint w " +
+                "join w.waypointCargo c " +
+                "where w.waypointOrder.id = :orderId")
 })
 @Data
 @NoArgsConstructor
@@ -29,10 +34,8 @@ public class Cargo {
     private String cargoTitle;
     @Column(name = "weight")
     private double cargoWeight;
+    @Column(name = "cargo_status")
     @Enumerated(value = EnumType.STRING)
     private CargoStatus cargoStatus;
-    @ManyToMany(mappedBy = "waypointCargo")
-    private List<Waypoint> waypoints;
-
 
 }

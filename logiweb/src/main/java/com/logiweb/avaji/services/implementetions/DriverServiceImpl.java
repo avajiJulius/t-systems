@@ -1,4 +1,4 @@
-package com.logiweb.avaji.services;
+package com.logiweb.avaji.services.implementetions;
 
 import com.logiweb.avaji.dao.DriverDAO;
 import com.logiweb.avaji.dao.OrderDAO;
@@ -6,12 +6,13 @@ import com.logiweb.avaji.dao.TruckDAO;
 import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Truck;
+import com.logiweb.avaji.services.DriverService;
 import com.logiweb.avaji.views.DriverResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-public class DriverServiceImpl implements DriverService{
+public class DriverServiceImpl implements DriverService {
 
     private final DriverDAO driverDAO;
 
