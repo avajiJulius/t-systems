@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "cities")
@@ -18,5 +19,8 @@ public class City{
     private Long cityCode;
     @Column(name = "city_name")
     private String cityName;
+    @OneToMany(mappedBy = "cities")
+    private List<Road> roads;
+
 
 }

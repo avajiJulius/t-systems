@@ -13,6 +13,9 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = "Order.findAllOrders",
         query = "select o from Order o"),
+        @NamedQuery(name = "Order.findOrdersByWaypointId",
+        query = "select o from Order o where o.waypoints in (" +
+                "select w from Waypoint w where w.waypointOrder = :waypointId)"),
         @NamedQuery(name = "Order.deleteOrder",
         query = "delete from Order o where o.orderId = :orderId" )
 })

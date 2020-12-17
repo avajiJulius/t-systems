@@ -1,26 +1,28 @@
 package com.logiweb.avaji.entities.models.utils;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "roads")
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Road {
-    private final City from;
-    private final City to;
-    private final double distance;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "road_id")
+    private long roadId;
+    @ManyToOne
+    @JoinColumn(name = "city_a_code")
+    private City cityA;
+    @ManyToOne
+    @JoinColumn(name = "city_b_code")
+    private City cityB;
+    @Column(name = "distance")
+    private double distance;
 
-    public Road(City from, City to, int distance) {
-        this.from = from;
-        this.to = to;
-        this.distance = distance;
-    }
-
-    public City getFrom() {
-        return from;
-    }
-
-    public City getTo() {
-        return to;
-    }
-
-    public double getDistance() {
-        return distance;
-    }
 }
