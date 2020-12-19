@@ -17,6 +17,12 @@ public class CargoDAO {
         entityManager = factory.createEntityManager();
     }
 
+    public List<Cargo> findAllCargo() {
+        TypedQuery<Cargo> query = entityManager.createNamedQuery("Cargo.findAllCargo", Cargo.class);
+
+        return query.getResultList();
+    }
+
     public List<Cargo> findCargoByWaypoints(List<Waypoint> waypoints) {
         Query query = entityManager.createNamedQuery("Cargo.findCargoByWaypoints")
                 .setParameter("waypoints", waypoints);

@@ -20,6 +20,11 @@ public class CargoServiceImpl implements CargoService {
 
 
     @Override
+    public List<Cargo> readAllCargo() {
+        return cargoDAO.findAllCargo();
+    }
+
+    @Override
     public List<Cargo> readCargoByOrderId(Long orderId) {
         return cargoDAO.findCargoByOrderId(orderId);
     }

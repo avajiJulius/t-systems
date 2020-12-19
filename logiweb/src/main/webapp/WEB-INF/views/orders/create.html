@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Create Truck</title>
+</head>
+<body>
+<h2>Create Order</h2>
+<form action="#" th:action="@{/orders/}" th:object="${form}"
+      method="POST">
+    <fieldset>
+        <input type="submit" id="submitButton" th:value="Save">
+        <input type="reset" id="resetButton" name="reset" th:value="Reset"/>
+        <table>
+            <thead>
+            <tr>
+                <th> City</th>
+                <th> Cargo</th>
+                <th> Type</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="waypoint, i : *{waypoints}">
+                <td><input th:field="*{waypoints[__${i.index}__].waypointCity}" /></td>
+                <td>
+                    <select th:field="*{waypoints[__${i.index}__].waypointCargo}" >
+                        <option th:each="c : ${cargo}" th:value="${c}" th:text="${c.cargoTitle}" />
+                    </select>
+                </td>
+                <td>
+                    <select th:field="*{waypoints[__${i.index}__].waypointType}">
+                        <option th:value="'LOADING'" th:text="LOAD"></option>
+                        <option th:value="'UNLOADING'" th:text="UNLOAD"></option>
+                    </select>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </fieldset>
+</form>
+<a th:href="@{/orders/}">Back to Users List</a>
+<script th:replace="fragments/script.html :: jquery"></script>
+<script th:replace="fragments/script.html :: popper"></script>
+<script th:replace="fragments/script.html :: bootstrap"></script>
+</body>
+</html>

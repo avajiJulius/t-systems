@@ -1,16 +1,17 @@
 package com.logiweb.avaji.controllers;
 
+import com.logiweb.avaji.entities.dto.WaypointsCreationDto;
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Order;
+import com.logiweb.avaji.entities.models.utils.Waypoint;
 import com.logiweb.avaji.services.CargoService;
 import com.logiweb.avaji.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -39,6 +40,28 @@ public class OrderController {
         List<Cargo> cargoList = cargoService.readCargoByOrderId(orderId);
         model.addAttribute("cargoList", cargoList);
         return "orders/cargo";
+    }
+
+    @GetMapping("/new")
+    public String getOrderForm(Model model) {
+        WaypointsCreationDto waypointForm = new WaypointsCreationDto();
+
+        for (int i = 1; i <= 3; i++) {
+            waypointForm.addWaypoint(new Waypoint());
+        }
+        model.addAttribute("cargo", cargoService.readAllCargo());
+        model.addAttribute("form", waypointForm);
+        return "orders/create";
+    }
+
+    @PostMapping("")
+    public String createOrder(@ModelAttribute(name = "form") WaypointsCreationDto waypoints, Model model) {
+        Order order = new Order();
+        order.setWaypoints(waypoints.getWaypoints());
+        orderService.createOrder(order);
+
+        model.addAttribute("orders", orderService.readAllOrders());
+        return "redirect:/orders/home";
     }
 
 }

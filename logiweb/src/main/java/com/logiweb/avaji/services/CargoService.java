@@ -6,6 +6,9 @@ import java.util.List;
 
 public interface CargoService {
 
+    List<Cargo> readAllCargo();
+
+
     /**
      * The <code>readCargoByOrderId</code> read list of cargo of specified order by order id;
      *

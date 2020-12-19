@@ -12,6 +12,8 @@ import java.util.List;
 @Entity
 @Table(name = "cargo")
 @NamedQueries(value = {
+        @NamedQuery(name = "Cargo.findAllCargo",
+        query = "select c from Cargo c"),
         @NamedQuery(name = "Cargo.findCargoByOrderId",
         query = "select c from Waypoint w " +
                 "join w.waypointCargo c " +

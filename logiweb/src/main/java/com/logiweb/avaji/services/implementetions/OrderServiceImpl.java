@@ -2,6 +2,7 @@ package com.logiweb.avaji.services.implementetions;
 
 import com.logiweb.avaji.dao.CargoDAO;
 import com.logiweb.avaji.dao.OrderDAO;
+import com.logiweb.avaji.entities.enums.WaypointType;
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.utils.Waypoint;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.Id;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -32,7 +34,29 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void createOrder(Order order) {
-        throw new UnsupportedOperationException();
+        List<Cargo> load = order.getWaypoints().stream()
+                .filter(w -> w.getWaypointType() == WaypointType.LOADING)
+                .map(Waypoint::getWaypointCargo)
+                .collect(Collectors.toList());
+        List<Cargo> unload = order.getWaypoints().stream()
+                .filter(w -> w.getWaypointType() == WaypointType.UNLOADING)
+                .map(Waypoint::getWaypointCargo)
+                .collect(Collectors.toList());
+        if(load.size() != unload.size()) {
+            return;
+        }
+        for(Cargo loadCargo: load) {
+            for(Cargo unloadCargo: unload) {
+                if(loadCargo.getCargoId() == unloadCargo.getCargoId()) {
+                    load.remove(loadCargo);
+                    unload.remove(unloadCargo);
+                    continue;
+                }
+            }
+        }
+        if(load.isEmpty() && unload.isEmpty()) {
+            orderDAO.saveOrder(order);
+        }
     }
 
     @Override
