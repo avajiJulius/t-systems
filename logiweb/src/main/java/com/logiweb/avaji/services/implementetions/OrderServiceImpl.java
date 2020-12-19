@@ -31,18 +31,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> readOrdersByWaypointId(Long waypointId) {
-        return null;
-    }
-
-    @Override
-    public List<Cargo> readCargoByOrderId(Long orderId) {
-
-        List<Waypoint> waypoints = orderDAO.findWaypointByOrderId(orderId);
-        return cargoDAO.findCargoByWaypoints(waypoints);
-    }
-
-    @Override
     public void createOrder(Order order) {
         throw new UnsupportedOperationException();
     }

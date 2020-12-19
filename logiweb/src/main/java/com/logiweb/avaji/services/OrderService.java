@@ -15,8 +15,6 @@ public interface OrderService {
      */
     List<Order> readAllOrders();
 
-    List<Order> readOrdersByWaypointId(Long waypointId);
-    public List<Cargo> readCargoByOrderId(Long orderId);
 
     /**
      * The <code>createOrder</code> create order entity whit valid cargo.

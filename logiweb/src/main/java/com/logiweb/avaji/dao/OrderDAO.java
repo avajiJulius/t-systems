@@ -25,11 +25,6 @@ public class OrderDAO {
         return query.getResultList();
     }
 
-    public List<Waypoint> findWaypointByOrderId(Long orderId) {
-        Query query = entityManager.createNamedQuery("Order.findWaypointByOrderId")
-                .setParameter("orderId", orderId);
-        return query.getResultList();
-    }
 
     @Transactional
     public void saveOrder(Order order) {
