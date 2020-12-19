@@ -15,19 +15,19 @@
         <thead>
         <tr>
             <th> Id</th>
-<!--            <th> Work Shift Size</th>-->
+            <th> Work Shift Size</th>
             <th> Capacity</th>
             <th> Serviceable</th>
-<!--            <th> Current City</th>-->
+            <th> Current City</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="truck : ${truckList}">
-            <td th:text="${truck.truckId}"></td>
-<!--            <td th:text="${truck.workShiftSize}"></td>-->
-            <td th:text="${truck.capacity}"></td>
-            <td th:text="${truck.serviceable}"></td>
-<!--            <td th:text="${truck.currentCity.cityName}"></td>-->
+            <td th:text="${truck.truckId}" />
+            <td th:text="${truck.workShiftSize} ?: '0'" />
+            <td th:text="${truck.capacity}" />
+            <td th:text="${truck.serviceable}" />
+            <td th:text="${truck.currentCity?.cityName}"/>
         </tr>
         </tbody>
     </table>

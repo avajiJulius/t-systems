@@ -37,7 +37,6 @@ public class OrderController {
     public String getCargoByOrder(Model model,
                                   @PathVariable(name = "id") Long orderId) {
         List<Cargo> cargoList = cargoService.readCargoByOrderId(orderId);
-//        List<Cargo> cargoList = orderService.readCargoByOrderId(orderId);
         model.addAttribute("cargoList", cargoList);
         return "orders/cargo";
     }

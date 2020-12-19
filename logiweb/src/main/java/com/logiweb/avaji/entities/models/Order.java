@@ -13,11 +13,10 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = "Order.findAllOrders",
         query = "select o from Order o"),
-        @NamedQuery(name = "Order.findOrdersByWaypointId",
-        query = "select o from Order o where o.waypoints in (" +
-                "select w from Waypoint w where w.waypointOrder = :waypointId)"),
-        @NamedQuery(name = "Order.findCargoByOrderId",
-                query = "select o from Order o"),
+        @NamedQuery(name = "Order.findWaypointByOrderId",
+        query = "select w from Order o " +
+                "join o.waypoints w " +
+                "where w.waypointOrder.id = :orderId"),
         @NamedQuery(name = "Order.deleteOrder",
         query = "delete from Order o where o.orderId = :orderId" )
 })
@@ -33,7 +32,7 @@ public class Order {
     private boolean completed;
     @OneToMany(mappedBy = "waypointOrder")
     private List<Waypoint> waypoints;
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "truck_id")
     private Truck designatedTruck;
 

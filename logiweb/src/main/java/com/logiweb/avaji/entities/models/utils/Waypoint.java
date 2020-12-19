@@ -29,7 +29,7 @@ public class Waypoint {
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order waypointOrder;
-    @OneToMany
+    @OneToOne
     @JoinColumn(name = "cargo_id")
-    private List<Cargo> waypointCargo;
+    private Cargo waypointCargo;
 }

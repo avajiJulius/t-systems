@@ -1,6 +1,6 @@
 drop table if exists cargo_waypoints;
-drop table if exists cargo;
 drop table if exists waypoints;
+drop table if exists cargo;
 drop table if exists orders;
 drop table if exists drivers;
 drop table if exists trucks;
@@ -48,8 +48,8 @@ create table trucks (
 );
 
 insert into trucks(work_shift_size, capacity, serviceable, city_code)
-values (2, 2000, true, 1), ( null , 3000, false , null),
-       (1, 4000, true, 3), ( null, 5000, true, 2);
+values (2, 2000, true, 1), ( 0 , 3000, false , null),
+       (1, 4000, true, 3), ( 0, 5000, true, 2);
 
 create table drivers (
     driver_id varchar(7),

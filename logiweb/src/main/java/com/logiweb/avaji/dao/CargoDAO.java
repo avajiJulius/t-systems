@@ -1,12 +1,10 @@
 package com.logiweb.avaji.dao;
 
 import com.logiweb.avaji.entities.models.Cargo;
+import com.logiweb.avaji.entities.models.utils.Waypoint;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.util.List;
 
 @Repository
@@ -19,8 +17,14 @@ public class CargoDAO {
         entityManager = factory.createEntityManager();
     }
 
+    public List<Cargo> findCargoByWaypoints(List<Waypoint> waypoints) {
+        Query query = entityManager.createNamedQuery("Cargo.findCargoByWaypoints")
+                .setParameter("waypoints", waypoints);
+        return query.getResultList();
+    }
+
     public List<Cargo> findCargoByOrderId(Long orderId) {
-        Query query = entityManager.createNamedQuery("Cargo.findCargoByOrderId")
+        TypedQuery<Cargo> query = entityManager.createNamedQuery("Cargo.findCargoByOrderId", Cargo.class)
                 .setParameter("orderId", orderId);
         return query.getResultList();
     }

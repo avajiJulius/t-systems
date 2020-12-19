@@ -3,6 +3,7 @@ package com.logiweb.avaji.dao;
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Order;
+import com.logiweb.avaji.entities.models.utils.Waypoint;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
@@ -24,8 +25,9 @@ public class OrderDAO {
         return query.getResultList();
     }
 
-    public List<Cargo> findCargoByOrderId(Long orderId) {
-        Query query = entityManager.createNamedQuery("Order.findCargoByOrderId");
+    public List<Waypoint> findWaypointByOrderId(Long orderId) {
+        Query query = entityManager.createNamedQuery("Order.findWaypointByOrderId")
+                .setParameter("orderId", orderId);
         return query.getResultList();
     }
 

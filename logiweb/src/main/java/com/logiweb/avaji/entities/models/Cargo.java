@@ -12,14 +12,13 @@ import java.util.List;
 @Entity
 @Table(name = "cargo")
 @NamedQueries(value = {
-//        @NamedQuery(name = "Cargo.findCargoByOrderId",
-//        query = "select w.waypointCargo from Order o " +
-//                "join o.waypoints w " +
-//                "where o.orderId = 1")
         @NamedQuery(name = "Cargo.findCargoByOrderId",
         query = "select c from Waypoint w " +
                 "join w.waypointCargo c " +
-                "where w.waypointOrder.id = :orderId")
+                "where w.waypointOrder.orderId = :orderId"),
+        @NamedQuery(name = "Cargo.findCargoByWaypoints",
+        query = "select w.waypointCargo from Waypoint w " +
+                "where w in :waypoints")
 })
 @Data
 @NoArgsConstructor
