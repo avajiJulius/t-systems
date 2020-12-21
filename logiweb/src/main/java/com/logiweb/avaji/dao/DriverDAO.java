@@ -2,6 +2,7 @@ package com.logiweb.avaji.dao;
 
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Truck;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
@@ -13,9 +14,9 @@ public class DriverDAO {
 
     private EntityManager entityManager;
 
-    public DriverDAO() {
-        EntityManagerFactory factory = Persistence.createEntityManagerFactory("persistence");
-        entityManager = factory.createEntityManager();
+    @Autowired
+    public DriverDAO(EntityManagerFactory entityManagerFactory) {
+        this.entityManager = entityManagerFactory.createEntityManager();
     }
 
     public List<Driver> findDrivers() {
@@ -23,7 +24,7 @@ public class DriverDAO {
         return query.getResultList();
     }
 
-    public Driver findDriverById(String driverId) {
+    public Driver findDriverById(Integer driverId) {
         Query query = entityManager.createNamedQuery("Driver.findDriverById");
         query.setParameter("driverId", driverId);
         return (Driver) query.getSingleResult();
@@ -58,7 +59,7 @@ public class DriverDAO {
     }
 
 
-    public void deleteDriver(String driverId) {
+    public void deleteDriver(Integer driverId) {
         Query query = entityManager.createNamedQuery("Driver.deleteDriver");
         query.setParameter("driverId", driverId);
         query.executeUpdate();

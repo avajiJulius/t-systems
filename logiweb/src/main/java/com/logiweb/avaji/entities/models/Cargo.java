@@ -15,7 +15,7 @@ import java.util.List;
         @NamedQuery(name = "Cargo.findAllCargo",
         query = "select c from Cargo c"),
         @NamedQuery(name = "Cargo.findCargoByOrderId",
-        query = "select c from Waypoint w " +
+        query = "select distinct(c) from Waypoint w " +
                 "join w.waypointCargo c " +
                 "where w.waypointOrder.orderId = :orderId"),
         @NamedQuery(name = "Cargo.findCargoByWaypoints",
@@ -30,7 +30,7 @@ public class Cargo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cargo_id")
-    private Long cargoId;
+    private Integer cargoId;
     @Column(name = "title")
     private String cargoTitle;
     @Column(name = "weight")

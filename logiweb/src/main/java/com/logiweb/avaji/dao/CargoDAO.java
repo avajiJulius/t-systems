@@ -2,6 +2,7 @@ package com.logiweb.avaji.dao;
 
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.utils.Waypoint;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
@@ -12,9 +13,9 @@ public class CargoDAO {
 
     private EntityManager entityManager;
 
-    public CargoDAO() {
-        EntityManagerFactory factory = Persistence.createEntityManagerFactory("persistence");
-        entityManager = factory.createEntityManager();
+    @Autowired
+    public CargoDAO(EntityManagerFactory entityManagerFactory) {
+        this.entityManager = entityManagerFactory.createEntityManager();
     }
 
     public List<Cargo> findAllCargo() {
@@ -29,7 +30,7 @@ public class CargoDAO {
         return query.getResultList();
     }
 
-    public List<Cargo> findCargoByOrderId(Long orderId) {
+    public List<Cargo> findCargoByOrderId(Integer orderId) {
         TypedQuery<Cargo> query = entityManager.createNamedQuery("Cargo.findCargoByOrderId", Cargo.class)
                 .setParameter("orderId", orderId);
         return query.getResultList();

@@ -32,7 +32,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public DriverResponse readDriverById(String driverId) {
+    public DriverResponse readDriverById(Integer driverId) {
         throw new UnsupportedOperationException();
     }
 
@@ -42,7 +42,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public void deleteDriver(String driverID) {
+    public void deleteDriver(Integer driverID) {
 
         driverDAO.deleteDriver(driverID);
     }

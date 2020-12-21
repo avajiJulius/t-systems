@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CountryMap {
-    private Map<Long, List<Road>> countryMap;
+    private Map<Integer, List<Road>> countryMap;
 
     public CountryMap() {
 

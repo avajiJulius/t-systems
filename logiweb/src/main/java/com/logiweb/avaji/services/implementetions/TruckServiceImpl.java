@@ -29,7 +29,7 @@ public class TruckServiceImpl implements TruckService {
     }
 
     @Override
-    public Truck readTruckById(Long truckID) {
+    public Truck readTruckById(String truckID) {
         return truckDAO.findTruckById(truckID);
     }
 
@@ -39,7 +39,7 @@ public class TruckServiceImpl implements TruckService {
     }
 
     @Override
-    public void deleteTruck(Long truckID) {
+    public void deleteTruck(String truckID) {
         truckDAO.deleteTruck(truckID);
     }
 }

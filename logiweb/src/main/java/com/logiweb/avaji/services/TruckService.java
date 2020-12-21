@@ -30,7 +30,7 @@ public interface TruckService {
      * @param truckID unique identifier for trucks.
      * @return truck entity.
      */
-    Truck readTruckById(Long truckID);
+    Truck readTruckById(String truckID);
 
     /**
      * The <code>updateTruck</code> create updated truck entity
@@ -45,5 +45,5 @@ public interface TruckService {
      *
      * @param truckID unique identifier for trucks.
      */
-    void deleteTruck(Long truckID);
+    void deleteTruck(String truckID);
 }

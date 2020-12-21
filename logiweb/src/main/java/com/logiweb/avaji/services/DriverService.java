@@ -34,7 +34,7 @@ public interface DriverService {
      * @return driver response with driverId, set of co-drivers ids, truck id,
      * order id, set of waypoints.
      */
-    DriverResponse readDriverById(String driverId);
+    DriverResponse readDriverById(Integer driverId);
 
     /**
      * The <code>updateDriver</code> create updated driver entity
@@ -49,7 +49,7 @@ public interface DriverService {
      *
      * @param driverID unique identifier for drivers.
      */
-    void deleteDriver(String driverID);
+    void deleteDriver(Integer driverID);
 
     /**
      * The <code>readAndAssignDriverForTruck</code> take driver if workedHour limit

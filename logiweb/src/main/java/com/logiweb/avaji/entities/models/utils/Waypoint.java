@@ -20,11 +20,12 @@ public class Waypoint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "waypoint_id")
-    private long waypointId;
+    private Integer waypointId;
     @OneToOne
     @JoinColumn(name = "city_code")
     private City waypointCity;
     @Column(name = "type")
+    @Enumerated(value = EnumType.STRING)
     private WaypointType waypointType;
     @ManyToOne
     @JoinColumn(name = "order_id")

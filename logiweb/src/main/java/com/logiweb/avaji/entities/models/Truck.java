@@ -27,7 +27,6 @@ public class Truck {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "truck_id")
     private String truckId;
-    //уточнить у куратора про размер смены водителей
     @Column(name= "work_shift_size")
     private double workShiftSize;
     @Column(name = "capacity")

@@ -34,11 +34,17 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void createOrder(Order order) {
-        List<Cargo> load = order.getWaypoints().stream()
+
+    }
+
+    @Override
+    public void createOrderByWaypoints(List<Waypoint> waypoints) {
+        Order order = new Order();
+        List<Cargo> load = waypoints.stream()
                 .filter(w -> w.getWaypointType() == WaypointType.LOADING)
                 .map(Waypoint::getWaypointCargo)
                 .collect(Collectors.toList());
-        List<Cargo> unload = order.getWaypoints().stream()
+        List<Cargo> unload = waypoints.stream()
                 .filter(w -> w.getWaypointType() == WaypointType.UNLOADING)
                 .map(Waypoint::getWaypointCargo)
                 .collect(Collectors.toList());
@@ -55,12 +61,14 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         if(load.isEmpty() && unload.isEmpty()) {
+            order.setWaypoints(waypoints);
+            order.setCompleted(false);
             orderDAO.saveOrder(order);
         }
     }
 
     @Override
-    public void deleteOrder(Long orderId) {
+    public void deleteOrder(Integer orderId) {
         orderDAO.deleteOrder(orderId);
     }
 }

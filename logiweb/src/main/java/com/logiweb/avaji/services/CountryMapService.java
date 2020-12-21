@@ -11,6 +11,9 @@ import java.util.List;
  */
 public interface CountryMapService {
 
+
+    List<City> readAllCities();
+
     /**
      * The <code>createCity</code> create city entity. This entity goes to CountyMapDAO.
      *

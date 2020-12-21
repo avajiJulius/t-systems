@@ -1,10 +1,14 @@
 package com.logiweb.avaji.dao;
 
 import com.logiweb.avaji.entities.models.Truck;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.TransactionManager;
 
 import javax.persistence.*;
+import javax.sql.DataSource;
 import javax.transaction.Transactional;
+import java.sql.Connection;
 import java.util.List;
 
 @Repository
@@ -12,9 +16,9 @@ public class TruckDAO {
 
     private EntityManager entityManager;
 
-    public TruckDAO() {
-        EntityManagerFactory factory = Persistence.createEntityManagerFactory("persistence");
-        entityManager = factory.createEntityManager();
+    @Autowired
+    public TruckDAO(EntityManagerFactory entityManagerFactory) {
+        this.entityManager = entityManagerFactory.createEntityManager();
     }
 
     public List<Truck> findTrucks() {
@@ -22,7 +26,7 @@ public class TruckDAO {
         return query.getResultList();
     }
 
-    public Truck findTruckById(Long truckId) {
+    public Truck findTruckById(String truckId) {
         Query query = entityManager.createNamedQuery("Truck.findTruckById");
         query.setParameter("truckId", truckId);
         return (Truck) query.getSingleResult();
@@ -57,7 +61,7 @@ public class TruckDAO {
     }
 
 
-    public void deleteTruck(Long id) {
+    public void deleteTruck(String id) {
         Query query = entityManager.createNamedQuery("Truck.deleteTruck");
         query.setParameter("truckId", id);
         query.executeUpdate();

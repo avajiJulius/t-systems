@@ -33,12 +33,11 @@ values (1, 2, 250), (2,1, 250), (3,1, 700), (2,3, 580);
 create table country_map (
     city_code integer,
     road_id integer,
-    primary key (road_id)
+    primary key (road_id, city_code)
 );
 
-
 create table trucks (
-    truck_id serial,
+    truck_id varchar(7),
     work_shift_size double precision,
     capacity double precision,
     serviceable boolean,
@@ -47,39 +46,39 @@ create table trucks (
     foreign key (city_code) references cities(city_code)
 );
 
-insert into trucks(work_shift_size, capacity, serviceable, city_code)
-values (2, 2000, true, 1), ( 0 , 3000, false , null),
-       (1, 4000, true, 3), ( 0, 5000, true, 2);
+insert into trucks(truck_id, work_shift_size, capacity, serviceable, city_code)
+values ('AB12345', 2, 2000, true, 1), ('BA12345',0 , 3000, false , null),
+       ('CD12345',1, 4000, true, 3), ('DC12345', 0, 5000, true, 2);
 
 create table drivers (
-    driver_id varchar(7),
+    driver_id serial,
     first_name varchar(50),
     last_name varchar(50),
     worked_time_in_hours double precision,
     driver_status varchar(50),
     city_code integer,
-    truck_id integer,
+    truck_id varchar(7),
     primary key(driver_id),
     foreign key (city_code) references cities(city_code),
     foreign key (truck_id) references trucks(truck_id)
 );
 
-insert into drivers(driver_id, first_name, last_name, worked_time_in_hours, driver_status, city_code, truck_id)
-values ('AB12345', 'Alex', 'Matushkin', '160', 'IN_SHIFT', 1, 1),
-       ('BA12345', 'Vasia', 'Grigoriev', '60', 'REST', 2, null),
-       ('CD12345', 'Olya', 'Petrova', '10', 'IN_SHIFT', 3, 3),
-       ('DC12345', 'Petya', 'Frolov', '175', 'IN_SHIFT', 1, 1);
+insert into drivers(first_name, last_name, worked_time_in_hours, driver_status, city_code, truck_id)
+values ('Alex', 'Matushkin', '160', 'IN_SHIFT', 1, 'AB12345'),
+       ('Vasia', 'Grigoriev', '60', 'REST', 2, null),
+       ('Olya', 'Petrova', '10', 'IN_SHIFT', 3, 'CD12345'),
+       ('Petya', 'Frolov', '175', 'IN_SHIFT', 1, 'AB12345');
 
 create table orders (
     order_id serial,
     completed boolean,
-    truck_id integer,
+    truck_id varchar(7),
     primary key (order_id),
     foreign key (truck_id) references trucks(truck_id)
 );
 
 insert into orders(completed, truck_id)
-values (false , 1), (false , 3);
+values (false , 'AB12345'), (false , 'CD12345');
 
 create table cargo (
     cargo_id serial,

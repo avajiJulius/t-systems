@@ -9,10 +9,8 @@
 </head>
 <body>
 <h2>Create Order</h2>
-<form action="#" th:action="@{/orders/}" th:object="${form}"
-      method="POST">
+<form action="#" th:action="@{/orders/}" th:object="${form}" method="POST">
     <fieldset>
-        <input type="submit" id="submitButton" th:value="Save">
         <input type="reset" id="resetButton" name="reset" th:value="Reset"/>
         <table>
             <thead>
@@ -24,7 +22,11 @@
             </thead>
             <tbody>
             <tr th:each="waypoint, i : *{waypoints}">
-                <td><input th:field="*{waypoints[__${i.index}__].waypointCity}" /></td>
+                <td>
+                    <select th:field="*{waypoints[__${i.index}__].waypointCity}">
+                        <option th:each="city : ${cities}" th:value="${city}" th:text="${city.cityName}" />
+                    </select>
+                </td>
                 <td>
                     <select th:field="*{waypoints[__${i.index}__].waypointCargo}" >
                         <option th:each="c : ${cargo}" th:value="${c}" th:text="${c.cargoTitle}" />
@@ -39,6 +41,7 @@
             </tr>
             </tbody>
         </table>
+        <button type="submit" class="btn btn-primary">Create Order</button>
     </fieldset>
 </form>
 <a th:href="@{/orders/}">Back to Users List</a>

@@ -15,7 +15,7 @@ public class Road {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "road_id")
-    private long roadId;
+    private Integer roadId;
     @ManyToOne
     @JoinColumn(name = "city_a_code")
     private City cityA;

@@ -51,14 +51,14 @@ public class TruckController {
     }
 
     @GetMapping("/{id}/edit")
-    public String getTruckEditForm(Model model, @PathVariable("id") Long id) {
+    public String getTruckEditForm(Model model, @PathVariable("id") String id) {
         model.addAttribute("truck", truckService.readTruckById(id));
 
         return "trucks/update";
     }
 
     @PatchMapping("/{id}")
-    public String editTruck(@PathVariable("id") Long id,
+    public String editTruck(@PathVariable("id") String id,
                             @ModelAttribute Truck editTruck) {
         truckService.updateTruck(editTruck);
 
@@ -66,7 +66,7 @@ public class TruckController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteTruck(@PathVariable("id") Long id) {
+    public String deleteTruck(@PathVariable("id") String id) {
         truckService.deleteTruck(id);
 
         return "redirect:/trucks/";

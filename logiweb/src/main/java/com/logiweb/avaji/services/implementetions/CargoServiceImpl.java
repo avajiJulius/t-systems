@@ -25,7 +25,7 @@ public class CargoServiceImpl implements CargoService {
     }
 
     @Override
-    public List<Cargo> readCargoByOrderId(Long orderId) {
+    public List<Cargo> readCargoByOrderId(Integer orderId) {
         return cargoDAO.findCargoByOrderId(orderId);
     }
 
