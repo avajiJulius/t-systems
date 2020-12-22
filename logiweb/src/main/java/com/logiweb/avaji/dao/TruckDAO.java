@@ -30,6 +30,10 @@ public class TruckDAO {
         entityManager.flush();
     }
 
+    public void updateTruck(Truck truck) {
+        entityManager.merge(truck);
+    }
+
     public void deleteTruck(String id) {
         Truck truck = entityManager.find(Truck.class, id);
         entityManager.remove(truck);

@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 public class TruckDto {
     private String truckId;
     private double capacity;
+    private boolean serviceable;
     private Integer currentCityCode;
 }

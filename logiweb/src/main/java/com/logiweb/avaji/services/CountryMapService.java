@@ -1,5 +1,6 @@
 package com.logiweb.avaji.services;
 
+import com.logiweb.avaji.entities.dto.CityDto;
 import com.logiweb.avaji.entities.models.utils.City;
 import com.logiweb.avaji.entities.models.utils.Road;
 
@@ -12,7 +13,7 @@ import java.util.List;
 public interface CountryMapService {
 
 
-    List<City> readAllCities();
+    List<CityDto> readAllCities();
 
     /**
      * The <code>createCity</code> create city entity. This entity goes to CountyMapDAO.

@@ -1,6 +1,7 @@
 package com.logiweb.avaji.services.implementetions;
 
 import com.logiweb.avaji.dao.CountryMapDAO;
+import com.logiweb.avaji.entities.dto.DtoConverter;
 import com.logiweb.avaji.entities.dto.TruckDto;
 import com.logiweb.avaji.entities.models.Truck;
 import com.logiweb.avaji.dao.TruckDAO;
@@ -24,29 +25,24 @@ public class TruckServiceImpl implements TruckService {
 
     private final TruckDAO truckDAO;
     private final CountryMapDAO mapDAO;
+    private DtoConverter converter;
 
     @Autowired
     public TruckServiceImpl(TruckDAO truckDAO, CountryMapDAO mapDAO) {
         this.truckDAO = truckDAO;
         this.mapDAO = mapDAO;
+        this.converter = new DtoConverter();
     }
 
     @Override
     public void createTruck(TruckDto truckDto) {
-        Truck truck = convertTruckDtoToTruck(truckDto);
+        City city = getCity(truckDto);
+        Truck truck = converter.dtoToTruck(truckDto);
+        truck.setCurrentCity(city);
         truckDAO.saveTruck(truck);
     }
 
-    private Truck convertTruckDtoToTruck(TruckDto truckDto) {
-        City city = mapDAO.findCityByCode(truckDto.getCurrentCityCode());
-        Truck truck = new Truck();
-        truck.setTruckId(truckDto.getTruckId());
-        truck.setWorkShiftSize(2.0);
-        truck.setCapacity(truckDto.getCapacity());
-        truck.setServiceable(true);
-        truck.setCurrentCity(city);
-        return truck;
-    }
+
 
     @Override
     public List<Truck> readTrucks() {
@@ -54,17 +50,25 @@ public class TruckServiceImpl implements TruckService {
     }
 
     @Override
-    public Truck readTruckById(String truckID) {
-        return truckDAO.findTruckById(truckID);
+    public TruckDto readTruckById(String truckID) {
+        Truck truck = truckDAO.findTruckById(truckID);
+        return converter.truckToDto(truck);
     }
 
     @Override
-    public void updateTruck(Truck updatedTruck) {
-        truckDAO.saveTruck(updatedTruck);
+    public void updateTruck(TruckDto updatedTruck) {
+        Truck truck = converter.dtoToTruck(updatedTruck);
+        truck.setCurrentCity(getCity(updatedTruck));
+        truckDAO.updateTruck(truck);
     }
 
     @Override
     public void deleteTruck(String truckID) {
         truckDAO.deleteTruck(truckID);
+    }
+
+    private City getCity(TruckDto truckDto) {
+        City city = mapDAO.findCityByCode(truckDto.getCurrentCityCode());
+        return city;
     }
 }

@@ -59,7 +59,8 @@ public class TruckController {
 
     @PatchMapping("/{id}")
     public String editTruck(@PathVariable("id") String id,
-                            @ModelAttribute("truck") Truck editTruck) {
+                            @ModelAttribute("truck") TruckDto editTruck) {
+        editTruck.setTruckId(id);
         truckService.updateTruck(editTruck);
         return "redirect:/trucks";
     }
