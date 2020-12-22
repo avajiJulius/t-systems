@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Create Truck</title>
+</head>
+<body>
+<h2>Edit Truck</h2>
+
+<form action="#" th:action="@{/trucks/{id}(id=${truck.truckId})}" th:object="${truck}" th:method="PATCH">
+    <input type="number" th:field="*{capacity}" placeholder="Capacity">
+    <select th:field="*{currentCity}">
+        <option th:each="city : ${cities}" th:value="${city}" th:text="${city.cityName}" />
+    </select>
+    <input type="checkbox" th:field="*{serviceable}"> Servicable
+    <button type="submit" class="btn btn-primary">Edit</button>
+</form>
+<hr>
+<a th:href="@{/trucks/}">Back to Users List</a>
+<script th:replace="fragments/script.html :: jquery"></script>
+<script th:replace="fragments/script.html :: popper"></script>
+<script th:replace="fragments/script.html :: bootstrap"></script>
+</body>
+</html>

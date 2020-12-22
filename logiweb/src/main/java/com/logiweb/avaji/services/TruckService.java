@@ -1,5 +1,6 @@
 package com.logiweb.avaji.services;
 
+import com.logiweb.avaji.entities.dto.TruckDto;
 import com.logiweb.avaji.entities.models.Truck;
 
 import java.util.List;
@@ -13,9 +14,9 @@ public interface TruckService {
     /**
      * The <code>createTruck</code> create and insert truck entity into database.
      *
-     * @param truck entity.
+     * @param truckDto entity.
      */
-    void createTruck(Truck truck);
+    void createTruck(TruckDto truckDto);
 
     /**
      * The <code>readTrucks</code> read all trucks from database.

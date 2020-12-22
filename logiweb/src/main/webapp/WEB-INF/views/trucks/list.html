@@ -19,6 +19,7 @@
             <th> Capacity</th>
             <th> Serviceable</th>
             <th> Current City</th>
+            <th> Action</th>
         </tr>
         </thead>
         <tbody>
@@ -28,6 +29,12 @@
             <td th:text="${truck.capacity}" />
             <td th:text="${truck.serviceable}" />
             <td th:text="${truck.currentCity?.cityName}"/>
+            <td>
+                <a th:href="@{/trucks/{id}/edit(id=${truck.truckId})}">Edit</a>
+                <form action="#" th:action="@{/trucks/{id}(id=${truck.truckId})}" th:method="DELETE">
+                    <input type="submit" value="Delete" />
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>

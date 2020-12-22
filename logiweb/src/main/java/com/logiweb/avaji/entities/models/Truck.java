@@ -5,6 +5,8 @@ import com.logiweb.avaji.entities.models.utils.City;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,18 +15,14 @@ import java.util.List;
 @Table(name = "trucks")
 @NamedQueries({
         @NamedQuery(name = "Truck.findTrucks",
-                query = "select t from Truck t"),
-        @NamedQuery(name = "Truck.findTruckById",
-                query = "select t from Truck t where t.truckId = :truckId"),
-        @NamedQuery(name = "Truck.deleteTruck",
-                query = "delete from Truck t where t.truckId = :truckId"),
+                query = "select t from Truck t")
 })
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Truck {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "truck_id")
     private String truckId;
     @Column(name= "work_shift_size")
@@ -33,12 +31,12 @@ public class Truck {
     private double capacity;
     @Column(name = "serviceable")
     private boolean serviceable;
-    @OneToOne
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "city_code")
     private City currentCity;
 
-    @OneToMany(mappedBy = "currentTruck")
-    private List<Driver> drivers;
-
+//    @Transient
+//    @OneToMany(mappedBy = "currentTruck")
+//    private List<Driver> drivers;
 
 }
