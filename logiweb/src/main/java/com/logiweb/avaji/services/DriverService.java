@@ -1,10 +1,10 @@
 package com.logiweb.avaji.services;
 
+import com.logiweb.avaji.entities.dto.DriverPublicResponseDto;
 import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.Truck;
-import com.logiweb.avaji.views.DriverResponse;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public interface DriverService {
      *
      * @return list of drivers entities.
      */
-    List<Driver> readDrivers();
+    List<DriverPublicResponseDto> readDrivers();
 
     /**
      * The <code>readDriverById</code> read driver with current driverId.
@@ -34,7 +34,7 @@ public interface DriverService {
      * @return driver response with driverId, set of co-drivers ids, truck id,
      * order id, set of waypoints.
      */
-    DriverResponse readDriverById(Integer driverId);
+    Driver readDriverById(Integer driverId);
 
     /**
      * The <code>updateDriver</code> create updated driver entity

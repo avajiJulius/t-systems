@@ -12,12 +12,8 @@ import java.util.Locale;
 @Entity
 @Table(name = "drivers")
 @NamedQueries({
-    @NamedQuery(name = "Driver.findDrivers",
-    query = "select d from Driver d"),
-    @NamedQuery(name = "Driver.findDriverById",
-    query = "select d from Driver d where d.driverId = :driverId"),
-        @NamedQuery(name = "Driver.deleteDriver",
-        query = "delete from Driver d where d.driverId = :driverId")
+    @NamedQuery(name = "Driver.findAllDrivers",
+    query = "select d from Driver d")
 })
 @Data
 @NoArgsConstructor
@@ -32,12 +28,12 @@ public class Driver {
     private String firstName;
     @Column(name = "last_name")
     private String lastName;
-    @Column(name = "worked_time_in_hours")
-    private double workedTimeInHours;
+    @Column(name = "hours_worked")
+    private double hoursWorked;
     @Column(name = "driver_status")
     @Enumerated(value = EnumType.STRING)
     private DriverStatus driverStatus;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "city_code")
     private City currentCity;
     @ManyToOne

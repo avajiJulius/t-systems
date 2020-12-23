@@ -54,7 +54,7 @@ create table drivers (
     driver_id serial,
     first_name varchar(50),
     last_name varchar(50),
-    worked_time_in_hours double precision,
+    hours_worked double precision,
     driver_status varchar(50),
     city_code integer,
     truck_id varchar(7),
@@ -63,7 +63,7 @@ create table drivers (
     foreign key (truck_id) references trucks(truck_id)
 );
 
-insert into drivers(first_name, last_name, worked_time_in_hours, driver_status, city_code, truck_id)
+insert into drivers(first_name, last_name, hours_worked, driver_status, city_code, truck_id)
 values ('Alex', 'Matushkin', '160', 'IN_SHIFT', 1, 'AB12345'),
        ('Vasia', 'Grigoriev', '60', 'REST', 2, null),
        ('Olya', 'Petrova', '10', 'IN_SHIFT', 3, 'CD12345'),

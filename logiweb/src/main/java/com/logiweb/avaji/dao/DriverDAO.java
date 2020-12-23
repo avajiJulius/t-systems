@@ -10,59 +10,34 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
+@Transactional
 public class DriverDAO {
 
+    @PersistenceContext
     private EntityManager entityManager;
 
-    @Autowired
-    public DriverDAO(EntityManagerFactory entityManagerFactory) {
-        this.entityManager = entityManagerFactory.createEntityManager();
-    }
-
-    public List<Driver> findDrivers() {
-        Query query = entityManager.createNamedQuery("Driver.findDrivers");
+    public List<Driver> findAllDrivers() {
+        Query query = entityManager.createNamedQuery("Driver.findAllDrivers");
         return query.getResultList();
     }
 
     public Driver findDriverById(Integer driverId) {
-        Query query = entityManager.createNamedQuery("Driver.findDriverById");
-        query.setParameter("driverId", driverId);
-        return (Driver) query.getSingleResult();
+        return entityManager.find(Driver.class, driverId);
     }
 
-    @Transactional
     public void saveDriver(Driver driver) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
-            entityManager.persist(driver);
-            transaction.commit();
-        } finally {
-            if(transaction.isActive()) {
-                transaction.rollback();
-            }
-        }
+        entityManager.persist(driver);
+        entityManager.flush();
     }
 
-    @Transactional
     public void updateDriver(Driver updatedDriver) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
-            entityManager.merge(updatedDriver);
-            transaction.commit();
-        } finally {
-            if(transaction.isActive()) {
-                transaction.rollback();
-            }
-        }
+        entityManager.merge(updatedDriver);
     }
 
 
     public void deleteDriver(Integer driverId) {
-        Query query = entityManager.createNamedQuery("Driver.deleteDriver");
-        query.setParameter("driverId", driverId);
-        query.executeUpdate();
+        Driver driver = entityManager.find(Driver.class, driverId);
+        entityManager.remove(driver);
     }
 
 

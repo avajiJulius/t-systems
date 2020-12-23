@@ -31,11 +31,10 @@ public class OrderController {
         this.countryMapService = countryMapService;
     }
 
-    @GetMapping("")
+    @GetMapping()
     public String getAllOrders(Model model) {
-        List<Order> orders = orderService.readAllOrders();
-        model.addAttribute("orders", orders);
-        return "orders/home";
+        model.addAttribute("orders", orderService.readAllOrders());
+        return "orders/list";
     }
 
     @GetMapping("/{id}/cargo")

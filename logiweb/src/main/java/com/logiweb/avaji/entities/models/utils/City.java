@@ -24,10 +24,6 @@ public class City{
     private Integer cityCode;
     @Column(name = "city_name")
     private String cityName;
-    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY,
-        mappedBy = "currentCity")
-    private List<Truck> trucks;
-
 //    @OneToMany(mappedBy = "cities")
 //    private List<Road> roads;
 

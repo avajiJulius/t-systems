@@ -1,5 +1,6 @@
 package com.logiweb.avaji.entities.dto;
 
+import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Truck;
 import com.logiweb.avaji.entities.models.utils.City;
 
@@ -36,5 +37,15 @@ public class DtoConverter {
     public TruckDto truckToDto(Truck truck) {
         return new TruckDto(truck.getTruckId(), truck.getCapacity(),
                 truck.isServiceable(), truck.getCurrentCity().getCityCode());
+    }
+
+    public List<DriverPublicResponseDto> driversToDtos(List<Driver> allDrivers) {
+        List<DriverPublicResponseDto> dtos = new ArrayList<>();
+        for(Driver driver: allDrivers) {
+            dtos.add(new DriverPublicResponseDto(driver.getDriverId(), driver.getFirstName(),
+                    driver.getLastName(), driver.getHoursWorked(), driver.getDriverStatus().name(),
+                    driver.getCurrentCity(), driver.getCurrentTruck()));
+        }
+        return dtos;
     }
 }

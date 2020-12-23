@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Trucks</title>
+</head>
+<body>
+<div align="center">
+    <h1>Drivers List</h1>
+    <table border="1">
+        <thead>
+        <tr>
+            <th> Id</th>
+            <th> First Name</th>
+            <th> Last Name</th>
+            <th> Hours Worked</th>
+            <th> Status</th>
+            <th> Current City</th>
+            <th> Current Truck</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="driver : ${drivers}">
+            <td th:text="${driver.id}" />
+            <td th:text="${driver.firstName}" />
+            <td th:text="${driver.lastName}" />
+            <td th:text="${driver.hoursWorked}" />
+            <td th:text="${driver.driverStatus}" />
+            <td th:text="${driver.currentCity.cityName}" />
+            <td>
+                <span th:text="${driver?.currentTruck?.truckId}" />
+                <a href="#" th:if="${driver.currentTruck == null}">Choose Truck</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script th:replace="fragments/script.html :: jquery"></script>
+<script th:replace="fragments/script.html :: popper"></script>
+<script th:replace="fragments/script.html :: bootstrap"></script>
+</body>
+</html>

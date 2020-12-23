@@ -35,8 +35,4 @@ public class Truck {
     @JoinColumn(name = "city_code")
     private City currentCity;
 
-//    @Transient
-//    @OneToMany(mappedBy = "currentTruck")
-//    private List<Driver> drivers;
-
 }

@@ -15,7 +15,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/trucks")
-public class TruckController {
+public class    TruckController {
 
     private static final Logger log = LoggerFactory.getLogger(TruckController.class);
 
