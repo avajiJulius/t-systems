@@ -15,6 +15,11 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This service convert DTO to Entities and vice versa.
+ *
+ */
+
 @Service
 public class DtoConverter {
 
@@ -29,6 +34,12 @@ public class DtoConverter {
         this.cargoDAO = cargoDAO;
     }
 
+    /**
+     * Convert list of city to cityDto
+     *
+     * @param cities
+     * @return cityDto list
+     */
     public List<CityDto> citiesToDtos(List<City> cities) {
         List<CityDto> dtos = new ArrayList<>();
         for(City city: cities) {
@@ -37,6 +48,12 @@ public class DtoConverter {
         return dtos;
     }
 
+    /**
+     * Convert cityDto to City entity.
+     *
+     * @param cityDto
+     * @return city entity.
+     */
     public City dtoToCity(CityDto cityDto) {
         City city = new City();
         city.setCityCode(cityDto.getCityCode());
@@ -44,7 +61,12 @@ public class DtoConverter {
         return city;
     }
 
-
+    /**
+     * Convert TruckDto to Truck entity.
+     *
+     * @param truckDto
+     * @return truck entity
+     */
     public Truck dtoToTruck(TruckDto truckDto) {
         Truck truck = new Truck();
         truck.setTruckId(truckDto.getTruckId());
@@ -55,11 +77,24 @@ public class DtoConverter {
         return truck;
     }
 
+    /**
+     * Convert Truck entity to TruckDto
+     *
+     * @param truck
+     * @return truckDto
+     */
     public TruckDto truckToDto(Truck truck) {
         return new TruckDto(truck.getTruckId(), truck.getCapacity(),
                 truck.isServiceable(), truck.getCurrentCity().getCityCode());
     }
 
+
+    /**
+     * Convert list of Truck entities to truckDto list.
+     *
+     * @param trucks
+     * @return truckDto list
+     */
     public List<TruckDto> trucksToDtos(List<Truck> trucks) {
         List<TruckDto> dtos = new ArrayList<>();
         for(Truck truck: trucks) {
@@ -68,6 +103,14 @@ public class DtoConverter {
         return dtos;
     }
 
+
+    /**
+     * Convert list of Driver entities to DriverPublicResponseDto.
+     *
+     * @param allDrivers
+     * @return DriverPublicResponseDto
+     * @see DriverPublicResponseDto
+     */
     public List<DriverPublicResponseDto> driversToDtos(List<Driver> allDrivers) {
         List<DriverPublicResponseDto> dtos = new ArrayList<>();
         for(Driver driver: allDrivers) {
@@ -78,6 +121,13 @@ public class DtoConverter {
         return dtos;
     }
 
+    /**
+     * Convert waypointDto to Waypoint entity.
+     *
+     * @param dto
+     * @param order
+     * @return waypoint entity.
+     */
     public Waypoint dtoToWaypoint(WaypointDto dto, Order order) {
         WaypointType type;
         if (dto.getType().equals("LOADING")) {
@@ -88,6 +138,13 @@ public class DtoConverter {
         return new Waypoint(mapDAO.findCityByCode(dto.getCityCode()),type, order, cargoDAO.findCargoById(dto.getCargoId()));
     }
 
+    /**
+     * Convert list of waypointDto to waypoint list
+     *
+     * @param waypointDtos
+     * @param order
+     * @return list of waypoint entities.
+     */
     public List<Waypoint> dtosToWaypoints(List<WaypointDto> waypointDtos, Order order) {
         List<Waypoint> waypoints = new ArrayList<>();
         for(WaypointDto waypointDto: waypointDtos) {

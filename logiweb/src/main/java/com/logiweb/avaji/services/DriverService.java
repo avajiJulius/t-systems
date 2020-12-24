@@ -22,17 +22,17 @@ public interface DriverService {
     void createDriver(Driver driver);
 
     /**
-     * The <code>readDrivers</code> read all drivers from database.
+     * The <code>readDrivers</code> read all drivers from database and convert driver entities
+     * into DriverPublicResponseDto.
      *
-     * @return list of drivers entities.
+     * @return list of DriverPublicResponseDto.
      */
     List<DriverPublicResponseDto> readDrivers();
 
     /**
      * The <code>readDriverById</code> read driver with current driverId.
      *
-     * @return driver response with driverId, set of co-drivers ids, truck id,
-     * order id, set of waypoints.
+     * @return driver entity.
      */
     Driver readDriverById(Integer driverId);
 

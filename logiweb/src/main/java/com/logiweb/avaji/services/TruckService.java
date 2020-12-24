@@ -13,9 +13,10 @@ import java.util.List;
  */
 public interface TruckService {
     /**
-     * The <code>createTruck</code> create and insert truck entity into database.
+     * The <code>createTruck</code> convert truckDto into Truck entity
+     * and insert into database.
      *
-     * @param truckDto entity.
+     * @param truckDto
      */
     void createTruck(TruckDto truckDto);
 
@@ -27,20 +28,29 @@ public interface TruckService {
     List<Truck> readTrucks();
 
     /**
-     * The <code>readTruckById</code> read truck from database by id.
+     * The <code>readTruckById</code> read truck from database by id and convert
+     * it into truckDto.
      *
-     * @param truckID unique identifier for trucks.
-     * @return truck entity.
+     * @param truckID unique identifier for truck.
+     * @return truckDto
      */
     TruckDto readTruckById(String truckID);
 
+    /**
+     * The <code>readTrucksForOrder</code> read waypoints for order by orderId.
+     * Count <code>maxCapacity</code> value and read all free and serviceable trucks
+     * with capacity greater than <code>maxCapacity</code>.
+     *
+     * @param orderId
+     * @return all free, serviceable and suitable for capacity.
+     */
     List<Truck> readTrucksForOrder(Integer orderId);
 
     /**
      * The <code>updateTruck</code> create updated truck entity
-     * and replace existing entity with this updated entity.
+     * by convert truckDto to Truck entity and update entity in database.
      *
-     * @param updatedTruck entity.
+     * @param updatedTruck truckDto
      */
     void updateTruck(TruckDto updatedTruck);
 

@@ -24,16 +24,5 @@ public class City{
     private Integer cityCode;
     @Column(name = "city_name")
     private String cityName;
-//    @OneToMany(mappedBy = "cities")
-//    private List<Road> roads;
-
-//    public Road getRoadTo(City cityTo) {
-//        for(Road road: roads) {
-//            if(road.getCityB().getCityCode() == cityTo.getCityCode()) {
-//                return road;
-//            }
-//        }
-//        return null;
-//    }
 
 }

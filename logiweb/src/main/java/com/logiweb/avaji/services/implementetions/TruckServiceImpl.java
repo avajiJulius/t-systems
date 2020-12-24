@@ -53,7 +53,6 @@ public class TruckServiceImpl implements TruckService {
     }
 
 
-
     @Override
     public List<Truck> readTrucks() {
         return truckDAO.findTrucks();

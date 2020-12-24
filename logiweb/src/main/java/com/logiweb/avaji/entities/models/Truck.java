@@ -16,10 +16,6 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = "Truck.findTrucks",
                 query = "select t from Truck t"),
-//        @NamedQuery(name = "Truck.findTrucksForOrder",
-//                query = "select t from Truck t " +
-//                        "where t.capacity > :maxCapacity " +
-//                        "and t.serviceable = true"),
         @NamedQuery(name = "Truck.findTrucksForOrder",
                 query = "select t from Truck t " +
                         "where t.serviceable = true " +

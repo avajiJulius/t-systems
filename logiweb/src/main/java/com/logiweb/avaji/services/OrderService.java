@@ -8,6 +8,11 @@ import com.logiweb.avaji.entities.models.utils.Waypoint;
 
 import java.util.List;
 
+/**
+ * This service response for order create, delete and read manipulations.
+ *
+ */
+
 public interface OrderService {
 
     /**
@@ -27,10 +32,12 @@ public interface OrderService {
 
 
     /**
-     * The <code>createOrderByWaypoints</code> create order entity with list of waypoints.
+     * The <code>createOrderByWaypoints</code> create order entity by converting waypointsDto
+     * into list of waypoint entities. Validate this waypoint by this rules: every cargo need to be
+     * loaded and unloaded. After success validation save order into database.
      *
-     * @param order
-     * @param waypointsDto
+     * @param order in which waypoint list insert.
+     * @param waypointsDto convert into waypoint list and go across validate.
      */
     void createOrderByWaypoints(Order order,List<WaypointDto> waypointsDto);
 
