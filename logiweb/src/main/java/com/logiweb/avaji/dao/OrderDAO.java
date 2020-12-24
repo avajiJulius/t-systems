@@ -12,14 +12,11 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
+@Transactional
 public class OrderDAO {
 
+    @PersistenceContext
     private EntityManager entityManager;
-
-    @Autowired
-    public OrderDAO(EntityManagerFactory entityManagerFactory) {
-        this.entityManager = entityManagerFactory.createEntityManager();
-    }
 
     public List<Order> findAllOrders() {
         Query query = entityManager.createNamedQuery("Order.findAllOrders");
@@ -27,23 +24,19 @@ public class OrderDAO {
     }
 
 
-    @Transactional
     public void saveOrder(Order order) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try{
-            transaction.begin();
-            entityManager.persist(order);
-            transaction.commit();
-        } finally {
-            if(transaction.isActive()) {
-                transaction.rollback();
-            }
-        }
+        entityManager.persist(order);
+        entityManager.flush();
     }
 
     public void deleteOrder(Integer orderId) {
-        Query query = entityManager.createNamedQuery("Order.deleteOrder");
-        query.executeUpdate();
+        Order order = entityManager.find(Order.class, orderId);
+        entityManager.remove(order);
     }
 
+    public Order findOrderById(Integer orderId) {
+        TypedQuery<Order> query = entityManager.createNamedQuery("Order.findOrderById", Order.class)
+                .setParameter("orderId", orderId);
+        return query.getSingleResult();
+    }
 }

@@ -1,6 +1,7 @@
 package com.logiweb.avaji.services;
 
 
+import com.logiweb.avaji.entities.dto.WaypointDto;
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.utils.Waypoint;
@@ -28,9 +29,10 @@ public interface OrderService {
     /**
      * The <code>createOrderByWaypoints</code> create order entity with list of waypoints.
      *
-     * @param waypoints
+     * @param order
+     * @param waypointsDto
      */
-    void createOrderByWaypoints(List<Waypoint> waypoints);
+    void createOrderByWaypoints(Order order,List<WaypointDto> waypointsDto);
 
     /**
      * The <code>deleteOrder</code> delete order by id.

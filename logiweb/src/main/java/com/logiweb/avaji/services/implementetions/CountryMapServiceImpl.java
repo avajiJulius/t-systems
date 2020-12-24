@@ -17,11 +17,11 @@ import java.util.List;
 public class CountryMapServiceImpl implements CountryMapService {
 
     private final CountryMapDAO countryMapDAO;
-    private DtoConverter converter;
+    private final DtoConverter converter;
 
     @Autowired
-    public CountryMapServiceImpl(CountryMapDAO countryMapDAO) {
-        this.converter = new DtoConverter();
+    public CountryMapServiceImpl(CountryMapDAO countryMapDAO, DtoConverter dtoConverter) {
+        this.converter = dtoConverter;
         this.countryMapDAO = countryMapDAO;
     }
 

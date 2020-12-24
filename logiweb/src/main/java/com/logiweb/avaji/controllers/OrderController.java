@@ -1,5 +1,6 @@
 package com.logiweb.avaji.controllers;
 
+import com.logiweb.avaji.entities.dto.WaypointDto;
 import com.logiweb.avaji.entities.dto.WaypointsCreationDto;
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Order;
@@ -50,7 +51,7 @@ public class OrderController {
         WaypointsCreationDto waypointForm = new WaypointsCreationDto();
 
         for (int i = 1; i <= 4; i++) {
-            waypointForm.addWaypoint(new Waypoint());
+            waypointForm.addWaypointDto(new WaypointDto());
         }
         model.addAttribute("cities", countryMapService.readAllCities());
         model.addAttribute("cargo", cargoService.readAllCargo());
@@ -58,13 +59,13 @@ public class OrderController {
         return "orders/create";
     }
 
-    @PostMapping("")
+    @PostMapping()
     public String createOrder(@ModelAttribute(name = "form") WaypointsCreationDto waypoints,
                               Model model) {
-        orderService.createOrderByWaypoints(waypoints.getWaypoints());
+        orderService.createOrderByWaypoints(new Order(), waypoints.getWaypointsDto());
 
         model.addAttribute("orders", orderService.readAllOrders());
-        return "redirect:/orders/";
+        return "redirect:/orders";
     }
 
 }

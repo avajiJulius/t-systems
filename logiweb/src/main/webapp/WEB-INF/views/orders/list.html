@@ -24,7 +24,7 @@
         <tr th:each="order : ${orders}">
             <td th:text="${order.orderId}"></td>
             <td th:text="${order.completed}"></td>
-            <td th:text="${order.designatedTruck.truckId}"></td>
+            <td th:text="${order?.designatedTruck?.truckId}"></td>
             <td><a th:href="@{/orders/{id}/cargo(id=${order.orderId})}">Go to Cargo</a></td>
         </tr>
         </tbody>

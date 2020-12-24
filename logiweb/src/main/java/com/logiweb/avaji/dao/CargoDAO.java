@@ -4,11 +4,13 @@ import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.utils.Waypoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Repository
+@Transactional
 public class CargoDAO {
 
     private EntityManager entityManager;
@@ -34,6 +36,10 @@ public class CargoDAO {
         TypedQuery<Cargo> query = entityManager.createNamedQuery("Cargo.findCargoByOrderId", Cargo.class)
                 .setParameter("orderId", orderId);
         return query.getResultList();
+    }
+
+    public Cargo findCargoById(Integer cargoId) {
+        return entityManager.find(Cargo.class, cargoId);
     }
 
 }

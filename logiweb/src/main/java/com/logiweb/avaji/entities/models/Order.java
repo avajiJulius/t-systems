@@ -13,8 +13,10 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name = "Order.findAllOrders",
         query = "select o from Order o"),
-        @NamedQuery(name = "Order.deleteOrder",
-        query = "delete from Order o where o.orderId = :orderId" )
+        @NamedQuery(name = "Order.findWaypointsOfThisOrder",
+        query = "select w from Waypoint w where w.waypointOrder.orderId = :orderId " ),
+        @NamedQuery(name = "Order.findOrderById",
+                query = "select o from Order o where o.orderId = :orderId " )
 })
 @Data
 @NoArgsConstructor
@@ -26,9 +28,10 @@ public class Order {
     private Integer orderId;
     @Column(name = "completed")
     private boolean completed;
-    @OneToMany(mappedBy = "waypointOrder")
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,
+            mappedBy = "waypointOrder")
     private List<Waypoint> waypoints;
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.PERSIST} ,fetch = FetchType.LAZY)
     @JoinColumn(name = "truck_id")
     private Truck designatedTruck;
 

@@ -21,7 +21,7 @@ create table roads (
     city_a_code integer,
     city_b_code integer,
     distance double precision,
-    primary key (city_a_code),
+    primary key (road_id),
     foreign key (city_a_code) references cities(city_code),
     foreign key (city_b_code) references cities(city_code)
 );
@@ -38,7 +38,7 @@ create table country_map (
 
 create table trucks (
     truck_id varchar(7),
-    work_shift_size double precision,
+    work_shift_size double precision default 0,
     capacity double precision,
     serviceable boolean,
     city_code integer,
@@ -54,10 +54,10 @@ create table drivers (
     driver_id serial,
     first_name varchar(50),
     last_name varchar(50),
-    hours_worked double precision,
+    hours_worked double precision default 0,
     driver_status varchar(50),
     city_code integer,
-    truck_id varchar(7),
+    truck_id varchar(7) default null,
     primary key(driver_id),
     foreign key (city_code) references cities(city_code),
     foreign key (truck_id) references trucks(truck_id)
@@ -71,8 +71,8 @@ values ('Alex', 'Matushkin', '160', 'IN_SHIFT', 1, 'AB12345'),
 
 create table orders (
     order_id serial,
-    completed boolean,
-    truck_id varchar(7),
+    completed boolean default false,
+    truck_id varchar(7) default null,
     primary key (order_id),
     foreign key (truck_id) references trucks(truck_id)
 );

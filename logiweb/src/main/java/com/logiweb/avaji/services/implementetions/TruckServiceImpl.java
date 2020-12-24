@@ -25,13 +25,13 @@ public class TruckServiceImpl implements TruckService {
 
     private final TruckDAO truckDAO;
     private final CountryMapDAO mapDAO;
-    private DtoConverter converter;
+    private final DtoConverter converter;
 
     @Autowired
-    public TruckServiceImpl(TruckDAO truckDAO, CountryMapDAO mapDAO) {
+    public TruckServiceImpl(TruckDAO truckDAO, CountryMapDAO mapDAO, DtoConverter converter) {
         this.truckDAO = truckDAO;
         this.mapDAO = mapDAO;
-        this.converter = new DtoConverter();
+        this.converter = converter;
     }
 
     @Override

@@ -16,13 +16,15 @@ import java.util.List;
 public class DriverServiceImpl implements DriverService {
 
     private final DriverDAO driverDAO;
-    private DtoConverter converter;
+    private final DtoConverter converter;
 
     @Autowired
-    public DriverServiceImpl(DriverDAO driverDAO) {
+    public DriverServiceImpl(DriverDAO driverDAO, DtoConverter converter) {
         this.driverDAO = driverDAO;
-        converter = new DtoConverter();
+        this.converter = converter;
     }
+
+
 
     @Override
     public void createDriver(Driver driver) {

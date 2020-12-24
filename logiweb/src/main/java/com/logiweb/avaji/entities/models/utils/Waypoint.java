@@ -12,6 +12,12 @@ import java.util.List;
 
 @Entity
 @Table(name = "waypoints")
+@NamedQueries(value = {
+        @NamedQuery(name = "Waypoint.findWaypointsOfThisOrder",
+        query = "select w from Waypoint w where w.waypointOrder.orderId = :orderId"),
+        @NamedQuery(name = "Waypoint.findWaypointsOfThisCargo",
+                query = "select w from Waypoint w where w.waypointCargo.cargoId = :cargoId")
+})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,10 +33,18 @@ public class Waypoint {
     @Column(name = "type")
     @Enumerated(value = EnumType.STRING)
     private WaypointType waypointType;
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order waypointOrder;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "cargo_id")
     private Cargo waypointCargo;
+
+    public Waypoint(City waypointCity, WaypointType waypointType,
+                    Order waypointOrder, Cargo waypointCargo) {
+        this.waypointCity = waypointCity;
+        this.waypointType = waypointType;
+        this.waypointOrder = waypointOrder;
+        this.waypointCargo = waypointCargo;
+    }
 }

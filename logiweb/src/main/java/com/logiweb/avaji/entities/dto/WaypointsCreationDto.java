@@ -12,9 +12,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WaypointsCreationDto {
-    private List<Waypoint> waypoints = new ArrayList<>();
+    private List<WaypointDto> waypointsDto = new ArrayList<>();
 
-    public void addWaypoint(Waypoint waypoint) {
-        this.waypoints.add(waypoint);
+    public void addWaypointDto(WaypointDto waypoint) {
+        this.waypointsDto.add(waypoint);
     }
 }
