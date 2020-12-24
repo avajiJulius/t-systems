@@ -1,5 +1,6 @@
 package com.logiweb.avaji.dao;
 
+import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.Truck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -29,6 +30,13 @@ public class TruckDAO {
         entityManager.persist(truck);
         entityManager.flush();
     }
+
+    public List<Truck> findTrucksForOrder(Double maxCapacity) {
+        TypedQuery<Truck> query = entityManager.createNamedQuery("Truck.findTrucksForOrder", Truck.class)
+                .setParameter("maxCapacity", maxCapacity);
+        return query.getResultList();
+    }
+
 
     public void updateTruck(Truck truck) {
         entityManager.merge(truck);

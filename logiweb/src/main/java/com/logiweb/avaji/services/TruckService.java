@@ -1,6 +1,7 @@
 package com.logiweb.avaji.services;
 
 import com.logiweb.avaji.entities.dto.TruckDto;
+import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.Truck;
 
 import java.util.List;
@@ -32,6 +33,8 @@ public interface TruckService {
      * @return truck entity.
      */
     TruckDto readTruckById(String truckID);
+
+    List<Truck> readTrucksForOrder(Integer orderId);
 
     /**
      * The <code>updateTruck</code> create updated truck entity

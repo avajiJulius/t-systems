@@ -60,6 +60,14 @@ public class DtoConverter {
                 truck.isServiceable(), truck.getCurrentCity().getCityCode());
     }
 
+    public List<TruckDto> trucksToDtos(List<Truck> trucks) {
+        List<TruckDto> dtos = new ArrayList<>();
+        for(Truck truck: trucks) {
+            dtos.add(truckToDto(truck));
+        }
+        return dtos;
+    }
+
     public List<DriverPublicResponseDto> driversToDtos(List<Driver> allDrivers) {
         List<DriverPublicResponseDto> dtos = new ArrayList<>();
         for(Driver driver: allDrivers) {
@@ -87,5 +95,4 @@ public class DtoConverter {
         }
         return waypoints;
     }
-
 }

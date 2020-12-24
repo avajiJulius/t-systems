@@ -47,8 +47,8 @@ create table trucks (
 );
 
 insert into trucks(truck_id, work_shift_size, capacity, serviceable, city_code)
-values ('AB12345', 2, 2000, true, 1), ('BA12345',0 , 3000, false , null),
-       ('CD12345',1, 4000, true, 3), ('DC12345', 0, 5000, true, 2);
+values ('AB12345', 2, 10000, true, 1), ('BA12345',0 , 3000, false , null),
+       ('CD12345',1, 20000, true, 3), ('DC12345', 0, 5000, true, 2);
 
 create table drivers (
     driver_id serial,

@@ -3,6 +3,7 @@ package com.logiweb.avaji.dao;
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Order;
+import com.logiweb.avaji.entities.models.Truck;
 import com.logiweb.avaji.entities.models.utils.Waypoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -39,4 +40,12 @@ public class OrderDAO {
                 .setParameter("orderId", orderId);
         return query.getSingleResult();
     }
+
+    public Truck findTruckByOrderId(Integer orderId) {
+        TypedQuery<Truck> query = entityManager.createNamedQuery("Order.findTruckByOrderId", Truck.class)
+                .setParameter("orderId", orderId);
+        return query.getSingleResult();
+    }
+
+
 }

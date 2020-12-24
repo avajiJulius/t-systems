@@ -9,27 +9,32 @@
 </head>
 <body>
 <div align="center">
-    <h1>Order List</h1>
-    <a th:href="@{/orders/new}">Create order</a>
+    <h1>Truck List</h1>
+    <a th:href="@{/trucks/new}">Create Turck</a>
     <table border="1">
         <thead>
         <tr>
-            <th> ID</th>
-            <th> Status</th>
-            <th> Truck</th>
-            <th> Cargo</th>
+            <th> Id</th>
+            <th> Work Shift Size</th>
+            <th> Capacity</th>
+            <th> Serviceable</th>
+            <th> Current City</th>
+            <th> Action</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="order : ${orders}">
-            <td th:text="${order.orderId}"></td>
-            <td th:text="${order.completed}"></td>
+        <tr th:each="truck : ${trucks}">
+            <td th:text="${truck.truckId}" />
+            <td th:text="${truck.workShiftSize}" />
+            <td th:text="${truck.capacity}" />
+            <td th:text="${truck.serviceable}" />
+            <td th:text="${truck?.currentCity?.cityName}"/>
             <td>
-                <span th:text="${order?.designatedTruck?.truckId}" />
-                <a th:href="@{/trucks/order/{id}(id=${order.orderId})}"
-                   th:if="${order.designatedTruck == null}">Choose Truck</a>
+                <a th:href="@{/trucks/{id}/edit(id=${truck.truckId})}">Edit</a>
+                <form action="#" th:action="@{/trucks/{id}(id=${truck.truckId})}" th:method="DELETE">
+                    <input type="submit" value="Delete" />
+                </form>
             </td>
-            <td><a th:href="@{/orders/{id}/cargo(id=${order.orderId})}">Go to Cargo</a></td>
         </tr>
         </tbody>
     </table>

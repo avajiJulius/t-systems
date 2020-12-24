@@ -14,7 +14,8 @@ import java.util.List;
 @Table(name = "waypoints")
 @NamedQueries(value = {
         @NamedQuery(name = "Waypoint.findWaypointsOfThisOrder",
-        query = "select w from Waypoint w where w.waypointOrder.orderId = :orderId"),
+        query = "select w from Waypoint w join fetch w.waypointOrder " +
+                "where w.waypointOrder.orderId = :orderId"),
         @NamedQuery(name = "Waypoint.findWaypointsOfThisCargo",
                 query = "select w from Waypoint w where w.waypointCargo.cargoId = :cargoId")
 })

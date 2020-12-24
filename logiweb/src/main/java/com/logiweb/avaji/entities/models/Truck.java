@@ -15,7 +15,16 @@ import java.util.List;
 @Table(name = "trucks")
 @NamedQueries({
         @NamedQuery(name = "Truck.findTrucks",
-                query = "select t from Truck t")
+                query = "select t from Truck t"),
+//        @NamedQuery(name = "Truck.findTrucksForOrder",
+//                query = "select t from Truck t " +
+//                        "where t.capacity > :maxCapacity " +
+//                        "and t.serviceable = true"),
+        @NamedQuery(name = "Truck.findTrucksForOrder",
+                query = "select t from Truck t " +
+                        "where t.serviceable = true " +
+                        "and t.capacity > :maxCapacity " +
+                        "and t not in (select o.designatedTruck from Order o)")
 })
 @Data
 @NoArgsConstructor
@@ -34,5 +43,8 @@ public class Truck {
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "city_code")
     private City currentCity;
+    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY,
+            mappedBy = "designatedTruck")
+    private Order currentOrder;
 
 }

@@ -6,15 +6,14 @@ import com.logiweb.avaji.dao.WaypointDAO;
 import com.logiweb.avaji.entities.dto.DtoConverter;
 import com.logiweb.avaji.entities.dto.WaypointDto;
 import com.logiweb.avaji.entities.enums.WaypointType;
-import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.utils.Waypoint;
 import com.logiweb.avaji.services.OrderService;
+import com.logiweb.avaji.services.WaypointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Id;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
     public void createOrderByWaypoints(Order order, List<WaypointDto> waypointsDto) {
         List<Waypoint> waypoints = converter.dtosToWaypoints(waypointsDto, order);
         order.setWaypoints(waypoints);
-        if(cargoValidate(waypoints)) {
+        if(validateOrderByWaypoints(waypoints)) {
             orderDAO.saveOrder(order);
         }
     }
@@ -59,27 +58,26 @@ public class OrderServiceImpl implements OrderService {
         orderDAO.deleteOrder(orderId);
     }
 
-    private boolean cargoValidate(List<Waypoint> waypoints) {
-        List<Cargo> load = waypoints.stream()
+    private boolean validateOrderByWaypoints(List<Waypoint> waypoints) {
+        List<Waypoint> loadWaypoints = waypoints.stream()
                 .filter(w -> w.getWaypointType() == WaypointType.LOADING)
-                .map(Waypoint::getWaypointCargo)
                 .collect(Collectors.toList());
-        List<Cargo> unload = waypoints.stream()
+        List<Waypoint> unloadWaypoints = waypoints.stream()
                 .filter(w -> w.getWaypointType() == WaypointType.UNLOADING)
-                .map(Waypoint::getWaypointCargo)
                 .collect(Collectors.toList());
-        if(load.size() != unload.size()) {
+        if(loadWaypoints.size() != unloadWaypoints.size()) {
             return false;
         }
         int count = 0;
-        for (Cargo lc: load) {
-            for (Cargo uc: unload) {
-                if(lc.getCargoId() == uc.getCargoId()) {
+        for (Waypoint load: loadWaypoints) {
+            for (Waypoint unload: unloadWaypoints) {
+                if(load.getWaypointCargo().getCargoId() == unload.getWaypointCargo().getCargoId()
+                        & load.getWaypointCity().getCityCode() != unload.getWaypointCity().getCityCode()) {
                     count++;
                 }
             }
         }
-        if(count == load.size()) {
+        if(count == loadWaypoints.size()) {
             return true;
         }
         return false;
