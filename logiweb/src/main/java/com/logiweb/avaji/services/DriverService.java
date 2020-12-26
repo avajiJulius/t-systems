@@ -51,14 +51,7 @@ public interface DriverService {
      */
     void deleteDriver(Integer driverID);
 
-    /**
-     * The <code>readAndAssignDriverForTruck</code> take driver if workedHour limit
-     * will not be exceeded, driver status is <code>REST</code>, and the truck current city
-     * is the same as driver current city.
-     *
-     * @param truck on the basis of which the selection is conducted.
-     */
-    void readAndAssignDriverForTruck(Truck truck);
+
 
     /**
      * The <code>updateDriverStatus</code> update status for driver.

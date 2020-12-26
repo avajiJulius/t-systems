@@ -41,10 +41,21 @@ public class OrderDAO {
         return query.getSingleResult();
     }
 
+    public Order findOrderByTruckId(String truckId) {
+        TypedQuery<Order> query = entityManager.createNamedQuery("Order.findOrderByTruckId", Order.class)
+                .setParameter("truckId", truckId);
+        return query.getSingleResult();
+    }
+
+
     public Truck findTruckByOrderId(Integer orderId) {
         TypedQuery<Truck> query = entityManager.createNamedQuery("Order.findTruckByOrderId", Truck.class)
                 .setParameter("orderId", orderId);
         return query.getSingleResult();
+    }
+
+    public void updateOrder(Order order) {
+        entityManager.merge(order);
     }
 
 

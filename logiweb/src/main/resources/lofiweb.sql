@@ -20,14 +20,14 @@ create table roads (
     road_id serial,
     city_a_code integer,
     city_b_code integer,
-    distance double precision,
+    distance_in_hours double precision,
     primary key (road_id),
     foreign key (city_a_code) references cities(city_code),
     foreign key (city_b_code) references cities(city_code)
 );
 
-insert into roads(city_a_code, city_b_code, distance)
-values (1, 2, 250), (2,1, 250), (3,1, 700), (2,3, 580);
+insert into roads(city_a_code, city_b_code, distance_in_hours)
+values (1, 2, 5), (2 , 1, 5), (3,1, 20),(1,3, 20), (2,3, 15),(3,2, 15);
 
 
 create table country_map (
@@ -63,12 +63,6 @@ create table drivers (
     foreign key (truck_id) references trucks(truck_id)
 );
 
-insert into drivers(first_name, last_name, hours_worked, driver_status, city_code, truck_id)
-values ('Alex', 'Matushkin', '160', 'IN_SHIFT', 1, 'AB12345'),
-       ('Vasia', 'Grigoriev', '60', 'REST', 2, null),
-       ('Olya', 'Petrova', '10', 'IN_SHIFT', 3, 'CD12345'),
-       ('Petya', 'Frolov', '175', 'IN_SHIFT', 1, 'AB12345');
-
 create table orders (
     order_id serial,
     completed boolean default false,
@@ -76,6 +70,13 @@ create table orders (
     primary key (order_id),
     foreign key (truck_id) references trucks(truck_id)
 );
+
+insert into drivers(first_name, last_name, hours_worked, driver_status, city_code, truck_id)
+values ('Alex', 'Matushkin', '160', 'IN_SHIFT', 1, 'AB12345'),
+       ('Vasia', 'Grigoriev', '60', 'REST', 2, null),
+       ('Olya', 'Petrova', '10', 'IN_SHIFT', 3, 'CD12345'),
+       ('Petya', 'Frolov', '175', 'IN_SHIFT', 1, 'AB12345'),
+       ('TEST', 'TESTOVICH', '0', 'SHIFT', 1, null);
 
 insert into orders(completed, truck_id)
 values (false , 'AB12345'), (false , 'CD12345');

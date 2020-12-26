@@ -30,9 +30,9 @@
             <td th:text="${truck.serviceable}" />
             <td th:text="${truck?.currentCity?.cityName}"/>
             <td>
-                <a th:href="@{/trucks/{id}/edit(id=${truck.truckId})}">Edit</a>
-                <form action="#" th:action="@{/trucks/{id}(id=${truck.truckId})}" th:method="DELETE">
-                    <input type="submit" value="Delete" />
+                <form th:method="PATCH"
+                      th:action="@{/orders/{orderId}/trucks/{truckId}(orderId=${orderId}, truckId=${truck.truckId})}">
+                    <input type="submit" value="ADD" />
                 </form>
             </td>
         </tr>

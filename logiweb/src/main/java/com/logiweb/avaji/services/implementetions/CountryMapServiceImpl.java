@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -66,5 +67,14 @@ public class CountryMapServiceImpl implements CountryMapService {
     @Override
     public Road readRoad(City cityA, City cityB) {
         return null;
+    }
+
+    @Override
+    public List<Road> readPathRoads(List<City> path) {
+        List<Road> roads = new ArrayList<>();
+        for (int i = 0; i < path.size() - 2; i++) {
+            roads.add(countryMapDAO.findRoadByCities(path.get(i).getCityCode(), path.get(i+1).getCityCode()));
+        }
+        return roads;
     }
 }

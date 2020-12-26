@@ -63,4 +63,6 @@ public interface CountryMapService {
      */
     Road readRoad(City cityA, City cityB);
 
+    List<Road> readPathRoads(List<City> path);
+
 }

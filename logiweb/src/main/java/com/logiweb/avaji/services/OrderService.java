@@ -1,6 +1,7 @@
 package com.logiweb.avaji.services;
 
 
+import com.logiweb.avaji.entities.dto.DriverPublicResponseDto;
 import com.logiweb.avaji.entities.dto.WaypointDto;
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Order;
@@ -47,4 +48,21 @@ public interface OrderService {
      * @param orderId of order entity.
      */
     void deleteOrder(Integer orderId);
+
+    /**
+     * The <code>addTruckToOrder</code> find truck by truckId and add it to order with orderId.
+     *
+     * @param truckId
+     * @param orderId
+     */
+    void addTruckToOrder(String truckId, Integer orderId);
+
+    /**
+     * The <code>readDriverForOrder</code> take driver if workedHour limit
+     * will not be exceeded, driver status is <code>REST</code>, and the truck current city
+     * is the same as driver current city.
+     *
+     * @param orderId
+     */
+    List<DriverPublicResponseDto> readDriverForOrder(Integer orderId);
 }

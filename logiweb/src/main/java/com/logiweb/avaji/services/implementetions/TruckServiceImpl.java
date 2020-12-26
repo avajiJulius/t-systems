@@ -1,18 +1,14 @@
 package com.logiweb.avaji.services.implementetions;
 
 import com.logiweb.avaji.dao.CountryMapDAO;
-import com.logiweb.avaji.dao.OrderDAO;
 import com.logiweb.avaji.dao.WaypointDAO;
 import com.logiweb.avaji.entities.dto.DtoConverter;
 import com.logiweb.avaji.entities.dto.TruckDto;
-import com.logiweb.avaji.entities.models.Order;
+import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Truck;
 import com.logiweb.avaji.dao.TruckDAO;
 import com.logiweb.avaji.entities.models.utils.City;
-import com.logiweb.avaji.entities.models.utils.Waypoint;
-import com.logiweb.avaji.services.CountryMapService;
 import com.logiweb.avaji.services.TruckService;
-import com.logiweb.avaji.services.WaypointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,16 +27,16 @@ public class TruckServiceImpl implements TruckService {
     private final TruckDAO truckDAO;
     private final CountryMapDAO mapDAO;
     private final WaypointDAO waypointDAO;
-    private final WaypointService waypointService;
+    private final ComputingService computingService;
     private final DtoConverter converter;
 
     @Autowired
     public TruckServiceImpl(TruckDAO truckDAO, CountryMapDAO mapDAO, WaypointDAO waypointDAO,
-                            WaypointService waypointService, DtoConverter converter) {
+                            ComputingService computingService, DtoConverter converter) {
         this.truckDAO = truckDAO;
         this.mapDAO = mapDAO;
         this.waypointDAO = waypointDAO;
-        this.waypointService = waypointService;
+        this.computingService = computingService;
         this.converter = converter;
     }
 
@@ -66,9 +62,7 @@ public class TruckServiceImpl implements TruckService {
 
     @Override
     public List<Truck> readTrucksForOrder(Integer orderId) {
-        List<Waypoint> waypoints = waypointDAO.findWaypointsOfThisOrder(orderId);
-        List<City> dumpPath = waypointService.getDumpPath(waypoints);
-        Double maxCapacity = waypointService.getMaxCapacity(dumpPath, waypoints);
+        Double maxCapacity = computingService.new OrderCalculation(orderId).getMaxCapacity();
         return truckDAO.findTrucksForOrder(maxCapacity);
     }
 
@@ -78,6 +72,7 @@ public class TruckServiceImpl implements TruckService {
         truck.setCurrentCity(getCity(updatedTruck));
         truckDAO.updateTruck(truck);
     }
+
 
     @Override
     public void deleteTruck(String truckID) {

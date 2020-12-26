@@ -1,5 +1,6 @@
 package com.logiweb.avaji.dao;
 
+import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Truck;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,4 +42,9 @@ public class DriverDAO {
     }
 
 
+    public List<Driver> findDriverForOrder(Double shiftHours, Integer cityCode) {
+        TypedQuery<Driver> query = entityManager.createNamedQuery("Driver.findDriversForOrder", Driver.class)
+                .setParameter("shiftHours", shiftHours).setParameter("cityCode", cityCode);
+        return query.getResultList();
+    }
 }

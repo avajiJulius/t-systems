@@ -13,7 +13,12 @@ import java.util.Locale;
 @Table(name = "drivers")
 @NamedQueries({
     @NamedQuery(name = "Driver.findAllDrivers",
-    query = "select d from Driver d")
+    query = "select d from Driver d"),
+        @NamedQuery(name = "Driver.findDriversForOrder",
+        query = "select d from Driver d " +
+                "where (176 - d.hoursWorked) > :shiftHours " +
+                "and d.currentCity.cityCode = :cityCode " +
+                "and d.driverStatus like 'REST' ")
 })
 @Data
 @NoArgsConstructor

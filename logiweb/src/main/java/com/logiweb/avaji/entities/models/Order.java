@@ -20,7 +20,9 @@ import java.util.List;
                         "join fetch o.waypoints w " +
                         "where w.waypointOrder.orderId = :orderId " ),
         @NamedQuery(name = "Order.findTruckByOrderId",
-        query = "select o.designatedTruck from Order o where o.orderId = :orderId")
+        query = "select o.designatedTruck from Order o where o.orderId = :orderId"),
+        @NamedQuery(name = "Order.findOrderByTruckId",
+        query = "select o from Order o where o.designatedTruck.truckId like :truckId")
 })
 @Data
 @NoArgsConstructor
@@ -35,7 +37,7 @@ public class Order {
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,
             mappedBy = "waypointOrder")
     private List<Waypoint> waypoints;
-    @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.PERSIST} ,fetch = FetchType.LAZY)
+    @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.PERSIST} ,fetch = FetchType.EAGER)
     @JoinColumn(name = "truck_id")
     private Truck designatedTruck;
 

@@ -65,12 +65,6 @@ public class    TruckController {
         return "redirect:/trucks";
     }
 
-    @GetMapping("/order/{id}")
-    public String getTrucksForOrder(@PathVariable("id") Integer orderId,
-                                    Model model) {
-        model.addAttribute("trucks", truckService.readTrucksForOrder(orderId));
-        return "trucks/forOrder";
-    }
 
     @DeleteMapping("/{id}")
     public String deleteTruck(@PathVariable("id") String id) {
