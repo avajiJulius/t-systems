@@ -4,6 +4,7 @@ import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Truck;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
@@ -46,5 +47,11 @@ public class DriverDAO {
         TypedQuery<Driver> query = entityManager.createNamedQuery("Driver.findDriversForOrder", Driver.class)
                 .setParameter("shiftHours", shiftHours).setParameter("cityCode", cityCode);
         return query.getResultList();
+    }
+
+    @Scheduled(cron = "0 0 0 1 */1 *")
+    public void refreshWorkingHours() {
+        Query query = entityManager.createNamedQuery("Driver.refreshWorkedHours");
+        query.executeUpdate();
     }
 }

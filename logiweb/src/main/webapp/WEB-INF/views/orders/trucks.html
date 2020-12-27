@@ -5,26 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <title>Trucks</title>
+    <title>Trucks For Order</title>
 </head>
 <body>
+<nav th:replace="fragments/navbar.html :: navigation"></nav>
 <div align="center">
     <h1>Truck List</h1>
-    <a th:href="@{/trucks/new}">Create Turck</a>
-    <table border="1">
-        <thead>
+    <table class="table table-hover">
+        <thead class="thead-light">
         <tr>
-            <th> Id</th>
-            <th> Work Shift Size</th>
-            <th> Capacity</th>
-            <th> Serviceable</th>
-            <th> Current City</th>
-            <th> Action</th>
+            <th scope="col"> Id</th>
+            <th scope="col"> Work Shift Size</th>
+            <th scope="col"> Capacity</th>
+            <th scope="col"> Serviceable</th>
+            <th scope="col"> Current City</th>
+            <th scope="col"> Action</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="truck : ${trucks}">
-            <td th:text="${truck.truckId}" />
+            <td scope="row" th:text="${truck.truckId}" />
             <td th:text="${truck.workShiftSize}" />
             <td th:text="${truck.capacity}" />
             <td th:text="${truck.serviceable}" />

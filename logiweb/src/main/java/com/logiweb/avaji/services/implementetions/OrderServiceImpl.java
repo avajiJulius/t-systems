@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.*;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,7 +77,20 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderDAO.findOrderById(orderId);
         Integer cityCode = order.getDesignatedTruck().getCurrentCity().getCityCode();
         Double shiftHours = computingService.new OrderCalculation(orderId).getShiftHours();
+
+        long untilEndOfMonth = calculateTimeUntilEndOfMonth();
+        if(shiftHours > untilEndOfMonth) {
+            shiftHours = (double) untilEndOfMonth;
+        }
+
         return converter.driversToDtos(driverDAO.findDriverForOrder(shiftHours, cityCode));
+    }
+
+    private long calculateTimeUntilEndOfMonth() {
+        LocalDateTime to = LocalDateTime.now().withHour(0).with(TemporalAdjusters.firstDayOfNextMonth());
+        LocalDateTime from = LocalDateTime.now();
+        long until = from.until(to, ChronoUnit.HOURS);
+        return until;
     }
 
     private boolean validateOrderByWaypoints(List<Waypoint> waypoints) {

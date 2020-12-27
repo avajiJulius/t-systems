@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<nav th:fragment="navigation" class="navbar navbar-expand-md navbar-light bg-light">
+    <a class="navbar-brand" th:href="@{/}">LogiWeb</a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-targer="#navbarSupportedContent">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+                <a class="nav-link" th:href="@{/}">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/orders}">Orders</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/trucks}">Trucks</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/drivers}">Drivers</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+</html>

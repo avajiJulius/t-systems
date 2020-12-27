@@ -18,7 +18,9 @@ import java.util.Locale;
         query = "select d from Driver d " +
                 "where (176 - d.hoursWorked) > :shiftHours " +
                 "and d.currentCity.cityCode = :cityCode " +
-                "and d.driverStatus like 'REST' ")
+                "and d.driverStatus like 'REST' "),
+        @NamedQuery(name = "Driver.refreshWorkedHours",
+        query = "update Driver d set d.hoursWorked = 0")
 })
 @Data
 @NoArgsConstructor

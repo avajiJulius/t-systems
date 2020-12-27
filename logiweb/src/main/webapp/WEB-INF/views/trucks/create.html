@@ -8,22 +8,45 @@
     <title>Create Truck</title>
 </head>
 <body>
+<nav th:replace="fragments/navbar.html :: navigation"></nav>
 
 <form th:method="POST" th:action="@{/trucks}" th:object="${truck}" >
-    <label for="truckId">Identifier</label>
-    <input type="text" th:field="*{truckId}" id="truckId" placeholder="Identifier">
-    <label for="capacity">Capacity</label>
-    <input type="number" th:field="*{capacity}" id="capacity" placeholder="Capacity">
-    <label for="currentCity">Current City</label>
-    <select th:field="*{currentCityCode}" id="currentCity">
-        <option th:each="city : ${cities}" th:value="${city.cityCode}" th:text="${city.cityName}" />
-    </select>
-    <label for="serviceable">Serviceable</label>
-    <input type="checkbox" th:field="*{serviceable}" id="serviceable">
-    <button type="submit" class="btn btn-primary">Create</button>
+    <div class="form-group row">
+        <label for="truckId" class="col-sm-2 col-form-label">Identifier</label>
+        <div class="col-sm-10">
+        <input type="text" th:field="*{truckId}" id="truckId" placeholder="Identifier">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="capacity" class="col-sm-2 col-form-label">Capacity</label>
+        <div class="col-sm-10">
+        <input type="number" th:field="*{capacity}" id="capacity" placeholder="Capacity">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="currentCity" class="col-sm-2 col-form-label">Current City</label>
+        <div class="col-sm-10">
+            <select th:field="*{currentCityCode}" id="currentCity">
+                <option th:each="city : ${cities}" th:value="${city.cityCode}" th:text="${city.cityName}" />
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-2">Serviceable</div>
+        <div class="col-sm-10">
+            <div class="form-check">
+                <input type="checkbox" th:field="*{serviceable}" id="serviceable">
+                <label for="serviceable">Truck is Serviceable?</label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-10">
+            <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+    </div>
 </form>
 
-<a th:href="@{/trucks/}">Back to Users List</a>
 <a th:href="@{/trucks/}">Back to Users List</a>
 <script th:replace="fragments/script.html :: jquery"></script>
 <script th:replace="fragments/script.html :: popper"></script>

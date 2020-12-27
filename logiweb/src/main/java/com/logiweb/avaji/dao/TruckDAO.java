@@ -2,7 +2,8 @@ package com.logiweb.avaji.dao;
 
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.Truck;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @Repository
 @Transactional
 public class TruckDAO {
+
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -36,6 +38,7 @@ public class TruckDAO {
                 .setParameter("maxCapacity", maxCapacity);
         return query.getResultList();
     }
+
 
 
     public void updateTruck(Truck truck) {

@@ -80,12 +80,12 @@ public class ComputingService {
 
         public Double getShiftHours() {
             List<Road> roads = mapService.readPathRoads(path);
-            Double distance = 0.0;
+            Double shiftHours = 0.0;
             for (Road road : roads) {
-                distance += road.getDistanceInHours();
+                shiftHours += road.getDistanceInHours();
             }
 
-            return distance;
+            return shiftHours;
         }
 
 

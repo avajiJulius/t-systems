@@ -8,23 +8,24 @@
     <title>Trucks</title>
 </head>
 <body>
+<nav th:replace="fragments/navbar.html :: navigation"></nav>
 <div align="center">
     <h1>Truck List</h1>
-    <a th:href="@{/trucks/new}">Create Turck</a>
-    <table border="1">
-        <thead>
+    <a th:href="@{/trucks/new}">Create Truck</a>
+    <table class="table table-hover">
+        <thead class="thead-light">
         <tr>
-            <th> Id</th>
-            <th> Work Shift Size</th>
-            <th> Capacity</th>
-            <th> Serviceable</th>
-            <th> Current City</th>
-            <th> Action</th>
+            <th scope="col"> Id</th>
+            <th scope="col"> Work Shift Size</th>
+            <th scope="col"> Capacity</th>
+            <th scope="col"> Serviceable</th>
+            <th scope="col"> Current City</th>
+            <th scope="col"> Action</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="truck : ${truckList}">
-            <td th:text="${truck.truckId}" />
+            <td scope="row" th:text="${truck.truckId}" />
             <td th:text="${truck.workShiftSize}" />
             <td th:text="${truck.capacity}" />
             <td th:text="${truck.serviceable}" />
