@@ -2,12 +2,12 @@ package com.logiweb.avaji.services.implementetions;
 
 import com.logiweb.avaji.dao.DriverDAO;
 import com.logiweb.avaji.dao.OrderDAO;
+import com.logiweb.avaji.entities.dto.DriverPrivateResponseDto;
 import com.logiweb.avaji.entities.dto.DriverPublicResponseDto;
 import com.logiweb.avaji.entities.dto.DtoConverter;
+import com.logiweb.avaji.entities.dto.WorkDetailDto;
 import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.models.Driver;
-import com.logiweb.avaji.entities.models.Order;
-import com.logiweb.avaji.entities.models.Truck;
 import com.logiweb.avaji.services.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,14 +45,17 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public Driver readDriverById(Integer driverId) {
-        return driverDAO.findDriverById(driverId);
+    public DriverPrivateResponseDto readDriverById(Integer driverId) {
+        Driver driver = driverDAO.findDriverById(driverId);
+        return converter.driverToDto(driver);
     }
 
     @Override
     public void updateDriver(Driver updatedDriver) {
         driverDAO.updateDriver(updatedDriver);
     }
+
+
 
     @Override
     public void deleteDriver(Integer driverID) {

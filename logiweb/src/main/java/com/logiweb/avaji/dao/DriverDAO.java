@@ -3,6 +3,9 @@ package com.logiweb.avaji.dao;
 import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Truck;
+import com.logiweb.avaji.exceptions.DriverNotFoundException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
@@ -10,10 +13,13 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
 public class DriverDAO {
+
+    private static final Logger logger = LogManager.getLogger(DriverDAO.class);
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -24,7 +30,11 @@ public class DriverDAO {
     }
 
     public Driver findDriverById(Integer driverId) {
-        return entityManager.find(Driver.class, driverId);
+        return Optional.ofNullable(entityManager.find(Driver.class, driverId))
+                .orElseThrow(()  -> {
+                    logger.error("Driver with ID {} not found", driverId);
+                    throw new DriverNotFoundException("Driver by ID not found");
+                });
     }
 
     public void saveDriver(Driver driver) {
@@ -38,7 +48,11 @@ public class DriverDAO {
 
 
     public void deleteDriver(Integer driverId) {
-        Driver driver = entityManager.find(Driver.class, driverId);
+        Driver driver = Optional.ofNullable(entityManager.find(Driver.class, driverId))
+                .orElseThrow(()  -> {
+                    logger.error("Driver with ID {} not found", driverId);
+                    throw new DriverNotFoundException("Driver by ID not found");
+                });
         entityManager.remove(driver);
     }
 
@@ -46,12 +60,31 @@ public class DriverDAO {
     public List<Driver> findDriverForOrder(Double shiftHours, Integer cityCode) {
         TypedQuery<Driver> query = entityManager.createNamedQuery("Driver.findDriversForOrder", Driver.class)
                 .setParameter("shiftHours", shiftHours).setParameter("cityCode", cityCode);
-        return query.getResultList();
+        return Optional.ofNullable(query.getResultList())
+                .orElseThrow(()  -> {
+                    logger.error("REST status Drivers with rest of worked hours less then {} " +
+                            "and city code {} not found", shiftHours, cityCode);
+                    throw new DriverNotFoundException("Driver by such parameters not found");
+                });
     }
 
     @Scheduled(cron = "0 0 0 1 */1 *")
-    public void refreshWorkingHours() {
+    public void refreshWorkedHours() {
         Query query = entityManager.createNamedQuery("Driver.refreshWorkedHours");
-        query.executeUpdate();
+        int rows = query.executeUpdate();
+        logger.debug("Worked Hours success refreshed on {} rows", rows);
+
     }
+
+    public List<Driver> findDriversByTruckId(String truckId) {
+        TypedQuery<Driver> query = entityManager.createNamedQuery("Driver.findDriversByTruckId", Driver.class)
+                .setParameter("truckId", truckId);
+        return Optional.ofNullable(query.getResultList())
+                .orElseThrow(() -> {
+                    logger.error("Drivers with truck ID {} not found", truckId);
+                    throw new DriverNotFoundException("Drivers by truck ID not found");
+                });
+    }
+
+
 }

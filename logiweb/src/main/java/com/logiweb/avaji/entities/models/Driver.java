@@ -2,12 +2,12 @@ package com.logiweb.avaji.entities.models;
 
 import com.logiweb.avaji.entities.models.utils.City;
 import com.logiweb.avaji.entities.enums.DriverStatus;
+import com.logiweb.avaji.entities.models.utils.WorkShift;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Locale;
 
 @Entity
 @Table(name = "drivers")
@@ -20,7 +20,9 @@ import java.util.Locale;
                 "and d.currentCity.cityCode = :cityCode " +
                 "and d.driverStatus like 'REST' "),
         @NamedQuery(name = "Driver.refreshWorkedHours",
-        query = "update Driver d set d.hoursWorked = 0")
+        query = "update Driver d set d.hoursWorked = 0"),
+        @NamedQuery(name = "Driver.findDriversByTruckId",
+        query = "select d from Driver d where d.currentTruck.truckId = :truckId")
 })
 @Data
 @NoArgsConstructor
@@ -46,5 +48,7 @@ public class Driver {
     @ManyToOne
     @JoinColumn(name = "truck_id")
     private Truck currentTruck;
+    @Embedded
+    private WorkShift workShift;
 
 }

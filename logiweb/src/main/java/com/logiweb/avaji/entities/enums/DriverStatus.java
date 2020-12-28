@@ -1,5 +1,5 @@
 package com.logiweb.avaji.entities.enums;
 
 public enum DriverStatus {
-    REST, IN_SHIFT, DRIVING;
+    REST, DRIVING, SECOND_DRIVER, LOAD_UNLOAD_WORK;
 }

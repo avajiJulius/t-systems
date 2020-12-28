@@ -1,10 +1,10 @@
 package com.logiweb.avaji.services;
 
+import com.logiweb.avaji.entities.dto.DriverPrivateResponseDto;
 import com.logiweb.avaji.entities.dto.DriverPublicResponseDto;
+import com.logiweb.avaji.entities.dto.WorkDetailDto;
 import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.models.Driver;
-import com.logiweb.avaji.entities.models.Order;
-import com.logiweb.avaji.entities.models.Truck;
 
 import java.util.List;
 
@@ -32,9 +32,10 @@ public interface DriverService {
     /**
      * The <code>readDriverById</code> read driver with current driverId.
      *
-     * @return driver entity.
+     * @return DriverPrivateResponseDto
+     * @see DriverPrivateResponseDto
      */
-    Driver readDriverById(Integer driverId);
+    DriverPrivateResponseDto readDriverById(Integer driverId);
 
     /**
      * The <code>updateDriver</code> create updated driver entity
@@ -50,7 +51,6 @@ public interface DriverService {
      * @param driverID unique identifier for drivers.
      */
     void deleteDriver(Integer driverID);
-
 
 
     /**

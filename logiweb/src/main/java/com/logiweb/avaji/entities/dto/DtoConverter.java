@@ -1,8 +1,6 @@
 package com.logiweb.avaji.entities.dto;
 
-import com.logiweb.avaji.dao.CargoDAO;
-import com.logiweb.avaji.dao.CountryMapDAO;
-import com.logiweb.avaji.dao.OrderDAO;
+import com.logiweb.avaji.dao.*;
 import com.logiweb.avaji.entities.enums.WaypointType;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Order;
@@ -14,6 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This service convert DTO to Entities and vice versa.
@@ -26,12 +27,17 @@ public class DtoConverter {
     private final CountryMapDAO mapDAO;
     private final OrderDAO orderDAO;
     private final CargoDAO cargoDAO;
+    private final DriverDAO driverDAO;
+    private final WaypointDAO waypointDAO;
 
     @Autowired
-    public DtoConverter(CountryMapDAO mapDAO, OrderDAO orderDAO, CargoDAO cargoDAO) {
+    public DtoConverter(CountryMapDAO mapDAO, OrderDAO orderDAO, 
+                        CargoDAO cargoDAO, DriverDAO driverDAO, WaypointDAO waypointDAO) {
         this.mapDAO = mapDAO;
         this.orderDAO = orderDAO;
         this.cargoDAO = cargoDAO;
+        this.driverDAO = driverDAO;
+        this.waypointDAO = waypointDAO;
     }
 
     /**
@@ -151,5 +157,40 @@ public class DtoConverter {
             waypoints.add(dtoToWaypoint(waypointDto, order));
         }
         return waypoints;
+    }
+
+    /**
+     * Convert driver to DriverPrivateResponseDto
+     * 
+     * @param driver
+     * @return DriverPrivateResponseDto
+     */
+    public DriverPrivateResponseDto driverToDto(Driver driver) {
+        String truckId = driver.getCurrentTruck().getTruckId();
+        List<Driver> soDrivers = driverDAO.findDriversByTruckId(truckId);
+        Order order = orderDAO.findOrderByTruckId(truckId);
+        List<Waypoint> waypoints = waypointDAO.findWaypointsOfThisOrder(order.getOrderId());
+        List<Optional<Integer>> coDriversIds = soDrivers.stream().map(d -> d.getDriverId())
+                .filter(i -> i != driver.getDriverId()).map(Optional::ofNullable).collect(Collectors.toList());
+        return new DriverPrivateResponseDto(driver.getDriverId(), coDriversIds,
+                truckId, order.getOrderId(), waypointsToDtos(waypoints));
+    }
+
+    private List<WaypointDto> waypointsToDtos(List<Waypoint> waypoints) {
+        List<WaypointDto> dtos = new ArrayList<>();
+        for(Waypoint waypoint: waypoints) {
+            dtos.add(waypointToDto(waypoint));
+        }
+        return dtos;
+    }
+
+    private WaypointDto waypointToDto(Waypoint waypoint) {
+        String type;
+        if(waypoint.getWaypointType() == WaypointType.LOADING) {
+            type = "LOADING";
+        } else {
+            type = "UNLOADING";
+        }
+        return new WaypointDto(waypoint.getWaypointId(), type, waypoint.getWaypointCargo().getCargoId());
     }
 }

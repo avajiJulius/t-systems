@@ -42,4 +42,7 @@ public class CargoDAO {
         return entityManager.find(Cargo.class, cargoId);
     }
 
+    public void updateCargo(Cargo cargo) {
+        entityManager.merge(cargo);
+    }
 }

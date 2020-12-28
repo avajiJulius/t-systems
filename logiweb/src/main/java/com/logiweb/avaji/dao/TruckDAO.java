@@ -1,6 +1,5 @@
 package com.logiweb.avaji.dao;
 
-import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.Truck;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,6 +13,7 @@ import java.util.List;
 @Transactional
 public class TruckDAO {
 
+    private static final Logger logger = LogManager.getLogger(TruckDAO.class);
 
     @PersistenceContext
     private EntityManager entityManager;

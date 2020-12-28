@@ -29,4 +29,11 @@ public class DriverController {
         return "drivers/list";
     }
 
+    @GetMapping("/{id}")
+    public String getDriver(@PathVariable("id") Integer driverId,
+                            Model model) {
+        model.addAttribute("driver", driverService.readDriverById(driverId));
+        return "drivers/profile";
+    }
+
 }

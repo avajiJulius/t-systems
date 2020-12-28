@@ -58,6 +58,8 @@ create table drivers (
     driver_status varchar(50),
     city_code integer,
     truck_id varchar(7) default null,
+    shift_start timestamp default null,
+    shift_end timestamp default null,
     primary key(driver_id),
     foreign key (city_code) references cities(city_code),
     foreign key (truck_id) references trucks(truck_id)
