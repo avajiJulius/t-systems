@@ -38,17 +38,26 @@ create table country_map (
 
 create table trucks (
     truck_id varchar(7),
-    work_shift_size double precision default 0,
+    shift_size integer default 0,
     capacity double precision,
     serviceable boolean,
     city_code integer,
+    free boolean default true,
     primary key (truck_id),
     foreign key (city_code) references cities(city_code)
 );
 
-insert into trucks(truck_id, work_shift_size, capacity, serviceable, city_code)
-values ('AB12345', 2, 10000, true, 1), ('BA12345',0 , 3000, false , null),
-       ('CD12345',1, 20000, true, 3), ('DC12345', 0, 5000, true, 2);
+insert into trucks(truck_id, shift_size, capacity, serviceable, city_code, free)
+values ('AB12345', 2, 10000, true, 1, false), ('BA12345',0 , 3000, false, 1, true),
+       ('CD12345',1, 20000, true, 3, false), ('DC12345', 0, 5000, true, 2, true);
+
+create table work_shifts (
+    shift_id serial,
+    active boolean default false,
+    shift_start timestamp default null,
+    shift_end timestamp default null,
+    primary key(shift_id)
+);
 
 create table drivers (
     driver_id serial,
@@ -58,12 +67,23 @@ create table drivers (
     driver_status varchar(50),
     city_code integer,
     truck_id varchar(7) default null,
-    shift_start timestamp default null,
-    shift_end timestamp default null,
+    shift_id integer default null,
+    free boolean default true,
     primary key(driver_id),
     foreign key (city_code) references cities(city_code),
-    foreign key (truck_id) references trucks(truck_id)
+    foreign key (truck_id) references trucks(truck_id),
+    foreign key (shift_id) references work_shifts(shift_id)
 );
+
+
+insert into drivers(first_name, last_name, hours_worked, driver_status, city_code, truck_id, free)
+values ('Alex', 'Matushkin', '160', 'DRIVING', 1, 'AB12345', false),
+       ('Vasia', 'Grigoriev', '60', 'REST', 2, null, true),
+       ('Olya', 'Petrova', '10', 'DRIVING', 3, 'CD12345', false ),
+       ('Petya', 'Frolov', '175', 'SECOND_DRIVER', 1, 'AB12345', false ),
+       ('TEST', 'TESTOVICH', '0', 'REST', 1, null, true );
+
+
 
 create table orders (
     order_id serial,
@@ -72,13 +92,6 @@ create table orders (
     primary key (order_id),
     foreign key (truck_id) references trucks(truck_id)
 );
-
-insert into drivers(first_name, last_name, hours_worked, driver_status, city_code, truck_id)
-values ('Alex', 'Matushkin', '160', 'IN_SHIFT', 1, 'AB12345'),
-       ('Vasia', 'Grigoriev', '60', 'REST', 2, null),
-       ('Olya', 'Petrova', '10', 'IN_SHIFT', 3, 'CD12345'),
-       ('Petya', 'Frolov', '175', 'IN_SHIFT', 1, 'AB12345'),
-       ('TEST', 'TESTOVICH', '0', 'SHIFT', 1, null);
 
 insert into orders(completed, truck_id)
 values (false , 'AB12345'), (false , 'CD12345');
@@ -111,16 +124,5 @@ create table waypoints (
 insert into waypoints(city_code, type, order_id, cargo_id)
 values (1, 'LOADING', 1, 1), (1, 'LOADING', 1, 2), (3, 'LOADING', 1, 3), (2, 'UNLOADING', 1, 1),(2, 'UNLOADING', 1, 2),(2, 'UNLOADING', 1, 3),
        (3, 'LOADING', 2, 4),(3, 'LOADING', 2, 5),(3, 'LOADING', 2, 6),(2, 'UNLOADING', 2, 5),(1, 'UNLOADING', 2, 4),(1, 'UNLOADING', 2, 6);
-
-
--- create table cargo_waypoints (
---      waypoint_id integer,
---      cargo_id integer,
---      primary key(waypoint_id, cargo_id)
--- );
---
--- insert into cargo_waypoints(waypoint_id, cargo_id)
--- values (1,1), (1,2), (2, 3), (3, 1), (3, 2) ,(3, 3),
---        (4,4), (4,5), (4, 6), (5, 5), (6, 4) ,(6, 6);
 
 

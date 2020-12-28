@@ -32,12 +32,12 @@
                    th:if="${order.designatedTruck == null}">Choose Truck</a>
             </td>
             <td>
-                <span th:text="${order?.designatedTruck?.workShiftSize}" />
+                <span th:text="${order?.designatedTruck?.shiftSize}" />
                 <div th:if="${order.designatedTruck == null}">
                     <a th:href="@{/orders/{id}/trucks(id=${order.orderId})}">Choose Truck</a>
                 </div>
                 <div th:unless="${order.designatedTruck == null}">
-                    <a th:if="${order.designatedTruck.workShiftSize == 0}"
+                    <a th:if="${order.designatedTruck.shiftSize == 0}"
                        th:href="@{/orders/{id}/drivers(id=${order.orderId})}">Choose Driver</a>
                 </div>
             </td>

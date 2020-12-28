@@ -1,21 +1,18 @@
 package com.logiweb.avaji.controllers;
 
-import com.logiweb.avaji.entities.dto.TruckDto;
 import com.logiweb.avaji.entities.dto.WaypointDto;
 import com.logiweb.avaji.entities.dto.WaypointsCreationDto;
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Order;
-import com.logiweb.avaji.entities.models.utils.Waypoint;
-import com.logiweb.avaji.services.CargoService;
-import com.logiweb.avaji.services.CountryMapService;
-import com.logiweb.avaji.services.OrderService;
-import com.logiweb.avaji.services.TruckService;
+import com.logiweb.avaji.services.api.CargoService;
+import com.logiweb.avaji.services.api.CountryMapService;
+import com.logiweb.avaji.services.api.OrderService;
+import com.logiweb.avaji.services.api.TruckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller

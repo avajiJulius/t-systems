@@ -48,7 +48,10 @@ public class Driver {
     @ManyToOne
     @JoinColumn(name = "truck_id")
     private Truck currentTruck;
-    @Embedded
+    @OneToOne
+    @JoinColumn(name = "shift_id")
     private WorkShift workShift;
+    @Column(name = "free")
+    private boolean free;
 
 }

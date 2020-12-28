@@ -6,7 +6,7 @@ import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.utils.City;
 import com.logiweb.avaji.entities.models.utils.Road;
 import com.logiweb.avaji.entities.models.utils.Waypoint;
-import com.logiweb.avaji.services.CountryMapService;
+import com.logiweb.avaji.services.api.CountryMapService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +38,8 @@ public class ComputingService {
         }
 
         private List<City> getDumpPath() {
-            List<City> cities = waypoints.stream().map(Waypoint::getWaypointCity).distinct().collect(Collectors.toList());
+            List<City> cities = waypoints.stream().map(Waypoint::getWaypointCity)
+                    .distinct().collect(Collectors.toList());
             cities.add(cities.get(0));
             return cities;
         }

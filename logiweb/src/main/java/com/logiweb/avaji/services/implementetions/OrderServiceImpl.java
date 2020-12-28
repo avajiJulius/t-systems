@@ -2,13 +2,18 @@ package com.logiweb.avaji.services.implementetions;
 
 import com.logiweb.avaji.dao.*;
 import com.logiweb.avaji.entities.dto.DriverPublicResponseDto;
-import com.logiweb.avaji.entities.dto.DtoConverter;
 import com.logiweb.avaji.entities.dto.WaypointDto;
 import com.logiweb.avaji.entities.enums.WaypointType;
+import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.Truck;
+import com.logiweb.avaji.entities.models.utils.City;
 import com.logiweb.avaji.entities.models.utils.Waypoint;
-import com.logiweb.avaji.services.OrderService;
+import com.logiweb.avaji.exceptions.CityValidateException;
+import com.logiweb.avaji.exceptions.LoadAndUnloadValidateException;
+import com.logiweb.avaji.services.api.OrderService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,12 +21,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class OrderServiceImpl implements OrderService {
+
+    private static final Logger logger = LogManager.getLogger(OrderServiceImpl.class);
 
     private final OrderDAO orderDAO;
     private final TruckDAO truckDAO;
@@ -94,27 +102,48 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private boolean validateOrderByWaypoints(List<Waypoint> waypoints) {
-        List<Waypoint> loadWaypoints = waypoints.stream()
-                .filter(w -> w.getWaypointType() == WaypointType.LOADING)
-                .collect(Collectors.toList());
-        List<Waypoint> unloadWaypoints = waypoints.stream()
-                .filter(w -> w.getWaypointType() == WaypointType.UNLOADING)
-                .collect(Collectors.toList());
-        if(loadWaypoints.size() != unloadWaypoints.size()) {
-            return false;
-        }
-        int count = 0;
-        for (Waypoint load: loadWaypoints) {
-            for (Waypoint unload: unloadWaypoints) {
-                if(load.getWaypointCargo().getCargoId() == unload.getWaypointCargo().getCargoId()
-                        & load.getWaypointCity().getCityCode() != unload.getWaypointCity().getCityCode()) {
-                    count++;
-                }
-            }
-        }
-        if(count == loadWaypoints.size()) {
+        if (cityValidate(waypoints) && loadAndUnloadValidate(waypoints)) {
             return true;
         }
         return false;
+    }
+
+    private boolean loadAndUnloadValidate(List<Waypoint> waypoints) {
+        List<Cargo> load = waypoints.stream()
+                .filter(w -> w.getWaypointType() == WaypointType.LOADING)
+                .map(Waypoint::getWaypointCargo).distinct()
+                .sorted(Comparator.comparingInt(Cargo::getCargoId))
+                .collect(Collectors.toList());
+        List<Cargo> unload = waypoints.stream()
+                .filter(w -> w.getWaypointType() == WaypointType.UNLOADING)
+                .map(Waypoint::getWaypointCargo).distinct()
+                .sorted(Comparator.comparingInt(Cargo::getCargoId))
+                .collect(Collectors.toList());
+        if(load.size() != unload.size()) {
+            throw new LoadAndUnloadValidateException();
+        }
+        if(!load.equals(unload)) {
+            throw new LoadAndUnloadValidateException();
+        }
+        return true;
+    }
+    private boolean cityValidate(List<Waypoint> waypoints) {
+        List<City> load = waypoints.stream()
+                .filter(w -> w.getWaypointType() == WaypointType.LOADING)
+                .map(Waypoint::getWaypointCity).distinct()
+                .sorted(Comparator.comparingInt(City::getCityCode))
+                .collect(Collectors.toList());
+        List<City> unload = waypoints.stream()
+                .filter(w -> w.getWaypointType() == WaypointType.UNLOADING)
+                .map(Waypoint::getWaypointCity).distinct()
+                .sorted(Comparator.comparingInt(City::getCityCode))
+                .collect(Collectors.toList());
+        if(load.size() != unload.size()) {
+            throw new CityValidateException();
+        }
+        if(!load.equals(unload)) {
+            throw new CityValidateException();
+        }
+        return true;
     }
 }

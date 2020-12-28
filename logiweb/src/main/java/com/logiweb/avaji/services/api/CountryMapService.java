@@ -1,4 +1,4 @@
-package com.logiweb.avaji.services;
+package com.logiweb.avaji.services.api;
 
 import com.logiweb.avaji.entities.dto.CityDto;
 import com.logiweb.avaji.entities.models.utils.City;

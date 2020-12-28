@@ -2,13 +2,11 @@ package com.logiweb.avaji.services.implementetions;
 
 import com.logiweb.avaji.dao.CountryMapDAO;
 import com.logiweb.avaji.dao.WaypointDAO;
-import com.logiweb.avaji.entities.dto.DtoConverter;
 import com.logiweb.avaji.entities.dto.TruckDto;
-import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Truck;
 import com.logiweb.avaji.dao.TruckDAO;
 import com.logiweb.avaji.entities.models.utils.City;
-import com.logiweb.avaji.services.TruckService;
+import com.logiweb.avaji.services.api.TruckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

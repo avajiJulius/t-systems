@@ -30,8 +30,8 @@ public class Truck {
     @Id
     @Column(name = "truck_id")
     private String truckId;
-    @Column(name= "work_shift_size")
-    private double workShiftSize;
+    @Column(name= "shift_size")
+    private int shiftSize;
     @Column(name = "capacity")
     private double capacity;
     @Column(name = "serviceable")
@@ -42,5 +42,7 @@ public class Truck {
     @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY,
             mappedBy = "designatedTruck")
     private Order currentOrder;
+    @Column(name = "free")
+    private boolean free;
 
 }

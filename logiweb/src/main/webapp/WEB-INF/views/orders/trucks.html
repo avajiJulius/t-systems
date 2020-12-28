@@ -15,7 +15,7 @@
         <thead class="thead-light">
         <tr>
             <th scope="col"> Id</th>
-            <th scope="col"> Work Shift Size</th>
+            <th scope="col"> Shift Size</th>
             <th scope="col"> Capacity</th>
             <th scope="col"> Serviceable</th>
             <th scope="col"> Current City</th>
@@ -25,7 +25,7 @@
         <tbody>
         <tr th:each="truck : ${trucks}">
             <td scope="row" th:text="${truck.truckId}" />
-            <td th:text="${truck.workShiftSize}" />
+            <td th:text="${truck.shiftSize}" />
             <td th:text="${truck.capacity}" />
             <td th:text="${truck.serviceable}" />
             <td th:text="${truck?.currentCity?.cityName}"/>

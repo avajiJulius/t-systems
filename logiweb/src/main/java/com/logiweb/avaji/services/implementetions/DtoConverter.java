@@ -1,6 +1,7 @@
-package com.logiweb.avaji.entities.dto;
+package com.logiweb.avaji.services.implementetions;
 
 import com.logiweb.avaji.dao.*;
+import com.logiweb.avaji.entities.dto.*;
 import com.logiweb.avaji.entities.enums.WaypointType;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Order;
@@ -76,7 +77,6 @@ public class DtoConverter {
     public Truck dtoToTruck(TruckDto truckDto) {
         Truck truck = new Truck();
         truck.setTruckId(truckDto.getTruckId());
-        truck.setWorkShiftSize(0);
         truck.setCurrentCity(mapDAO.findCityByCode(truckDto.getCurrentCityCode()));
         truck.setCapacity(truckDto.getCapacity());
         truck.setServiceable(truckDto.isServiceable());

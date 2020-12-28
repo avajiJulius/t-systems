@@ -18,7 +18,7 @@ import java.util.List;
         @NamedQuery(name = "Order.findOrderById",
                 query = "select o from Order o " +
                         "join fetch o.waypoints w " +
-                        "where w.waypointOrder.orderId = :orderId " ),
+                        "where w.waypointOrder.orderId = :orderId"),
         @NamedQuery(name = "Order.findTruckByOrderId",
         query = "select o.designatedTruck from Order o where o.orderId = :orderId"),
         @NamedQuery(name = "Order.findOrderByTruckId",

@@ -1,4 +1,4 @@
-package com.logiweb.avaji.services;
+package com.logiweb.avaji.services.api;
 
 public interface WorkShiftService {
     void updateWorkShiftStatus(boolean isActive, Integer driverId);

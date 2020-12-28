@@ -2,8 +2,8 @@ package com.logiweb.avaji.controllers;
 
 import com.logiweb.avaji.entities.dto.TruckDto;
 import com.logiweb.avaji.entities.models.Truck;
-import com.logiweb.avaji.services.CountryMapService;
-import com.logiweb.avaji.services.TruckService;
+import com.logiweb.avaji.services.api.CountryMapService;
+import com.logiweb.avaji.services.api.TruckService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

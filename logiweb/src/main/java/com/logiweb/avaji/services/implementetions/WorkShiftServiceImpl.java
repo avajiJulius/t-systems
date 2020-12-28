@@ -1,18 +1,14 @@
 package com.logiweb.avaji.services.implementetions;
 
-import com.logiweb.avaji.dao.CargoDAO;
-import com.logiweb.avaji.dao.DriverDAO;
-import com.logiweb.avaji.dao.OrderDAO;
-import com.logiweb.avaji.dao.WaypointDAO;
+import com.logiweb.avaji.dao.*;
 import com.logiweb.avaji.entities.enums.CargoStatus;
 import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Driver;
-import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.utils.WorkShift;
 import com.logiweb.avaji.exceptions.CargoStatusException;
 import com.logiweb.avaji.exceptions.DriverStatusException;
-import com.logiweb.avaji.services.WorkShiftService;
+import com.logiweb.avaji.services.api.WorkShiftService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,23 +28,30 @@ public class WorkShiftServiceImpl implements WorkShiftService {
     private final CargoDAO cargoDAO;
     private final OrderDAO orderDAO;
     private final WaypointDAO waypointDAO;
+    private final WorkShiftDAO workShiftDAO;
 
     @Autowired
     public WorkShiftServiceImpl(DriverDAO driverDAO, CargoDAO cargoDAO,
-                                OrderDAO orderDAO, WaypointDAO waypointDAO) {
+                                OrderDAO orderDAO, WaypointDAO waypointDAO,
+                                WorkShiftDAO workShiftDAO) {
         this.driverDAO = driverDAO;
         this.cargoDAO = cargoDAO;
         this.orderDAO = orderDAO;
         this.waypointDAO = waypointDAO;
+        this.workShiftDAO = workShiftDAO;
     }
 
     @Override
     public void updateWorkShiftStatus(boolean isActive, Integer driverId) {
         Driver driver = driverDAO.findDriverById(driverId);
+        WorkShift workShift;
         if(isActive == true) {
-            driver.setWorkShift(new WorkShift(true, LocalDateTime.now(), null));
+            workShift = new WorkShift();
+            workShift.setActive(true);
+            workShift.setDriver(driver);
+            workShift.setStart(LocalDateTime.now());
         } else {
-            WorkShift workShift = driver.getWorkShift();
+            workShift = workShiftDAO.findShiftByDriverId(driverId);
             workShift.setEnd(LocalDateTime.now());
             workShift.setActive(false);
             long workedHours = ChronoUnit.HOURS.between(workShift.getStart(), workShift.getEnd());

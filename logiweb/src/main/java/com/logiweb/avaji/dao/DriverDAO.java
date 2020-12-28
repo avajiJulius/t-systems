@@ -31,7 +31,7 @@ public class DriverDAO {
 
     public Driver findDriverById(Integer driverId) {
         return Optional.ofNullable(entityManager.find(Driver.class, driverId))
-                .orElseThrow(()  -> {
+                .<DriverNotFoundException>orElseThrow(()  -> {
                     logger.error("Driver with ID {} not found", driverId);
                     throw new DriverNotFoundException("Driver by ID not found");
                 });
@@ -49,7 +49,7 @@ public class DriverDAO {
 
     public void deleteDriver(Integer driverId) {
         Driver driver = Optional.ofNullable(entityManager.find(Driver.class, driverId))
-                .orElseThrow(()  -> {
+                .<DriverNotFoundException>orElseThrow(()  -> {
                     logger.error("Driver with ID {} not found", driverId);
                     throw new DriverNotFoundException("Driver by ID not found");
                 });
@@ -61,7 +61,7 @@ public class DriverDAO {
         TypedQuery<Driver> query = entityManager.createNamedQuery("Driver.findDriversForOrder", Driver.class)
                 .setParameter("shiftHours", shiftHours).setParameter("cityCode", cityCode);
         return Optional.ofNullable(query.getResultList())
-                .orElseThrow(()  -> {
+                .<DriverNotFoundException>orElseThrow(()  -> {
                     logger.error("REST status Drivers with rest of worked hours less then {} " +
                             "and city code {} not found", shiftHours, cityCode);
                     throw new DriverNotFoundException("Driver by such parameters not found");
@@ -73,14 +73,13 @@ public class DriverDAO {
         Query query = entityManager.createNamedQuery("Driver.refreshWorkedHours");
         int rows = query.executeUpdate();
         logger.debug("Worked Hours success refreshed on {} rows", rows);
-
     }
 
     public List<Driver> findDriversByTruckId(String truckId) {
         TypedQuery<Driver> query = entityManager.createNamedQuery("Driver.findDriversByTruckId", Driver.class)
                 .setParameter("truckId", truckId);
         return Optional.ofNullable(query.getResultList())
-                .orElseThrow(() -> {
+                .<DriverNotFoundException>orElseThrow(() -> {
                     logger.error("Drivers with truck ID {} not found", truckId);
                     throw new DriverNotFoundException("Drivers by truck ID not found");
                 });
