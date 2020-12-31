@@ -1,8 +1,10 @@
+drop table if exists work_details;
 drop table if exists cargo_waypoints;
 drop table if exists waypoints;
 drop table if exists cargo;
 drop table if exists orders;
 drop table if exists drivers;
+drop table if exists work_shifts;
 drop table if exists trucks;
 drop table if exists country_map;
 drop table if exists roads;
@@ -42,14 +44,13 @@ create table trucks (
     capacity double precision,
     serviceable boolean,
     city_code integer,
-    free boolean default true,
     primary key (truck_id),
     foreign key (city_code) references cities(city_code)
 );
 
-insert into trucks(truck_id, shift_size, capacity, serviceable, city_code, free)
-values ('AB12345', 2, 10000, true, 1, false), ('BA12345',0 , 3000, false, 1, true),
-       ('CD12345',1, 20000, true, 3, false), ('DC12345', 0, 5000, true, 2, true);
+insert into trucks(truck_id, shift_size, capacity, serviceable, city_code)
+values ('AB12345', 2, 10000, true, 1), ('BA12345',0 , 3000, false, 1),
+       ('CD12345',1, 20000, true, 3), ('DC12345', 0, 5000, true, 2);
 
 create table work_shifts (
     shift_id serial,
@@ -68,7 +69,6 @@ create table drivers (
     city_code integer,
     truck_id varchar(7) default null,
     shift_id integer default null,
-    free boolean default true,
     primary key(driver_id),
     foreign key (city_code) references cities(city_code),
     foreign key (truck_id) references trucks(truck_id),
@@ -76,12 +76,12 @@ create table drivers (
 );
 
 
-insert into drivers(first_name, last_name, hours_worked, driver_status, city_code, truck_id, free)
-values ('Alex', 'Matushkin', '160', 'DRIVING', 1, 'AB12345', false),
-       ('Vasia', 'Grigoriev', '60', 'REST', 2, null, true),
-       ('Olya', 'Petrova', '10', 'DRIVING', 3, 'CD12345', false ),
-       ('Petya', 'Frolov', '175', 'SECOND_DRIVER', 1, 'AB12345', false ),
-       ('TEST', 'TESTOVICH', '0', 'REST', 1, null, true );
+insert into drivers(first_name, last_name, hours_worked, driver_status, city_code, truck_id)
+values ('Alex', 'Matushkin', '160', 'DRIVING', 1, 'AB12345'),
+       ('Vasia', 'Grigoriev', '60', 'REST', 2, null),
+       ('Olya', 'Petrova', '10', 'DRIVING', 3, 'CD12345'),
+       ('Petya', 'Frolov', '175', 'SECOND_DRIVER', 1, 'AB12345'),
+       ('TEST', 'TESTOVICH', '0', 'REST', 1, null);
 
 
 
@@ -126,3 +126,15 @@ values (1, 'LOADING', 1, 1), (1, 'LOADING', 1, 2), (3, 'LOADING', 1, 3), (2, 'UN
        (3, 'LOADING', 2, 4),(3, 'LOADING', 2, 5),(3, 'LOADING', 2, 6),(2, 'UNLOADING', 2, 5),(1, 'UNLOADING', 2, 4),(1, 'UNLOADING', 2, 6);
 
 
+create table work_details (
+    id serial,
+    driver_id integer,
+    truck_id varchar(7),
+    order_id integer,
+    shift_id integer,
+    primary key (id),
+    foreign key (driver_id) references drivers(driver_id),
+    foreign key (truck_id) references trucks(truck_id),
+    foreign key (order_id) references orders(order_id),
+    foreign key (shift_id) references work_shifts(shift_id)
+);

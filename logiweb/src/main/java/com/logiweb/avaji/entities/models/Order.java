@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -34,9 +35,9 @@ public class Order {
     private Integer orderId;
     @Column(name = "completed")
     private boolean completed;
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,
+    @OneToMany(cascade = CascadeType.ALL ,fetch = FetchType.LAZY,
             mappedBy = "waypointOrder")
-    private List<Waypoint> waypoints;
+    private List<Waypoint> waypoints = new ArrayList<>();
     @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.PERSIST} ,fetch = FetchType.EAGER)
     @JoinColumn(name = "truck_id")
     private Truck designatedTruck;

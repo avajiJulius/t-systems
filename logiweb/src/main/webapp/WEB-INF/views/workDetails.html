@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Orders</title>
+</head>
+<body>
+<nav th:replace="fragments/navbar.html :: navigation"></nav>
+<div class="card border-dark mb-3" style="max-width: 18rem;">
+    <div class="card-header" th:text="${details.driverId}"></div>
+    <div class="card-body text-dark">
+        <h5 class="card-title" th:text="${details.truckId}"></h5>
+        <h5 class="card-title" th:text="${details.orderId}"></h5>
+        <p class="card-text" th:text="${details.driverStatus}"></p>
+        <p class="card-text" th:text="${details.shiftActive}"></p>
+        <p class="card-text" th:text="${details.orderStatus}"></p>
+    </div>
+</div>
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th> Driver Id</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="coDriver : ${driver.soDriversIds}">
+            <td th:text="${coDriver}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div>
+    <p th:text="${driver.orderId}"></p>
+    <table>
+        <thead>
+        <tr>
+            <th> City</th>
+            <th> Type</th>
+            <th> Cargo Id</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="waypoint : ${driver.waypoints}">
+            <td th:text="${waypoint.cityCode}"></td>
+            <td th:text="${waypoint.type}"></td>
+            <td th:text="${waypoint.cargoId}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script th:replace="fragments/script.html :: jquery"></script>
+<script th:replace="fragments/script.html :: popper"></script>
+<script th:replace="fragments/script.html :: bootstrap"></script>
+</body>
+</html>

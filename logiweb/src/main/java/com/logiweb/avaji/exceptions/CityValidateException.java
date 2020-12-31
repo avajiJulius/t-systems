@@ -1,5 +1,8 @@
 package com.logiweb.avaji.exceptions;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 public class CityValidateException extends RuntimeException {
     public CityValidateException() {
     }
@@ -15,4 +18,5 @@ public class CityValidateException extends RuntimeException {
     public CityValidateException(Throwable cause) {
         super(cause);
     }
+
 }

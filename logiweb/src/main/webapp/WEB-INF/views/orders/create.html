@@ -12,6 +12,7 @@
 <h2>Create Order</h2>
 <form action="#" th:action="@{/orders/}" th:object="${form}" method="POST">
     <fieldset>
+        <div th:if="${message != null}" th:text="${message}"></div>
         <input type="reset" id="resetButton" name="reset" th:value="Reset"/>
         <table>
             <thead>

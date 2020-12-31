@@ -12,14 +12,35 @@
 <h2>Edit Truck</h2>
 
 <form th:method="PATCH" th:action="@{/trucks/{id}(id=${truck.truckId})}" th:object="${truck}" >
-    <label for="capacity">Capacity</label>
-    <input type="number" th:field="*{capacity}" id="capacity" placeholder="Capacity">
-    <label for="currentCity">Current City</label>
-    <select th:field="*{currentCityCode}" id="currentCity">
-        <option th:each="city : ${cities}" th:value="${city.cityCode}" th:text="${city.cityName}" />
-    </select>
-    <label for="serviceable">Serviceable</label>
-    <input type="checkbox" th:field="*{serviceable}" id="serviceable">
+    <div class="form-group row">
+        <label for="capacity" class="col-sm-2 col-form-label">Capacity</label>
+        <div class="col-sm-10">
+            <input type="number" th:field="*{capacity}" id="capacity" placeholder="Capacity">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="capacity" class="col-sm-2 col-form-label">Shift Size</label>
+        <div class="col-sm-10">
+            <input type="number" th:field="*{shiftSize}" id="shiftSize" placeholder="Shift Size">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="currentCity" class="col-sm-2 col-form-label">Current City</label>
+        <div class="col-sm-10">
+            <select th:field="*{currentCityCode}" id="currentCity">
+                <option th:each="city : ${cities}" th:value="${city.cityCode}" th:text="${city.cityName}" />
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-2">Serviceable</div>
+        <div class="col-sm-10">
+            <div class="form-check">
+                <input type="checkbox" th:field="*{serviceable}" id="serviceable">
+                <label for="serviceable">Truck is Serviceable?</label>
+            </div>
+        </div>
+    </div>
     <button type="submit" class="btn btn-primary">Edit</button>
 </form>
 <hr>

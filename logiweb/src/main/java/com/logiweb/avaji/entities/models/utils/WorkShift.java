@@ -32,4 +32,5 @@ public class WorkShift {
     private LocalDateTime start;
     @Column(name = "shift_end")
     private LocalDateTime end;
+
 }

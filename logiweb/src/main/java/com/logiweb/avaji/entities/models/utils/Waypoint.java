@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "waypoints")
@@ -28,7 +27,7 @@ public class Waypoint {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "waypoint_id")
     private Integer waypointId;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "city_code")
     private City waypointCity;
     @Column(name = "type")

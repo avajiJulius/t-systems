@@ -42,16 +42,15 @@ public class Driver {
     @Column(name = "driver_status")
     @Enumerated(value = EnumType.STRING)
     private DriverStatus driverStatus;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "city_code")
     private City currentCity;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "truck_id")
     private Truck currentTruck;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "shift_id")
     private WorkShift workShift;
-    @Column(name = "free")
-    private boolean free;
+
 
 }

@@ -1,14 +1,16 @@
 package com.logiweb.avaji.entities.models;
 
 
+import com.logiweb.avaji.entities.models.Driver;
+import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.utils.City;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -42,7 +44,8 @@ public class Truck {
     @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY,
             mappedBy = "designatedTruck")
     private Order currentOrder;
-    @Column(name = "free")
-    private boolean free;
+    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY,
+            mappedBy = "currentTruck")
+    private List<Driver> drivers = new ArrayList<>();
 
 }

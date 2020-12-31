@@ -1,13 +1,11 @@
 package com.logiweb.avaji.entities.models;
 
 import com.logiweb.avaji.entities.enums.CargoStatus;
-import com.logiweb.avaji.entities.models.utils.Waypoint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "cargo")
@@ -38,5 +36,6 @@ public class Cargo {
     @Column(name = "cargo_status")
     @Enumerated(value = EnumType.STRING)
     private CargoStatus cargoStatus;
+
 
 }
