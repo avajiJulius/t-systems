@@ -9,48 +9,72 @@
 </head>
 <body>
 <nav th:replace="fragments/navbar.html :: navigation"></nav>
-<div class="card border-dark mb-3" style="max-width: 18rem;">
-    <div class="card-header" th:text="${details.driverId}"></div>
-    <div class="card-body text-dark">
-        <h5 class="card-title" th:text="${details.truckId}"></h5>
-        <h5 class="card-title" th:text="${details.orderId}"></h5>
-        <p class="card-text" th:text="${details.driverStatus}"></p>
-        <p class="card-text" th:text="${details.shiftActive}"></p>
-        <p class="card-text" th:text="${details.orderStatus}"></p>
+<div class="container">
+    <div class="row" >
+        <div class="col">
+            <span>Personal ID : </span>
+            <h5 id="user_id" th:text="${details.id}" />
+        </div>
+        <div class="col">
+            <div class="row">
+                <span>Shift Status : </span>
+                <h5 id="shift_status" th:text="${details.shiftActive}"/>
+            </div>
+            <div class="row">
+                <span>Driver Status : </span>
+                <h5 id="work_status" th:text="${details.driverStatus}" />
+            </div>
+        </div>
     </div>
-</div>
-<div>
-    <table>
-        <thead>
-        <tr>
-            <th> Driver Id</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="coDriver : ${driver.soDriversIds}">
-            <td th:text="${coDriver}"></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-<div>
-    <p th:text="${driver.orderId}"></p>
-    <table>
-        <thead>
-        <tr>
-            <th> City</th>
-            <th> Type</th>
-            <th> Cargo Id</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="waypoint : ${driver.waypoints}">
-            <td th:text="${waypoint.cityCode}"></td>
-            <td th:text="${waypoint.type}"></td>
-            <td th:text="${waypoint.cargoId}"></td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="row">
+        <div class="col">
+            <table>
+                <tr>
+                    <th th:colspan="${#lists.size(details.coDriversId)}" >Co-Drivers IDs</th>
+                </tr>
+                <tr th:each="ids : ${details?.coDriversId}">
+                    <td th:text="${ids}"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <table>
+                <tr>
+                    <th>Truck ID</th>
+                    <th>Order ID</th>
+                </tr>
+                <tr>
+                    <td th:text="${details.truckId}"></td>
+                    <td th:text="${details.orderId}"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label for="path">Path</label>
+            <table id="path">
+                <thead>
+                <tr>
+                    <th>City</th>
+                    <th>Loading Status</th>
+                    <th>Cargo</th>
+                    <th>Cargo Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="waypoint : ${details.waypointList}">
+                    <td th:text="${waypoint.waypointCity.cityName}"></td>
+                    <td th:text="${waypoint.waypointType}"></td>
+                    <td th:text="${waypoint.waypointCargo.cargoTitle}"></td>
+                    <td th:text="${waypoint.waypointCargo.cargoStatus}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 <script th:replace="fragments/script.html :: jquery"></script>
 <script th:replace="fragments/script.html :: popper"></script>

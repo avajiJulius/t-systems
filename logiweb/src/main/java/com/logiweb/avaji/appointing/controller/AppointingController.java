@@ -4,6 +4,8 @@ import com.logiweb.avaji.appointing.service.api.AppointingService;
 import com.logiweb.avaji.exceptions.ShiftSizeExceedException;
 import com.logiweb.avaji.orderdetails.service.api.OrderDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +28,7 @@ public class AppointingController {
     }
 
     @GetMapping("/{id}/trucks")
+    @PreAuthorize("hasAuthority('employee:read')")
     public String getTrucksForOrder(@PathVariable("id") long orderId,
                                     Model model) {
         model.addAttribute("trucks", appointingService.readTrucksForOrder(orderId));
@@ -34,6 +37,7 @@ public class AppointingController {
     }
 
     @PatchMapping("{orderId}/trucks/{truckId}")
+    @PreAuthorize("hasAuthority('employee:write')")
     public String addTruckToOrder(@PathVariable("orderId") long orderId,
                                   @PathVariable("truckId") String truckId) {
         appointingService.addTruckToOrder(truckId, orderId);
@@ -42,6 +46,7 @@ public class AppointingController {
 
 
     @GetMapping("/{id}/drivers")
+    @PreAuthorize("hasAuthority('employee:read')")
     public String getDriversForOrder(@PathVariable("id") long orderId,
                                      Model model) {
         model.addAttribute("drivers", appointingService.readDriverForOrder(orderId));
@@ -50,7 +55,9 @@ public class AppointingController {
         return "appointing/drivers";
     }
 
+
     @PatchMapping("{orderId}/drivers")
+    @PreAuthorize("hasAuthority('employee:write')")
     public String addDriversToOrder(@PathVariable("orderId") long orderId,
                                   @ModelAttribute List<Long> driversIds) throws ShiftSizeExceedException {
         if(driversIds.size() > orderDetailsService.calculateFreeSpaceInShift(orderId)) {

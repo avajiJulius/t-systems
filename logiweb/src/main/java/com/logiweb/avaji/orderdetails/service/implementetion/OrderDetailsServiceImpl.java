@@ -1,6 +1,5 @@
 package com.logiweb.avaji.orderdetails.service.implementetion;
 
-import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Truck;
 import com.logiweb.avaji.orderdetails.dao.OrderDetailsDAO;
 import com.logiweb.avaji.entities.enums.WaypointType;

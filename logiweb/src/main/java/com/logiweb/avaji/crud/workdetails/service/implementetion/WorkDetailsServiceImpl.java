@@ -1,14 +1,13 @@
-package com.logiweb.avaji.workdetails.service.implementetion;
+package com.logiweb.avaji.crud.workdetails.service.implementetion;
 
+import com.logiweb.avaji.auth.dao.UserDAO;
 import com.logiweb.avaji.dtoconverter.DtoConverter;
-import com.logiweb.avaji.entities.models.utils.Waypoint;
+import com.logiweb.avaji.entities.enums.Role;
 import com.logiweb.avaji.entities.models.utils.WorkDetails;
-import com.logiweb.avaji.orderdetails.dao.OrderDetailsDAO;
 import com.logiweb.avaji.crud.cargo.dao.CargoDAO;
 import com.logiweb.avaji.crud.driver.dao.DriverDAO;
-import com.logiweb.avaji.crud.order.dao.OrderDAO;
-import com.logiweb.avaji.workdetails.dao.WorkDetailsDAO;
-import com.logiweb.avaji.workdetails.dto.WorkDetailsDto;
+import com.logiweb.avaji.crud.workdetails.dao.WorkDetailsDAO;
+import com.logiweb.avaji.crud.workdetails.dto.WorkDetailsDto;
 import com.logiweb.avaji.entities.enums.CargoStatus;
 import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.models.Cargo;
@@ -16,7 +15,7 @@ import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.utils.WorkShift;
 import com.logiweb.avaji.exceptions.CargoStatusException;
 import com.logiweb.avaji.exceptions.DriverStatusException;
-import com.logiweb.avaji.workdetails.service.api.WorkDetailsService;
+import com.logiweb.avaji.crud.workdetails.service.api.WorkDetailsService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,37 +24,39 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 @Service
-@Transactional
 public class WorkDetailsServiceImpl implements WorkDetailsService {
 
     private final static Logger logger = LogManager.getLogger(WorkDetailsServiceImpl.class);
 
     private final DriverDAO driverDAO;
     private final CargoDAO cargoDAO;
+    private final UserDAO userDAO;
     private final WorkDetailsDAO workDetailsDAO;
     private final DtoConverter converter;
 
     @Autowired
     public WorkDetailsServiceImpl(DriverDAO driverDAO, CargoDAO cargoDAO,
-                                  WorkDetailsDAO workDetailsDAO, DtoConverter converter) {
+                                  UserDAO userDAO, WorkDetailsDAO workDetailsDAO, DtoConverter converter) {
         this.driverDAO = driverDAO;
         this.cargoDAO = cargoDAO;
+        this.userDAO = userDAO;
         this.workDetailsDAO = workDetailsDAO;
         this.converter = converter;
     }
 
     @Override
-    public WorkDetailsDto readWorkDetailsByDriverId(long driverId) {
-        WorkDetails workDetails = workDetailsDAO.findWorkDetailsByDriverId(driverId);
+    @Transactional
+    public WorkDetailsDto readWorkDetailsByUserId(long userId) {
+        //TODO CHANGE FOR ALL USERS
+        WorkDetails workDetails = workDetailsDAO.findWorkDetailsByDriverId(userId);
         return converter.workDetailsToDto(workDetails);
     }
 
     @Override
-    public void updateWorkShiftStatus(boolean isActive, long workDetailsId) {
-        WorkDetails workDetails = workDetailsDAO.findWorkDetailsById(workDetailsId);
+    public void updateWorkShiftStatus(boolean isActive, long userId) {
+        WorkDetails workDetails = workDetailsDAO.findWorkDetailsById(userId);
         WorkShift workShift = workDetails.getWorkShift();
         if(isActive == true) {
             workShift.setActive(true);
@@ -73,9 +74,9 @@ public class WorkDetailsServiceImpl implements WorkDetailsService {
 
 
     @Override
-    public void updateDriverStatus(String driverStatus, long workDetailsId) {
-        WorkDetails workDetails = workDetailsDAO.findWorkDetailsById(workDetailsId);
-        Driver driver = workDetails.getDriver();
+    public void updateDriverStatus(String driverStatus, long driverId) {
+        Driver driver = driverDAO.findDriverById(driverId);
+
         switch (driverStatus) {
             case ("REST"):
                 driver.setDriverStatus(DriverStatus.REST);
@@ -93,8 +94,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService {
                 logger.error("Driver status '{}' not found", driverStatus);
                 throw new DriverStatusException("Driver status not found");
         }
-        workDetails.setDriver(driver);
-        workDetailsDAO.updateWorkDetails(workDetails);
+        driverDAO.updateDriver(driver);
     }
 
     @Override

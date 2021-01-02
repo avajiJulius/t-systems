@@ -1,4 +1,4 @@
-package com.logiweb.avaji.workdetails.dao;
+package com.logiweb.avaji.crud.workdetails.dao;
 
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.utils.WorkDetails;

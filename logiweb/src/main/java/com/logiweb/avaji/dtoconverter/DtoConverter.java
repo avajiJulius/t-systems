@@ -17,7 +17,7 @@ import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.Truck;
 import com.logiweb.avaji.entities.models.utils.City;
 import com.logiweb.avaji.entities.models.utils.Waypoint;
-import com.logiweb.avaji.workdetails.dto.WorkDetailsDto;
+import com.logiweb.avaji.crud.workdetails.dto.WorkDetailsDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -209,9 +209,9 @@ public class DtoConverter {
         List<Driver> coDrivers = driverDAO.findDriversByTruckId(workDetails.getTruck().getTruckId());
         List<Long> coDriversId = coDrivers.stream().map(Driver::getId).collect(Collectors.toList());
 
-        return new WorkDetailsDto(workDetails.getDriver().getId(), coDriversId, workDetails.getTruck().getTruckId(),
-                workDetails.getOrder().getOrderId(), workDetails.getOrder().getWaypoints(),
-                workDetails.getWorkShift().isActive(), workDetails.getDriver().getDriverStatus().name(),
+        return new WorkDetailsDto(workDetails.getUser().getId(), coDriversId, workDetails.getTruck().getTruckId(),
+                workDetails.getOrder().getOrderId(),orderDetailsDAO.findWaypointsOfThisOrder(workDetails.getOrder().getOrderId()),
+                workDetails.getWorkShift().isActive(), ((Driver)workDetails.getUser()).getDriverStatus().name(),
                 workDetails.getOrder().isCompleted());
     }
 }

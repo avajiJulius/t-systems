@@ -64,41 +64,27 @@ create table work_shifts (
     primary key(shift_id)
 );
 
+insert into work_shifts (active)
+values (false);
+
 create table users(
     id bigserial,
     email varchar(30) unique,
     password varchar(100),
     enable boolean default true,
+    role varchar(30),
     primary key (id)
 );
 
-insert into users(email, password, enable)
-values ('sasha', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true),
-       ('vas', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC',  true),
-       ('olga', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true),
-       ('petr', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true),
-        ('test', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true),
-        ('admin', '$2y$12$81QxgdqO0B8Tb8Qo61urdudm7G38VRU8MYV0iFdGkiRrD9wbRar3a', true);
+insert into users(email, password, enable, role)
+values ('sasha', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true, 'DRIVER'),
+       ('vas', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC',  true,'DRIVER'),
+       ('olga', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true,'DRIVER'),
+       ('petr', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true,'DRIVER'),
+        ('test', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true,'DRIVER'),
+        ('admin', '$2y$12$81QxgdqO0B8Tb8Qo61urdudm7G38VRU8MYV0iFdGkiRrD9wbRar3a', true,'EMPLOYEE');
 
-create table roles (
-    id serial,
-    name varchar(50) not null,
-    primary key (id)
-);
 
-insert into roles(name)
-values ('ROLE_DRIVER'), ('ROLE_EMPLOYEE');
-
-create table users_roles (
-    user_id bigint not null ,
-    role_id int not null ,
-    primary key (user_id, role_id),
-    foreign key (user_id) references users(id),
-    foreign key (role_id) references roles(id)
-);
-
-insert into users_roles(user_id, role_id)
-values (1,1),(2,1),(3,1),(4,1),(5,1),(6,2);
 
 create table drivers (
     id bigint,
@@ -169,13 +155,16 @@ values (1, 'LOADING', 1, 1), (1, 'LOADING', 1, 2), (3, 'LOADING', 1, 3), (2, 'UN
 
 create table work_details (
     id bigserial,
-    driver_id bigint,
     truck_id varchar(7),
     order_id bigint,
     shift_id bigint,
     primary key (id),
-    foreign key (driver_id) references drivers(id),
+    foreign key (id) references users(id),
     foreign key (truck_id) references trucks(truck_id),
     foreign key (order_id) references orders(order_id),
     foreign key (shift_id) references work_shifts(shift_id)
 );
+
+insert into work_details(id, truck_id, order_id, shift_id)
+values (1, 'AB12345', 1, 1);
+

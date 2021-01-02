@@ -1,4 +1,4 @@
-package com.logiweb.avaji.security;
+package com.logiweb.avaji.auth.dao;
 
 import com.logiweb.avaji.entities.models.User;
 import org.springframework.stereotype.Repository;

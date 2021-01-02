@@ -7,6 +7,8 @@ import com.logiweb.avaji.crud.truck.service.api.TruckService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +30,8 @@ public class    TruckController {
         this.mapService = mapService;
     }
 
-
     @GetMapping()
+    @PreAuthorize("hasAuthority('employee:read')")
     public String getTrucks(Model model) {
         List<Truck> truckList = truckService.readTrucks();
 
@@ -38,6 +40,7 @@ public class    TruckController {
     }
 
     @GetMapping("/new")
+    @PreAuthorize("hasAuthority('employee:write')")
     public String getTruckForm(@ModelAttribute("truck") TruckDto truckDto, Model model) {
 
         model.addAttribute("cities", mapService.readAllCities());
@@ -45,12 +48,14 @@ public class    TruckController {
     }
 
     @PostMapping()
+    @PreAuthorize("hasAuthority('employee:write')")
     public String createTruck(@ModelAttribute("truck") TruckDto truckDto) {
         truckService.createTruck(truckDto);
         return "redirect:/trucks";
     }
 
     @GetMapping("/{id}/edit")
+    @PreAuthorize("hasAuthority('employee:write')")
     public String getTruckEditForm(Model model, @PathVariable("id") String id) {
         model.addAttribute("cities", mapService.readAllCities());
         model.addAttribute("truck", truckService.readTruckById(id));
@@ -58,14 +63,15 @@ public class    TruckController {
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAuthority('employee:write')")
     public String editTruck(@PathVariable("id") String id,
                             @ModelAttribute("truck") TruckDto editTruck) {
         truckService.updateTruck(id, editTruck);
         return "redirect:/trucks";
     }
 
-
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('employee:write')")
     public String deleteTruck(@PathVariable("id") String id) {
         truckService.deleteTruck(id);
         return "redirect:/trucks";

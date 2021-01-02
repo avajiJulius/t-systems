@@ -9,6 +9,8 @@ import com.logiweb.avaji.crud.countrymap.service.api.CountryMapService;
 import com.logiweb.avaji.crud.order.service.api.OrderService;
 import com.logiweb.avaji.crud.truck.service.api.TruckService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,13 +36,16 @@ public class OrderController {
         this.countryMapService = countryMapService;
     }
 
+
     @GetMapping()
+    @PreAuthorize("hasAuthority('employee:read')")
     public String getAllOrders(Model model) {
         model.addAttribute("orders", orderService.readAllOrders());
         return "orders/list";
     }
 
     @GetMapping("/{id}/cargo")
+    @PreAuthorize("hasAuthority('employee:read')")
     public String getCargoByOrder(Model model,
                                   @PathVariable(name = "id") long orderId) {
         List<Cargo> cargoList = cargoService.readCargoByOrderId(orderId);
@@ -49,6 +54,7 @@ public class OrderController {
     }
 
     @GetMapping("/new")
+    @PreAuthorize("hasAuthority('employee:write')")
     public String getOrderForm(Model model) {
         WaypointsCreationDto waypointForm = new WaypointsCreationDto();
         for (int i = 1; i <= 4; i++) {
@@ -60,7 +66,9 @@ public class OrderController {
         return "orders/create";
     }
 
+
     @PostMapping()
+    @PreAuthorize("hasAuthority('employee:write')")
     public String createOrder(@ModelAttribute(name = "form") WaypointsCreationDto waypoints,
                               Model model) {
 

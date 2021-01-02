@@ -2,6 +2,7 @@ package com.logiweb.avaji.crud.truck.service.api;
 
 import com.logiweb.avaji.crud.truck.dto.TruckDto;
 import com.logiweb.avaji.entities.models.Truck;
+import org.springframework.security.access.annotation.Secured;
 
 import java.util.List;
 

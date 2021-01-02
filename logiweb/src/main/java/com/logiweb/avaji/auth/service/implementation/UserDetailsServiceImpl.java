@@ -1,9 +1,9 @@
-package com.logiweb.avaji.security;
+package com.logiweb.avaji.auth.service.implementation;
 
 import com.logiweb.avaji.entities.models.User;
-import com.logiweb.avaji.entities.models.utils.Role;
+import com.logiweb.avaji.entities.enums.Role;
+import com.logiweb.avaji.auth.dao.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,8 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service("userDetailsService")
@@ -36,11 +36,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 user.getEmail(), user.getPassword(),
                 user.isEnable(), user.isEnable(),
                 user.isEnable(), user.isEnable(),
-                mapRolesToAuthorities(user.getRoles())
+                getAuthorities(user.getRole())
         );
     }
 
-    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
-        return roles.stream().map(r -> new SimpleGrantedAuthority(r.getName())).collect(Collectors.toList());
+    private Set<SimpleGrantedAuthority> getAuthorities(Role role) {
+        return role.getPermissions().stream()
+                .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
+                .collect(Collectors.toSet());
     }
+
 }
