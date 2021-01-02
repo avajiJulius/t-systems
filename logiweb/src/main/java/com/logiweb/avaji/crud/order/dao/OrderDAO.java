@@ -26,12 +26,12 @@ public class OrderDAO {
         entityManager.flush();
     }
 
-    public void deleteOrder(Integer orderId) {
+    public void deleteOrder(long orderId) {
         Order order = entityManager.find(Order.class, orderId);
         entityManager.remove(order);
     }
 
-    public Order findOrderById(Integer orderId) {
+    public Order findOrderById(long orderId) {
         TypedQuery<Order> query = entityManager.createNamedQuery("Order.findOrderById", Order.class)
                 .setParameter("orderId", orderId);
         return query.getSingleResult();
@@ -43,12 +43,6 @@ public class OrderDAO {
         return query.getSingleResult();
     }
 
-
-    public Truck findTruckByOrderId(Integer orderId) {
-        TypedQuery<Truck> query = entityManager.createNamedQuery("Order.findTruckByOrderId", Truck.class)
-                .setParameter("orderId", orderId);
-        return query.getSingleResult();
-    }
 
     public void updateOrder(Order order) {
         entityManager.merge(order);

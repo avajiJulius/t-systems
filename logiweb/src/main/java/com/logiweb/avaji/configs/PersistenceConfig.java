@@ -20,7 +20,7 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan("com.logiweb.avaji.dao")
+@ComponentScan("com.logiweb.avaji")
 @PropertySource({"classpath:application.properties"})
 public class PersistenceConfig {
 

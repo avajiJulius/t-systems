@@ -23,7 +23,7 @@ public interface CargoService {
      * @param orderId
      * @return list or cargo of certain order.
      */
-    List<Cargo> readCargoByOrderId(Integer orderId);
+    List<Cargo> readCargoByOrderId(long orderId);
 
     /**
      * The <code>createCargo</code> create and check the valid of cargo entity.

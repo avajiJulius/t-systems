@@ -46,26 +46,22 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public DriverPrivateResponseDto readDriverById(Integer driverId) {
+    public DriverPrivateResponseDto readDriverById(long driverId) {
         Driver driver = driverDAO.findDriverById(driverId);
         return converter.driverToDto(driver);
     }
 
     @Override
-    public void updateDriver(Integer driverId, Driver updatedDriver) {
+    public void updateDriver(long driverId, Driver updatedDriver) {
         Driver driver = driverDAO.findDriverById(driverId);
-        boolean isBusy = Optional.ofNullable(driver.getCurrentTruck()).isPresent();
-
-        updatedDriver.setDriverId(driverId);
-        updatedDriver.setFree(!isBusy);
-
+        updatedDriver.setId(driverId);
         driverDAO.updateDriver(updatedDriver);
     }
 
 
 
     @Override
-    public void deleteDriver(Integer driverID) {
+    public void deleteDriver(long driverID) {
         driverDAO.deleteDriver(driverID);
     }
 

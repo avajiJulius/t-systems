@@ -130,7 +130,7 @@ public class DtoConverter {
     public List<DriverPublicResponseDto> driversToDtos(List<Driver> allDrivers) {
         List<DriverPublicResponseDto> dtos = new ArrayList<>();
         for(Driver driver: allDrivers) {
-            dtos.add(new DriverPublicResponseDto(driver.getDriverId(), driver.getFirstName(),
+            dtos.add(new DriverPublicResponseDto(driver.getId(), driver.getFirstName(),
                     driver.getLastName(), driver.getHoursWorked(), driver.getDriverStatus().name(),
                     driver.getCurrentCity(), driver.getCurrentTruck()));
         }
@@ -180,9 +180,9 @@ public class DtoConverter {
         List<Driver> soDrivers = driverDAO.findDriversByTruckId(truckId);
         Order order = orderDAO.findOrderByTruckId(truckId);
         List<Waypoint> waypoints = orderDetailsDAO.findWaypointsOfThisOrder(order.getOrderId());
-        List<Optional<Integer>> coDriversIds = soDrivers.stream().map(d -> d.getDriverId())
-                .filter(i -> i != driver.getDriverId()).map(Optional::ofNullable).collect(Collectors.toList());
-        return new DriverPrivateResponseDto(driver.getDriverId(), coDriversIds,
+        List<Optional<Long>> coDriversIds = soDrivers.stream().map(d -> d.getId())
+                .filter(i -> i != driver.getId()).map(Optional::ofNullable).collect(Collectors.toList());
+        return new DriverPrivateResponseDto(driver.getId(), coDriversIds,
                 truckId, order.getOrderId(), waypointsToDtos(waypoints));
     }
 
@@ -207,9 +207,9 @@ public class DtoConverter {
 
     public WorkDetailsDto workDetailsToDto(WorkDetails workDetails) {
         List<Driver> coDrivers = driverDAO.findDriversByTruckId(workDetails.getTruck().getTruckId());
-        List<Integer> coDriversId = coDrivers.stream().map(Driver::getDriverId).collect(Collectors.toList());
+        List<Long> coDriversId = coDrivers.stream().map(Driver::getId).collect(Collectors.toList());
 
-        return new WorkDetailsDto(workDetails.getDriver().getDriverId(), coDriversId, workDetails.getTruck().getTruckId(),
+        return new WorkDetailsDto(workDetails.getDriver().getId(), coDriversId, workDetails.getTruck().getTruckId(),
                 workDetails.getOrder().getOrderId(), workDetails.getOrder().getWaypoints(),
                 workDetails.getWorkShift().isActive(), workDetails.getDriver().getDriverStatus().name(),
                 workDetails.getOrder().isCompleted());

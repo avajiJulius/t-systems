@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Table(name = "work_details")
 @NamedQueries(value = {
         @NamedQuery(name = "WorkDetails.findWorkDetailsByDriverId",
-        query = "select w from WorkDetails  w where w.driver.driverId = :driverId")
+        query = "select w from WorkDetails  w where w.driver.id = :driverId")
 })
 @Data
 @NoArgsConstructor
@@ -22,7 +22,7 @@ public class WorkDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private long id;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "driver_id")
     private Driver driver;

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WaypointDto {
-    private Integer cityCode;
+    private long cityCode;
     private String type;
-    private Integer cargoId;
+    private long cargoId;
 }

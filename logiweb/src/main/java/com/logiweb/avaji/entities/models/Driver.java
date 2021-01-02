@@ -22,17 +22,18 @@ import javax.persistence.*;
         @NamedQuery(name = "Driver.refreshWorkedHours",
         query = "update Driver d set d.hoursWorked = 0"),
         @NamedQuery(name = "Driver.findDriversByTruckId",
-        query = "select d from Driver d where d.currentTruck.truckId = :truckId")
+        query = "select d from Driver d where d.currentTruck.truckId = :truckId"),
+        @NamedQuery(name = "Driver.findDriversByTruckIdAndCount",
+                query = "select count(d) from Driver d " +
+                        "where d.currentTruck in (select t from Truck t where t.truckId = :truckId)"),
+        @NamedQuery(name = "Driver.findDriversByIds",
+        query = "select d from Driver d where d.id in :driversIds")
 })
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Driver {
+public class Driver extends User{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "driver_id")
-    private Integer driverId;
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")
@@ -51,6 +52,5 @@ public class Driver {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "shift_id")
     private WorkShift workShift;
-
 
 }

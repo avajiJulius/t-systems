@@ -15,5 +15,5 @@ public class TruckDto {
     private double capacity;
     private int shiftSize;
     private boolean serviceable;
-    private Integer currentCityCode;
+    private long currentCityCode;
 }

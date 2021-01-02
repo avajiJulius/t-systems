@@ -1,5 +1,7 @@
 package com.logiweb.avaji.orderdetails.service.implementetion;
 
+import com.logiweb.avaji.entities.models.Driver;
+import com.logiweb.avaji.entities.models.Truck;
 import com.logiweb.avaji.orderdetails.dao.OrderDetailsDAO;
 import com.logiweb.avaji.entities.enums.WaypointType;
 import com.logiweb.avaji.entities.models.Cargo;
@@ -34,7 +36,7 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 
     }
 
-    public void init(Integer orderId) {
+    public void init(long orderId) {
         this.waypoints = orderDetailsDAO.findWaypointsOfThisOrder(orderId);
         this.path = getDumpPath();
     }
@@ -123,6 +125,14 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
         LocalDateTime from = LocalDateTime.now();
         long until = from.until(to, ChronoUnit.HOURS);
         return until;
+    }
+
+    @Override
+    public int calculateFreeSpaceInShift(long orderId) {
+        Truck truck = orderDetailsDAO.findTruckByOrderId(orderId);
+        int currentSize = orderDetailsDAO.findDriversByTruckIdAndCount(truck.getTruckId());
+        int size = truck.getShiftSize();
+        return (size - currentSize);
     }
 
 }

@@ -42,7 +42,7 @@ public class OrderController {
 
     @GetMapping("/{id}/cargo")
     public String getCargoByOrder(Model model,
-                                  @PathVariable(name = "id") Integer orderId) {
+                                  @PathVariable(name = "id") long orderId) {
         List<Cargo> cargoList = cargoService.readCargoByOrderId(orderId);
         model.addAttribute("cargoList", cargoList);
         return "orders/cargo";
@@ -62,7 +62,7 @@ public class OrderController {
 
     @PostMapping()
     public String createOrder(@ModelAttribute(name = "form") WaypointsCreationDto waypoints,
-                              BindingResult result, Model model) {
+                              Model model) {
 
         orderService.createOrderByWaypoints(new Order(), waypoints.getWaypointsDto());
 

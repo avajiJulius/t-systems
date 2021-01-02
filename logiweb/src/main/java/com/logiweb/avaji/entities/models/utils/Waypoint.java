@@ -26,7 +26,7 @@ public class Waypoint {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "waypoint_id")
-    private Integer waypointId;
+    private long waypointId;
     @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "city_code")
     private City waypointCity;

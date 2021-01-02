@@ -7,20 +7,15 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "cities")
-@NamedQueries(value = {
-        @NamedQuery(name = "City.findAllCities",
-        query = "select c from City c")
-})
+@Table(name = "roles")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class City{
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "city_code")
-    private long cityCode;
-    @Column(name = "city_name")
-    private String cityName;
-
+    @Column(name = "id")
+    private int id;
+    @Column(name = "name")
+    private String name;
 }

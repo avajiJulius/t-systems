@@ -22,11 +22,11 @@ public class CountryMapDAO {
         return query.getResultList();
     }
 
-    public City findCityByCode(Integer cityCode) {
+    public City findCityByCode(long cityCode) {
         return entityManager.find(City.class, cityCode);
     }
 
-    public Road findRoadByCities(Integer cityACode, Integer cityBCode) {
+    public Road findRoadByCities(long cityACode, long cityBCode) {
         TypedQuery<Road> query = entityManager.createNamedQuery("Road.findRoadByCities", Road.class)
                 .setParameter("cityACode", cityACode).setParameter("cityBCode", cityBCode);
         return query.getSingleResult();

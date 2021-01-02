@@ -22,7 +22,7 @@ public class WorkDetailsController {
     }
 
     @GetMapping("/{id}")
-    public String getWorkDetails(@PathVariable(name = "id")Integer driverId,
+    public String getWorkDetails(@PathVariable(name = "id")long driverId,
                                  Model model) {
         WorkDetailsDto workDetails = workDetailsService.readWorkDetailsByDriverId(driverId);
         model.addAttribute("details", workDetails);

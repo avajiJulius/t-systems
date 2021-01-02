@@ -5,9 +5,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface OrderDetailsService {
-    void init(Integer orderId);
+    void init(long orderId);
     Double getMaxCapacity();
     Double getShiftHours();
     long calculateTimeUntilEndOfMonth();
+    int calculateFreeSpaceInShift(long orderId);
 
 }

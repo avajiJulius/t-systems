@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DriverPublicResponseDto {
-    private Integer id;
+    private long id;
     private String firstName;
     private String lastName;
     private Double hoursWorked;

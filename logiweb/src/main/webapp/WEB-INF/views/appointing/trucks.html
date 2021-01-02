@@ -31,7 +31,7 @@
             <td th:text="${truck?.currentCity?.cityName}"/>
             <td>
                 <form th:method="PATCH"
-                      th:action="@{/orders/{orderId}/trucks/{truckId}(orderId=${orderId}, truckId=${truck.truckId})}">
+                      th:action="@{/{orderId}/trucks/{truckId}(orderId=${orderId}, truckId=${truck.truckId})}">
                     <input type="submit" value="ADD" />
                 </form>
             </td>

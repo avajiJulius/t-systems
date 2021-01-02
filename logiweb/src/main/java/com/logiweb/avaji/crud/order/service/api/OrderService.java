@@ -44,7 +44,7 @@ public interface OrderService {
      *
      * @param orderId of order entity.
      */
-    void deleteOrder(Integer orderId);
+    void deleteOrder(long orderId);
 
 
 }

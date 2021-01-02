@@ -40,7 +40,6 @@ public class TruckServiceImpl implements TruckService {
     @Override
     public void createTruck(TruckDto truckDto) {
         Truck truck = converter.dtoToTruck(truckDto);
-        truck.setFree(true);
 
         truckDAO.saveTruck(truck);
     }
@@ -63,9 +62,6 @@ public class TruckServiceImpl implements TruckService {
     public void updateTruck(String truckId,TruckDto updatedTruck) {
         updatedTruck.setTruckId(truckId);
         Truck truck = converter.dtoToTruck(updatedTruck);
-
-        boolean isBusy = Optional.ofNullable(orderDAO.findOrderByTruckId(truckId)).isPresent();
-        truck.setFree(!isBusy);
 
         truckDAO.updateTruck(truck);
     }

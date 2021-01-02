@@ -12,10 +12,10 @@ import java.util.Optional;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DriverPrivateResponseDto {
-    private Integer driverId;
-    private List<Optional<Integer>> soDriversIds;
+    private long driverId;
+    private List<Optional<Long>> soDriversIds;
     private String truckId;
-    private Integer orderId;
+    private long orderId;
     private List<WaypointDto> waypoints;
 
 }

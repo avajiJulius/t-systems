@@ -15,7 +15,7 @@ public interface AppointingService {
      * @param orderId
      * @return all free, serviceable and suitable for capacity.
      */
-    List<Truck> readTrucksForOrder(Integer orderId);
+    List<Truck> readTrucksForOrder(long orderId);
 
     /**
      * The <code>addTruckToOrder</code> find truck by truckId and add it to order with orderId.
@@ -23,7 +23,7 @@ public interface AppointingService {
      * @param truckId
      * @param orderId
      */
-    void addTruckToOrder(String truckId, Integer orderId);
+    void addTruckToOrder(String truckId, long orderId);
 
     /**
      * The <code>readDriverForOrder</code> take driver if workedHour limit
@@ -32,5 +32,14 @@ public interface AppointingService {
      *
      * @param orderId
      */
-    List<DriverPublicResponseDto> readDriverForOrder(Integer orderId);
+    List<DriverPublicResponseDto> readDriverForOrder(long orderId);
+
+
+    /**
+     * The <code>addDriversToOrder</code> find drivers and add them to truck of current order;
+     *
+     * @param driversIds
+     * @param orderId
+     */
+    void addDriversToOrder(List<Long> driversIds, long orderId);
 }

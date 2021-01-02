@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDto {
-    private Integer orderId;
+    private long orderId;
     private boolean completed;
     private List<Waypoint> waypoints;
     private Truck designatedTruck;

@@ -48,13 +48,13 @@ public class WorkDetailsServiceImpl implements WorkDetailsService {
     }
 
     @Override
-    public WorkDetailsDto readWorkDetailsByDriverId(Integer driverId) {
+    public WorkDetailsDto readWorkDetailsByDriverId(long driverId) {
         WorkDetails workDetails = workDetailsDAO.findWorkDetailsByDriverId(driverId);
         return converter.workDetailsToDto(workDetails);
     }
 
     @Override
-    public void updateWorkShiftStatus(boolean isActive, Integer workDetailsId) {
+    public void updateWorkShiftStatus(boolean isActive, long workDetailsId) {
         WorkDetails workDetails = workDetailsDAO.findWorkDetailsById(workDetailsId);
         WorkShift workShift = workDetails.getWorkShift();
         if(isActive == true) {
@@ -73,7 +73,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService {
 
 
     @Override
-    public void updateDriverStatus(String driverStatus, Integer workDetailsId) {
+    public void updateDriverStatus(String driverStatus, long workDetailsId) {
         WorkDetails workDetails = workDetailsDAO.findWorkDetailsById(workDetailsId);
         Driver driver = workDetails.getDriver();
         switch (driverStatus) {
@@ -98,7 +98,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService {
     }
 
     @Override
-    public void updateCargoStatus(String cargoStatus, Integer cargoId) {
+    public void updateCargoStatus(String cargoStatus, long cargoId) {
         Cargo cargo = cargoDAO.findCargoById(cargoId);
         CargoStatus status = cargo.getCargoStatus();
         CargoStatus newStatus = computeCargoStatus(cargoStatus, status);

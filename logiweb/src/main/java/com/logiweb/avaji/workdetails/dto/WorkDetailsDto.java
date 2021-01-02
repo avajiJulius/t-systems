@@ -13,10 +13,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WorkDetailsDto {
-    private Integer driverId;
-    private List<Integer> coDriversId = new ArrayList<>();
+    private long driverId;
+    private List<Long> coDriversId = new ArrayList<>();
     private String truckId;
-    private Integer orderId;
+    private long orderId;
     private List<Waypoint> waypointList = new ArrayList<>();
     private boolean shiftActive;
     private String driverStatus;

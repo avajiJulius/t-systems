@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NamedQueries(value = {
         @NamedQuery(name = "WorkShift.findShiftByDriverId",
         query = "select s from WorkShift s " +
-                "where s.driver.driverId = :driverId")
+                "where s.driver.id = :driverId")
 })
 @Data
 @NoArgsConstructor
@@ -22,7 +22,7 @@ public class WorkShift {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "shift_id")
-    private Integer id;
+    private long id;
     @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER,
             mappedBy = "workShift")
     private Driver driver;

@@ -34,7 +34,7 @@ public interface DriverService {
      * @return DriverPrivateResponseDto
      * @see DriverPrivateResponseDto
      */
-    DriverPrivateResponseDto readDriverById(Integer driverId);
+    DriverPrivateResponseDto readDriverById(long driverId);
 
     /**
      * The <code>updateDriver</code> create updated driver entity
@@ -42,14 +42,14 @@ public interface DriverService {
      *
      * @param updatedDriver entity.
      */
-    void updateDriver(Integer driverId,Driver updatedDriver);
+    void updateDriver(long driverId,Driver updatedDriver);
 
     /**
      * The <code>deleteDriver</code> delete driver entity from the database by driver id.
      *
-     * @param driverID unique identifier for drivers.
+     * @param driverId unique identifier for drivers.
      */
-    void deleteDriver(Integer driverID);
+    void deleteDriver(long driverId);
 
 
     /**

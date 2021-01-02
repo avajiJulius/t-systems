@@ -32,13 +32,13 @@ public class CargoDAO {
         return query.getResultList();
     }
 
-    public List<Cargo> findCargoByOrderId(Integer orderId) {
+    public List<Cargo> findCargoByOrderId(long orderId) {
         TypedQuery<Cargo> query = entityManager.createNamedQuery("Cargo.findCargoByOrderId", Cargo.class)
                 .setParameter("orderId", orderId);
         return query.getResultList();
     }
 
-    public Cargo findCargoById(Integer cargoId) {
+    public Cargo findCargoById(long cargoId) {
         return entityManager.find(Cargo.class, cargoId);
     }
 

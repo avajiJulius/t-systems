@@ -26,7 +26,7 @@ public class DriverDAO {
         return query.getResultList();
     }
 
-    public Driver findDriverById(Integer driverId) {
+    public Driver findDriverById(long driverId) {
         return Optional.ofNullable(entityManager.find(Driver.class, driverId))
                 .<DriverNotFoundException>orElseThrow(()  -> {
                     logger.error("Driver with ID {} not found", driverId);
@@ -44,7 +44,7 @@ public class DriverDAO {
     }
 
 
-    public void deleteDriver(Integer driverId) {
+    public void deleteDriver(long driverId) {
         Driver driver = Optional.ofNullable(entityManager.find(Driver.class, driverId))
                 .<DriverNotFoundException>orElseThrow(()  -> {
                     logger.error("Driver with ID {} not found", driverId);
@@ -54,7 +54,7 @@ public class DriverDAO {
     }
 
 
-    public List<Driver> findDriverForOrder(Double shiftHours, Integer cityCode) {
+    public List<Driver> findDriverForOrder(Double shiftHours, long cityCode) {
         TypedQuery<Driver> query = entityManager.createNamedQuery("Driver.findDriversForOrder", Driver.class)
                 .setParameter("shiftHours", shiftHours).setParameter("cityCode", cityCode);
         return Optional.ofNullable(query.getResultList())

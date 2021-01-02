@@ -11,6 +11,8 @@
 <nav th:replace="fragments/navbar.html :: navigation"></nav>
 <div align="center">
     <h1>Drivers List</h1>
+    <p>Free Space For Drivers: </p>
+    <p th:text="${shiftSize}"></p>
     <table class="table table-hover">
         <thead class="thead-light">
         <tr>
@@ -20,6 +22,7 @@
             <th scope="col"> Hours Worked</th>
             <th scope="col"> Status</th>
             <th scope="col"> Current City</th>
+            <th scope="col"> Action</th>
         </tr>
         </thead>
         <tbody>
@@ -30,6 +33,12 @@
             <td th:text="${driver.hoursWorked}" />
             <td th:text="${driver.driverStatus}" />
             <td th:text="${driver.currentCity.cityName}" />
+            <td>
+                <form th:method="PATCH"
+                      th:action="@{/{orderId}/drivers(orderId=${orderId})}">
+                    <input type="submit" value="ADD" />
+                </form>
+            </td>
         </tr>
         </tbody>
     </table>

@@ -23,7 +23,7 @@ import java.util.List;
         @NamedQuery(name = "Order.findTruckByOrderId",
         query = "select o.designatedTruck from Order o where o.orderId = :orderId"),
         @NamedQuery(name = "Order.findOrderByTruckId",
-        query = "select o from Order o where o.designatedTruck.truckId like :truckId")
+        query = "select o from Order o where o.designatedTruck.truckId like :truckId"),
 })
 @Data
 @NoArgsConstructor
@@ -32,7 +32,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
-    private Integer orderId;
+    private long orderId;
     @Column(name = "completed")
     private boolean completed;
     @OneToMany(cascade = CascadeType.ALL ,fetch = FetchType.LAZY,

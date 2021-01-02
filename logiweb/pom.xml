@@ -25,6 +25,7 @@
         <hibernate.version>5.4.25.Final</hibernate.version>
         <hibernate.validator.version>6.2.0.Final</hibernate.validator.version>
         <spring.version>5.3.0</spring.version>
+        <security.version>5.4.1</security.version>
         <slf4j.version>1.7.30</slf4j.version>
         <log4j.version>2.14.0</log4j.version>
     </properties>
@@ -111,6 +112,28 @@
             <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>${security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${security.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-data</artifactId>
+            <version>${security.version}</version>
+        </dependency>
+
+
 
         <dependency>
             <groupId>org.slf4j</groupId>
