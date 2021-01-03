@@ -7,8 +7,8 @@ drop table if exists drivers;
 drop table if exists employee;
 drop table if exists users_roles;
 drop table if exists roles;
-drop table if exists users;
 drop table if exists work_shifts;
+drop table if exists users;
 drop table if exists trucks;
 drop table if exists country_map;
 drop table if exists roads;
@@ -56,16 +56,7 @@ insert into trucks(truck_id, shift_size, capacity, serviceable, city_code)
 values ('AB12345', 2, 10000, true, 1), ('BA12345',2 , 3000, false, 1),
        ('CD12345',1, 20000, true, 3), ('DC12345', 1, 5000, true, 2);
 
-create table work_shifts (
-    shift_id bigserial,
-    active boolean default false,
-    shift_start timestamp default null,
-    shift_end timestamp default null,
-    primary key(shift_id)
-);
 
-insert into work_shifts (active)
-values (false);
 
 create table users(
     id bigserial,
@@ -77,14 +68,24 @@ create table users(
 );
 
 insert into users(email, password, enable, role)
-values ('sasha', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true, 'DRIVER'),
+values ('avaji@gmail.com', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true, 'DRIVER'),
        ('vas', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC',  true,'DRIVER'),
        ('olga', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true,'DRIVER'),
        ('petr', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true,'DRIVER'),
         ('test', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true,'DRIVER'),
-        ('admin', '$2y$12$81QxgdqO0B8Tb8Qo61urdudm7G38VRU8MYV0iFdGkiRrD9wbRar3a', true,'EMPLOYEE');
+        ('admin@gmail.com', '$2y$12$81QxgdqO0B8Tb8Qo61urdudm7G38VRU8MYV0iFdGkiRrD9wbRar3a', true,'EMPLOYEE');
 
+create table work_shifts (
+    id bigint,
+    active boolean default false,
+    shift_start timestamp default null,
+    shift_end timestamp default null,
+    primary key(id),
+    foreign key (id) references users(id)
+);
 
+insert into work_shifts (id, active)
+values (1 ,false);
 
 create table drivers (
     id bigint,
@@ -94,12 +95,10 @@ create table drivers (
     driver_status varchar(50),
     city_code bigint,
     truck_id varchar(7) default null,
-    shift_id bigint,
     primary key(id),
     foreign key (id) references users(id),
     foreign key (city_code) references cities(city_code),
-    foreign key (truck_id) references trucks(truck_id),
-    foreign key (shift_id) references work_shifts(shift_id)
+    foreign key (truck_id) references trucks(truck_id)
 );
 
 
@@ -162,7 +161,7 @@ create table work_details (
     foreign key (id) references users(id),
     foreign key (truck_id) references trucks(truck_id),
     foreign key (order_id) references orders(order_id),
-    foreign key (shift_id) references work_shifts(shift_id)
+    foreign key (shift_id) references work_shifts(id)
 );
 
 insert into work_details(id, truck_id, order_id, shift_id)

@@ -11,21 +11,19 @@
 </head>
 <body>
 <form action="#" th:action="@{/login}" th:method="POST">
-    <div class="container">
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="Email">Email</span>
-            </div>
-            <input type="text" name="username" class="form-control" placeholder="email" aria-label="Username" aria-describedby="username">
+    <div class="row mb-3">
+        <label for="email" class="col-sm-2 col-form-label">Email</label>
+        <div class="col-sm-10">
+            <input type="email" name="username" class="form-control" id="email">
         </div>
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="password">Password</span>
-            </div>
-            <input type="password" name="password" class="form-control" placeholder="password" aria-label="Password" aria-describedby="password">
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
     </div>
+    <div class="row mb-3">
+        <label for="password" class="col-sm-2 col-form-label">Password</label>
+        <div>
+            <input type="password" name="password" id="password" class="form-control" >
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 <script th:replace="fragments/script.html :: jquery"></script>
 <script th:replace="fragments/script.html :: popper"></script>

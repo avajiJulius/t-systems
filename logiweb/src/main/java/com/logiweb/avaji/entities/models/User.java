@@ -2,6 +2,7 @@ package com.logiweb.avaji.entities.models;
 
 import com.logiweb.avaji.entities.enums.Role;
 import com.logiweb.avaji.entities.models.utils.WorkDetails;
+import com.logiweb.avaji.entities.models.utils.WorkShift;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,4 +35,5 @@ public class User {
     @Column(name = "role")
     @Enumerated(value = EnumType.STRING)
     private Role role;
+
 }

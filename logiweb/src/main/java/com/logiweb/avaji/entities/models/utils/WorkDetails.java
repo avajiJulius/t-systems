@@ -1,6 +1,5 @@
 package com.logiweb.avaji.entities.models.utils;
 
-import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.Truck;
 import com.logiweb.avaji.entities.models.User;
@@ -10,12 +9,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+
 @Entity
 @Table(name = "work_details")
-@NamedQueries(value = {
-        @NamedQuery(name = "WorkDetails.findWorkDetailsByDriverId",
-        query = "select w from WorkDetails  w where w.user.id = :driverId")
-})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

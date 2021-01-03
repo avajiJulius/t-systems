@@ -15,16 +15,23 @@
             <span>Personal ID : </span>
             <h5 id="user_id" th:text="${details.id}" />
         </div>
-        <div class="col">
-            <div class="row">
-                <span>Shift Status : </span>
-                <h5 id="shift_status" th:text="${details.shiftActive}"/>
+        <form th:method="PATCH" th:action="@{/profile/shift}" th:object="${shiftDetails}">
+            <div class="col">
+                <div class="row">
+                    <span>Shift Status : </span>
+                    <input type="checkbox" th:field="*{active}" data-toggle="toggle" data-on="Active" data-off="Inactive"
+                           data-onstyle="success" data-offstyle="danger">
+                </div>
+                <div class="row">
+                    <span>Driver Status : </span>
+                    <select th:field="*{driverStatus}">
+                        <option th:value="${details.driverStatus}" th:text="${details.driverStatus}" selected />
+                        <option th:if="${details.driverStatus != ds.name()}" th:each="ds : ${driverStatus}" th:value="${ds.name()}" th:text="${ds.name()}" />
+                    </select>
+                </div>
             </div>
-            <div class="row">
-                <span>Driver Status : </span>
-                <h5 id="work_status" th:text="${details.driverStatus}" />
-            </div>
-        </div>
+            <button type="submit" class="btn btn-primary">Change</button>
+        </form>
     </div>
     <div class="row">
         <div class="col">

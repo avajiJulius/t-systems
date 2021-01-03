@@ -4,7 +4,6 @@ import com.logiweb.avaji.appointing.service.api.AppointingService;
 import com.logiweb.avaji.exceptions.ShiftSizeExceedException;
 import com.logiweb.avaji.orderdetails.service.api.OrderDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

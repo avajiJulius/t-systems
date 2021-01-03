@@ -1,16 +1,16 @@
 package com.logiweb.avaji.appointing.service.implementetion;
 
 import com.logiweb.avaji.appointing.service.api.AppointingService;
-import com.logiweb.avaji.entities.models.Driver;
-import com.logiweb.avaji.orderdetails.service.api.OrderDetailsService;
 import com.logiweb.avaji.crud.driver.dao.DriverDAO;
 import com.logiweb.avaji.crud.driver.dto.DriverPublicResponseDto;
 import com.logiweb.avaji.crud.order.dao.OrderDAO;
-import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.crud.truck.dao.TruckDAO;
-import com.logiweb.avaji.entities.models.Truck;
-import com.logiweb.avaji.dtoconverter.DtoConverter;
 import com.logiweb.avaji.crud.workdetails.dao.WorkDetailsDAO;
+import com.logiweb.avaji.dtoconverter.DtoConverter;
+import com.logiweb.avaji.entities.models.Driver;
+import com.logiweb.avaji.entities.models.Order;
+import com.logiweb.avaji.entities.models.Truck;
+import com.logiweb.avaji.orderdetails.service.api.OrderDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

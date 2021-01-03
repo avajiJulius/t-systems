@@ -44,13 +44,6 @@ public class AppConfig implements WebMvcConfigurer {
         return templateEngine;
     }
 
-//    @Bean
-//    public ThymeleafViewResolver viewResolver() {
-//        ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
-//        viewResolver.setTemplateEngine(templateEngine());
-//        return viewResolver;
-//    }
-
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
         ThymeleafViewResolver resolver = new ThymeleafViewResolver();

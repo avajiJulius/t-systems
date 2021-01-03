@@ -1,6 +1,7 @@
 package com.logiweb.avaji.entities.models.utils;
 
 import com.logiweb.avaji.entities.models.Driver;
+import com.logiweb.avaji.entities.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,22 +11,17 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "work_shifts")
-@NamedQueries(value = {
-        @NamedQuery(name = "WorkShift.findShiftByDriverId",
-        query = "select s from WorkShift s " +
-                "where s.driver.id = :driverId")
-})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class WorkShift {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "shift_id")
+    @Column(name = "id",updatable = false, nullable = false)
     private long id;
-    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER,
-            mappedBy = "workShift")
-    private Driver driver;
+    @MapsId
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "id", referencedColumnName = "id")
+    private User user;
     @Column(name = "active")
     private boolean active;
     @Column(name = "shift_start")

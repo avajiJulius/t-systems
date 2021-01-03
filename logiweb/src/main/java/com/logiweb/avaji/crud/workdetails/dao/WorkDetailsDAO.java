@@ -4,6 +4,7 @@ import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.utils.WorkDetails;
 import com.logiweb.avaji.entities.models.utils.WorkShift;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -11,6 +12,7 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Repository
+@Transactional
 public class WorkDetailsDAO {
 
     @PersistenceContext
@@ -20,16 +22,12 @@ public class WorkDetailsDAO {
         return entityManager.find(WorkDetails.class, workDetailsId);
     }
 
-    public WorkShift findShiftByDriverId(long driverId) {
-        TypedQuery<WorkShift> query = entityManager.createNamedQuery("WorkShift.findShiftByDriverId", WorkShift.class)
-                .setParameter("driverId", driverId);
-        return query.getSingleResult();
+    public WorkShift findShiftById(long id) {
+        return entityManager.find(WorkShift.class, id);
     }
 
-    public WorkDetails findWorkDetailsByDriverId(long driverId) {
-        TypedQuery<WorkDetails> query = entityManager.createNamedQuery("WorkDetails.findWorkDetailsByDriverId", WorkDetails.class)
-                .setParameter("driverId", driverId);
-        return query.getSingleResult();
+    public WorkDetails findWorkDetailsByDriverId(long id) {
+        return entityManager.find(WorkDetails.class, id);
     }
 
     public List<Driver> findDriversByIds(List<Long> driversIds) {

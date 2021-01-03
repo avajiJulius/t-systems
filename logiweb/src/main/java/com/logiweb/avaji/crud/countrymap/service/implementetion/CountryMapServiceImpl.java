@@ -29,9 +29,7 @@ public class CountryMapServiceImpl implements CountryMapService {
 
     @Override
     public List<CityDto> readAllCities() {
-        List<CityDto> dtos = converter.citiesToDtos(countryMapDAO.findAllCities());
-
-        return dtos;
+        return converter.citiesToDtos(countryMapDAO.findAllCities());
     }
 
     @Override

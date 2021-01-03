@@ -11,6 +11,8 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,7 +51,11 @@ public class    TruckController {
 
     @PostMapping()
     @PreAuthorize("hasAuthority('employee:write')")
-    public String createTruck(@ModelAttribute("truck") TruckDto truckDto) {
+    public String createTruck(@ModelAttribute("truck") @Validated(TruckDto.Create.class) TruckDto truckDto,
+                              BindingResult result) {
+        if (result.hasErrors()) {
+            return "trucks/create";
+        }
         truckService.createTruck(truckDto);
         return "redirect:/trucks";
     }
@@ -65,7 +71,11 @@ public class    TruckController {
     @PatchMapping("/{id}")
     @PreAuthorize("hasAuthority('employee:write')")
     public String editTruck(@PathVariable("id") String id,
-                            @ModelAttribute("truck") TruckDto editTruck) {
+                            @ModelAttribute("truck") @Validated(TruckDto.Update.class) TruckDto editTruck,
+                            BindingResult result) {
+        if (result.hasErrors()) {
+            return "trucks/edit";
+        }
         truckService.updateTruck(id, editTruck);
         return "redirect:/trucks";
     }
