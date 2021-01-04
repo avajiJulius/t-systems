@@ -2,6 +2,7 @@ package com.logiweb.avaji.dtoconverter;
 
 import com.logiweb.avaji.crud.countrymap.dao.CountryMapDAO;
 import com.logiweb.avaji.crud.countrymap.dto.CityDto;
+import com.logiweb.avaji.crud.order.dto.OrderDto;
 import com.logiweb.avaji.entities.models.utils.WorkDetails;
 import com.logiweb.avaji.orderdetails.dao.OrderDetailsDAO;
 import com.logiweb.avaji.crud.cargo.dao.CargoDAO;
@@ -213,5 +214,20 @@ public class DtoConverter {
                 workDetails.getOrder().getOrderId(),orderDetailsDAO.findWaypointsOfThisOrder(workDetails.getOrder().getOrderId()),
                 workDetails.getWorkShift().isActive(), ((Driver)workDetails.getUser()).getDriverStatus().name(),
                 workDetails.getOrder().isCompleted());
+    }
+
+    public List<OrderDto> ordersToDtos(List<Order> allOrders) {
+        List<OrderDto> dtos = new ArrayList<>();
+        for(Order order: allOrders) {
+            dtos.add(orderToDto(order));
+        }
+        return dtos;
+    }
+
+    private OrderDto orderToDto(Order order) {
+        String truckId = order.getDesignatedTruck().getTruckId();
+        return new OrderDto(order.getOrderId(), order.isCompleted(),
+                truckId, order.getDesignatedTruck().getShiftSize(),
+                driverDAO.findDriversByTruckId(truckId).size());
     }
 }

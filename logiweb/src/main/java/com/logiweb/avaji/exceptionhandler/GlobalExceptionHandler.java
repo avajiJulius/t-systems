@@ -1,19 +1,28 @@
 package com.logiweb.avaji.exceptionhandler;
 
-import javassist.NotFoundException;
+import org.springframework.dao.PermissionDeniedDataAccessException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.NoHandlerFoundException;
+
+
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(NotFoundException.class)
+    @ExceptionHandler(NoHandlerFoundException.class)
     public String pageNotFoundException() {
         return "exceptions/404";
     }
 
-    @ExceptionHandler(Exception.class)
-    public String serverException() {
-        return "exceptions/500";
+    @ExceptionHandler(AccessDeniedException.class)
+    public String pagePermissionDeniedException(){
+        return "exceptions/403";
     }
+//TODO: return after testing
+//    @ExceptionHandler(Exception.class)
+//    public String serverException() {
+//        return "exceptions/500";
+//    }
 }

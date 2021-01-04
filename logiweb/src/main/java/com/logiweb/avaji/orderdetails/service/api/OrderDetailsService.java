@@ -1,14 +1,45 @@
 package com.logiweb.avaji.orderdetails.service.api;
 
+import com.logiweb.avaji.crud.driver.dto.DriverPublicResponseDto;
+import com.logiweb.avaji.entities.models.Truck;
 
-import org.springframework.stereotype.Service;
+import java.util.List;
 
-@Service
 public interface OrderDetailsService {
-    void init(long orderId);
-    Double getMaxCapacity();
-    Double getShiftHours();
-    long calculateTimeUntilEndOfMonth();
-    int calculateFreeSpaceInShift(long orderId);
 
+    /**
+     * The <code>readTrucksForOrder</code> read waypoints for order by orderId.
+     * Count <code>maxCapacity</code> value and read all free and serviceable trucks
+     * with capacity greater than <code>maxCapacity</code>.
+     *
+     * @param orderId
+     * @return all free, serviceable and suitable for capacity.
+     */
+    List<Truck> readTrucksForOrder(long orderId);
+
+    /**
+     * The <code>addTruckToOrder</code> find truck by truckId and add it to order with orderId.
+     *
+     * @param truckId
+     * @param orderId
+     */
+    void addTruckToOrder(String truckId, long orderId);
+
+    /**
+     * The <code>readDriverForOrder</code> take driver if workedHour limit
+     * will not be exceeded, driver status is <code>REST</code>, and the truck current city
+     * is the same as driver current city.
+     *
+     * @param orderId
+     */
+    List<DriverPublicResponseDto> readDriverForOrder(long orderId);
+
+
+    /**
+     * The <code>addDriversToOrder</code> find drivers and add them to truck of current order;
+     *
+     * @param driversIds
+     * @param orderId
+     */
+    void addDriversToOrder(List<Long> driversIds, long orderId);
 }

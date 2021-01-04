@@ -17,7 +17,7 @@ import javax.persistence.*;
         query = "select d from Driver d " +
                 "where (176 - d.hoursWorked) > :shiftHours " +
                 "and d.currentCity.cityCode = :cityCode " +
-                "and d.driverStatus like 'REST' ")
+                "and d.currentTruck is null")
 @NamedQuery(name = "Driver.refreshWorkedHours",
         query = "update Driver d set d.hoursWorked = 0")
 @NamedQuery(name = "Driver.findDriversByTruckId",

@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<!--      xmlns:sec="http://www.springframework.org/security/tags"-->
 <nav th:fragment="navigation" class="navbar navbar-expand-md navbar-light bg-light">
     <a class="navbar-brand" th:href="@{/}">LogiWeb</a>
 
@@ -8,22 +10,26 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item active">
-                <a class="nav-link" th:href="@{/}">Home</a>
+            <li class="nav-item active" sec:authorize="hasAuthority('driver:read')" >
+                <a class="nav-link" th:href="@{/profile}">Work Details</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" sec:authorize="hasAuthority('employee:read')">
                 <a class="nav-link" th:href="@{/orders}">Orders</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" sec:authorize="hasAuthority('employee:read')">
                 <a class="nav-link" th:href="@{/trucks}">Trucks</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" sec:authorize="hasAuthority('employee:read')">
                 <a class="nav-link" th:href="@{/drivers}">Drivers</a>
             </li>
         </ul>
         <div class="d-flex">
-            <button th:href="@{/login}" class="btn btn-outline-success" >Sign in</button>
-            <form action="#" th:action="@{/logout}" th:method="POST">
+            <form th:if="${#authorization.expression('isAnonymous()')}"
+                  th:action="@{/login}" th:method="GET">
+                <button class="btn btn-outline-success ml-3">Sign in</button>
+            </form>
+            <form th:if="${#authorization.expression('isAuthenticated()')}"
+                  th:action="@{/logout}" th:method="POST">
                 <button class="btn btn-outline-danger ml-3">Sign Out</button>
             </form>
         </div>

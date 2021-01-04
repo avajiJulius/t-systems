@@ -1,12 +1,9 @@
 package com.logiweb.avaji.crud.order.dto;
 
-import com.logiweb.avaji.entities.models.Truck;
-import com.logiweb.avaji.entities.models.utils.Waypoint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -14,6 +11,7 @@ import java.util.List;
 public class OrderDto {
     private long orderId;
     private boolean completed;
-    private List<Waypoint> waypoints;
-    private Truck designatedTruck;
+    private String designatedTruckId;
+    private int totalShiftSize;
+    private int currentShiftSize;
 }

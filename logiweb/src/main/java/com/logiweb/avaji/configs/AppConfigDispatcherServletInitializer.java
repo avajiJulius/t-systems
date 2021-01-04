@@ -1,7 +1,10 @@
 package com.logiweb.avaji.configs;
 
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
+import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.FrameworkServlet;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import javax.servlet.ServletContext;
@@ -30,6 +33,14 @@ public class AppConfigDispatcherServletInitializer extends AbstractAnnotationCon
         registerHiddenFieldFilter(servletContext);
         registerDelegatingFilter(servletContext);
     }
+
+    @Override
+    protected FrameworkServlet createDispatcherServlet(WebApplicationContext servletAppContext) {
+        DispatcherServlet dispatcherServlet = new DispatcherServlet(servletAppContext);
+        dispatcherServlet.setThrowExceptionIfNoHandlerFound(true);
+        return dispatcherServlet;
+    }
+
 
     private void registerDelegatingFilter(ServletContext context) {
         context.addFilter("securityFilter", new DelegatingFilterProxy("springSecurityFilterChain"))

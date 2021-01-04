@@ -5,7 +5,7 @@ import com.logiweb.avaji.crud.truck.dto.TruckDto;
 import com.logiweb.avaji.entities.models.Truck;
 import com.logiweb.avaji.crud.truck.dao.TruckDAO;
 import com.logiweb.avaji.crud.truck.service.api.TruckService;
-import com.logiweb.avaji.orderdetails.service.implementetion.OrderDetailsServiceImpl;
+import com.logiweb.avaji.orderdetails.service.implementetion.ShiftDetailsServiceImpl;
 import com.logiweb.avaji.dtoconverter.DtoConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,12 +24,12 @@ public class TruckServiceImpl implements TruckService {
 
     private final TruckDAO truckDAO;
     private final OrderDAO orderDAO;
-    private final OrderDetailsServiceImpl computingService;
+    private final ShiftDetailsServiceImpl computingService;
     private final DtoConverter converter;
 
     @Autowired
     public TruckServiceImpl(TruckDAO truckDAO, OrderDAO orderDAO,
-                            OrderDetailsServiceImpl computingService, DtoConverter converter) {
+                            ShiftDetailsServiceImpl computingService, DtoConverter converter) {
         this.truckDAO = truckDAO;
         this.orderDAO = orderDAO;
         this.computingService = computingService;

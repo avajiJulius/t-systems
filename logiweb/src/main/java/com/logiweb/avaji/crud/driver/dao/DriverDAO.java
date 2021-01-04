@@ -43,6 +43,12 @@ public class DriverDAO {
         entityManager.merge(updatedDriver);
     }
 
+    public void updateDrivers(List<Driver> drivers) {
+        for (Driver driver: drivers) {
+            entityManager.merge(driver);
+        }
+    }
+
 
     public void deleteDriver(long driverId) {
         Driver driver = Optional.ofNullable(entityManager.find(Driver.class, driverId))
@@ -59,7 +65,7 @@ public class DriverDAO {
                 .setParameter("shiftHours", shiftHours).setParameter("cityCode", cityCode);
         return Optional.ofNullable(query.getResultList())
                 .<DriverNotFoundException>orElseThrow(()  -> {
-                    logger.error("REST status Drivers with rest of worked hours less then {} " +
+                    logger.error("Free Drivers with rest of worked hours less then {} " +
                             "and city code {} not found", shiftHours, cityCode);
                     throw new DriverNotFoundException("Driver by such parameters not found");
                 });

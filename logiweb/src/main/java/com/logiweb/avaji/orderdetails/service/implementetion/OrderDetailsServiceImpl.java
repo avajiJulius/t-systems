@@ -1,138 +1,86 @@
 package com.logiweb.avaji.orderdetails.service.implementetion;
 
-import com.logiweb.avaji.entities.models.Truck;
-import com.logiweb.avaji.orderdetails.dao.OrderDetailsDAO;
-import com.logiweb.avaji.entities.enums.WaypointType;
-import com.logiweb.avaji.entities.models.Cargo;
-import com.logiweb.avaji.entities.models.utils.City;
-import com.logiweb.avaji.entities.models.utils.Road;
-import com.logiweb.avaji.entities.models.utils.Waypoint;
 import com.logiweb.avaji.orderdetails.service.api.OrderDetailsService;
-import com.logiweb.avaji.crud.countrymap.service.api.CountryMapService;
+import com.logiweb.avaji.crud.driver.dao.DriverDAO;
+import com.logiweb.avaji.crud.driver.dto.DriverPublicResponseDto;
+import com.logiweb.avaji.crud.order.dao.OrderDAO;
+import com.logiweb.avaji.crud.truck.dao.TruckDAO;
+import com.logiweb.avaji.crud.workdetails.dao.WorkDetailsDAO;
+import com.logiweb.avaji.dtoconverter.DtoConverter;
+import com.logiweb.avaji.entities.models.Driver;
+import com.logiweb.avaji.entities.models.Order;
+import com.logiweb.avaji.entities.models.Truck;
+import com.logiweb.avaji.orderdetails.service.api.ShiftDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.List;
 
 @Service
 public class OrderDetailsServiceImpl implements OrderDetailsService {
 
-    private final OrderDetailsDAO orderDetailsDAO;
-    private final CountryMapService mapService;
-
-    private List<Waypoint> waypoints;
-    private List<City> path;
+    private final TruckDAO truckDAO;
+    private final OrderDAO orderDAO;
+    private final DriverDAO driverDAO;
+    private final WorkDetailsDAO workDetailsDAO;
+    private final ShiftDetailsService shiftDetailsService;
+    private final DtoConverter converter;
 
     @Autowired
-    public OrderDetailsServiceImpl(OrderDetailsDAO orderDetailsDAO, CountryMapService mapService) {
-        this.orderDetailsDAO = orderDetailsDAO;
-        this.mapService = mapService;
-
-    }
-
-    public void init(long orderId) {
-        this.waypoints = orderDetailsDAO.findWaypointsOfThisOrder(orderId);
-        this.path = getDumpPath();
-    }
-
-    private List<City> getDumpPath() {
-            List<City> cities = waypoints.stream().map(Waypoint::getWaypointCity)
-                    .distinct().collect(Collectors.toList());
-            cities.add(cities.get(0));
-            return cities;
+    public OrderDetailsServiceImpl(TruckDAO truckDAO, OrderDAO orderDAO, DriverDAO driverDAO,
+                                   WorkDetailsDAO workDetailsDAO, ShiftDetailsService shiftDetailsService, DtoConverter converter) {
+        this.truckDAO = truckDAO;
+        this.orderDAO = orderDAO;
+        this.driverDAO = driverDAO;
+        this.workDetailsDAO = workDetailsDAO;
+        this.shiftDetailsService = shiftDetailsService;
+        this.converter = converter;
     }
 
     @Override
-    public Double getMaxCapacity() {
-        int index = 0;
-        Double capacity = 0.0;
+    public List<Truck> readTrucksForOrder(long orderId) {
+        shiftDetailsService.init(orderId);
+        Double maxCapacity = shiftDetailsService.getMaxCapacity();
 
-        int finalIndex = index;
-        List<Waypoint> cityWaypoint = waypoints.stream()
-                .filter(w -> w.getWaypointCity().getCityCode() == path.get(finalIndex).getCityCode())
-                .collect(Collectors.toList());
-        capacity = cityWaypoint.stream().filter(waypoint -> waypoint.getWaypointType() == WaypointType.LOADING)
-                .map(Waypoint::getWaypointCargo)
-                .map(Cargo::getCargoWeight).reduce(capacity, (a, b) -> a + b);
-
-        Double maxCapacity = capacity;
-        index++;
-        while (index < path.size() - 2) {
-            int finalIndex1 = index;
-            cityWaypoint = waypoints.stream()
-                    .filter(w -> w.getWaypointCity().getCityCode() == path.get(finalIndex1).getCityCode())
-                    .collect(Collectors.toList());
-            capacity = cityWaypoint.stream().filter(waypoint -> waypoint.getWaypointType() == WaypointType.UNLOADING)
-                    .map(Waypoint::getWaypointCargo)
-                    .map(Cargo::getCargoWeight).reduce(capacity, (a, b) -> a - b);
-
-            capacity = cityWaypoint.stream().filter(waypoint -> waypoint.getWaypointType() == WaypointType.LOADING)
-                    .map(Waypoint::getWaypointCargo)
-                    .map(Cargo::getCargoWeight).reduce(capacity, (a, b) -> a + b);
-            if (capacity > maxCapacity) {
-                maxCapacity = capacity;
-            }
-            index++;
-        }
-
-        return maxCapacity;
-    }
-
-    @Override
-    public Double getShiftHours() {
-        List<Road> roads = mapService.readPathRoads(path);
-        Double shiftHours = 0.0;
-        for (Road road : roads) {
-            shiftHours += road.getDistanceInHours();
-        }
-
-        return shiftHours;
-    }
-
-
-    public void getPath(List<Waypoint> waypoints) {
-        getCityPath(waypoints);
-    }
-
-
-    //TODO: smart path created
-    public Set<City> getCityPath(List<Waypoint> waypoints) {
-        Deque<City> cityPath = new ArrayDeque<>();
-        List<City> cities = waypoints.stream().map(Waypoint::getWaypointCity).distinct().collect(Collectors.toList());
-        for (City city : cities) {
-            Stream<Waypoint> stream = waypoints.stream().filter(w -> w.getWaypointCity().getCityCode() == city.getCityCode());
-            long waypointsCounterInCity = stream.count();
-            long unloadingCounterInCity = stream.filter(w -> w.getWaypointType() == WaypointType.UNLOADING).count();
-            if (waypointsCounterInCity == unloadingCounterInCity) {
-                cityPath.addLast(city);
-                break;
-            }
-        }
-        if (cityPath.isEmpty()) {
-        }
-        throw new UnsupportedOperationException();
+        return truckDAO.findTrucksForOrder(maxCapacity);
     }
 
 
     @Override
-    public long calculateTimeUntilEndOfMonth() {
-        LocalDateTime to = LocalDateTime.now().withHour(0).with(TemporalAdjusters.firstDayOfNextMonth());
-        LocalDateTime from = LocalDateTime.now();
-        long until = from.until(to, ChronoUnit.HOURS);
-        return until;
+    public void addTruckToOrder(String truckId, long orderId) {
+        Truck truck = truckDAO.findTruckById(truckId);
+        Order order = orderDAO.findOrderById(orderId);
+        order.setDesignatedTruck(truck);
+        orderDAO.updateOrder(order);
     }
 
     @Override
-    public int calculateFreeSpaceInShift(long orderId) {
-        Truck truck = orderDetailsDAO.findTruckByOrderId(orderId);
-        int currentSize = orderDetailsDAO.findDriversByTruckIdAndCount(truck.getTruckId());
-        int size = truck.getShiftSize();
-        return (size - currentSize);
+    public List<DriverPublicResponseDto> readDriverForOrder(long orderId) {
+        shiftDetailsService.init(orderId);
+        Order order = orderDAO.findOrderById(orderId);
+        long cityCode = order.getDesignatedTruck().getCurrentCity().getCityCode();
+        Double shiftHours = shiftDetailsService.getShiftHours();
+
+        long untilEndOfMonth = shiftDetailsService.calculateTimeUntilEndOfMonth();
+        if(shiftHours > untilEndOfMonth) {
+            shiftHours = (double) untilEndOfMonth;
+        }
+
+        return converter.driversToDtos(driverDAO.findDriverForOrder(shiftHours, cityCode));
     }
+
+    @Override
+    @Transactional
+    public void addDriversToOrder(List<Long> driversIds, long orderId) {
+        String truckId = orderDAO.findOrderById(orderId).getDesignatedTruck().getTruckId();
+        Truck truck = truckDAO.findTruckById(truckId);
+        List<Driver> drivers = workDetailsDAO.findDriversByIds(driversIds);
+        for(Driver driver: drivers) {
+            driver.setCurrentTruck(truck);
+        }
+        driverDAO.updateDrivers(drivers);
+    }
+
 
 }

@@ -36,9 +36,9 @@ public class OrderDetailsDAO {
         return query.getSingleResult();
     }
 
-    public int findDriversByTruckIdAndCount(String truckId) {
+    public Object findDriversByTruckIdAndCount(String truckId) {
         Query query = entityManager.createNamedQuery("Driver.findDriversByTruckIdAndCount")
                 .setParameter("truckId", truckId);
-        return (int) query.getSingleResult();
+        return query.getSingleResult();
     }
 }

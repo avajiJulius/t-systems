@@ -2,6 +2,7 @@ package com.logiweb.avaji.crud.order.service.implementetion;
 
 import com.logiweb.avaji.crud.driver.dao.DriverDAO;
 import com.logiweb.avaji.crud.order.dao.OrderDAO;
+import com.logiweb.avaji.crud.order.dto.OrderDto;
 import com.logiweb.avaji.crud.truck.dao.TruckDAO;
 import com.logiweb.avaji.crud.order.dto.WaypointDto;
 import com.logiweb.avaji.entities.enums.WaypointType;
@@ -12,7 +13,7 @@ import com.logiweb.avaji.entities.models.utils.Waypoint;
 import com.logiweb.avaji.exceptions.CityValidateException;
 import com.logiweb.avaji.exceptions.LoadAndUnloadValidateException;
 import com.logiweb.avaji.crud.order.service.api.OrderService;
-import com.logiweb.avaji.orderdetails.service.implementetion.OrderDetailsServiceImpl;
+import com.logiweb.avaji.orderdetails.service.implementetion.ShiftDetailsServiceImpl;
 import com.logiweb.avaji.dtoconverter.DtoConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,11 +34,11 @@ public class OrderServiceImpl implements OrderService {
     private final TruckDAO truckDAO;
     private final DriverDAO driverDAO;
     private final DtoConverter converter;
-    private final OrderDetailsServiceImpl computingService;
+    private final ShiftDetailsServiceImpl computingService;
 
     @Autowired
     public OrderServiceImpl(OrderDAO orderDAO, TruckDAO truckDAO, DriverDAO driverDAO,
-                            DtoConverter converter, OrderDetailsServiceImpl computingService) {
+                            DtoConverter converter, ShiftDetailsServiceImpl computingService) {
         this.orderDAO = orderDAO;
         this.truckDAO = truckDAO;
         this.driverDAO = driverDAO;
@@ -47,15 +48,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public List<Order> readAllOrders() {
-        return orderDAO.findAllOrders();
+    public List<OrderDto> readAllOrders() {
+        List<Order> allOrders = orderDAO.findAllOrders();
+        return converter.ordersToDtos(allOrders);
     }
 
-
-    @Override
-    public void createOrder(Order order) {
-
-    }
 
     @Override
     public void createOrderByWaypoints(Order order, List<WaypointDto> waypointsDto) throws CityValidateException, LoadAndUnloadValidateException {

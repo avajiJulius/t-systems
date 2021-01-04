@@ -1,6 +1,7 @@
 package com.logiweb.avaji.crud.order.service.api;
 
 
+import com.logiweb.avaji.crud.order.dto.OrderDto;
 import com.logiweb.avaji.crud.order.dto.WaypointDto;
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.exceptions.CityValidateException;
@@ -20,15 +21,7 @@ public interface OrderService {
      *
      * @return list of order entities
      */
-    List<Order> readAllOrders();
-
-
-    /**
-     * The <code>createOrder</code> create order entity whit valid cargo.
-     *
-     * @param order
-     */
-    void createOrder(Order order);
+    List<OrderDto> readAllOrders();
 
 
     /**
