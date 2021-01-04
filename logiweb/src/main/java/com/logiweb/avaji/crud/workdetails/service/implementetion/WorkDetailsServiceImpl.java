@@ -13,7 +13,7 @@ import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.utils.WorkShift;
 import com.logiweb.avaji.exceptions.CargoStatusException;
-import com.logiweb.avaji.exceptions.DriverStatusException;
+import com.logiweb.avaji.exceptions.DriverStatusNotFoundException;
 import com.logiweb.avaji.crud.workdetails.service.api.WorkDetailsService;
 import com.logiweb.avaji.exceptions.ShiftValidationException;
 import org.apache.logging.log4j.LogManager;
@@ -55,7 +55,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService {
 
 
     @Override
-    public void updateCargoStatus(String cargoStatus, long cargoId) {
+    public void updateCargoStatus(String cargoStatus, long cargoId) throws CargoStatusException {
         Cargo cargo = cargoDAO.findCargoById(cargoId);
         CargoStatus status = cargo.getCargoStatus();
         CargoStatus newStatus = computeCargoStatus(cargoStatus, status);
@@ -66,86 +66,94 @@ public class WorkDetailsServiceImpl implements WorkDetailsService {
 
     @Override
     @Transactional
-    public void updateShiftDetails(long id, ShiftDetailsDto shiftDetails) throws ShiftValidationException {
+    public void updateShiftDetails(long id, ShiftDetailsDto shiftDetails)
+            throws ShiftValidationException, DriverStatusNotFoundException {
         WorkDetails workDetails = workDetailsDAO.findWorkDetailsByDriverId(id);
         Driver driver = driverDAO.findDriverById(id);
+
         DriverStatus status = driver.getDriverStatus();
         WorkShift shift = workDetailsDAO.findShiftById(id);
-        if(shift.isActive() != shiftDetails.isActive()) {
-            shift = updateWorkShiftStatus(shiftDetails.isActive(), shift);
-        }
         if(!shiftDetails.getDriverStatus().equals(status.name())) {
-            status = updateDriverStatus(shiftDetails.getDriverStatus(), driver);
+            status = convertToDriverStatus(shiftDetails.getDriverStatus());
         }
-        if(validateShiftAndDriverStatus(shift.isActive(), status)) {
+        if(!validateShiftAndDriverStatus(shiftDetails.isActive(), status)) {
+            logger.error("Driver status and shift status conflict");
+            throw new ShiftValidationException("Driver status and shift status conflict");
+        }
+
+        if(shift.isActive() != shiftDetails.isActive()) {
+            shift = updateWorkShiftStatus(shiftDetails.isActive(), shift, driver);
             workDetails.setWorkShift(shift);
-            driver.setDriverStatus(status);
             workDetailsDAO.updateWorkDetails(workDetails);
-            driverDAO.updateDriver(driver);
-            return;
         }
-        throw new ShiftValidationException();
+
+        driver.setDriverStatus(status);
+        driverDAO.updateDriver(driver);
     }
 
     public boolean validateShiftAndDriverStatus(boolean active, DriverStatus status) {
         return !active ? status.ordinal() == 0 : status.ordinal() > 0;
     }
 
-    public WorkShift updateWorkShiftStatus(boolean isActive, WorkShift workShift) {
+    public WorkShift updateWorkShiftStatus(boolean isActive, WorkShift workShift, Driver driver) {
         if(isActive == true) {
             workShift.setActive(true);
             workShift.setStart(LocalDateTime.now());
+            workShift.setEnd(null);
         } else {
             workShift.setEnd(LocalDateTime.now());
             workShift.setActive(false);
-            long shiftHours = ChronoUnit.HOURS.between(workShift.getStart(), workShift.getEnd());
-            double hoursWorked = ((Driver)workShift.getUser()).getHoursWorked();
-            ((Driver)workShift.getUser()).setHoursWorked((double) shiftHours + hoursWorked);
+            updateHoursWorked(workShift, driver);
         }
         return workShift;
     }
 
+    private void updateHoursWorked(WorkShift workShift, Driver driver) {
+        long shiftHours = ChronoUnit.HOURS.between(workShift.getStart(), workShift.getEnd());
+        double hoursWorked = driver.getHoursWorked();
+        driver.setHoursWorked((double)shiftHours + hoursWorked);
+    }
 
-    public DriverStatus updateDriverStatus(String driverStatus, Driver driver) {
 
-
+    public DriverStatus convertToDriverStatus(String driverStatus) throws DriverStatusNotFoundException {
+        DriverStatus status;
         switch (driverStatus) {
             case ("REST"):
-                driver.setDriverStatus(DriverStatus.REST);
+                status = DriverStatus.REST;
                 break;
             case ("DRIVING"):
-                driver.setDriverStatus(DriverStatus.DRIVING);
+                status = DriverStatus.DRIVING;
                 break;
             case ("SECOND_DRIVER"):
-                driver.setDriverStatus(DriverStatus.SECOND_DRIVER);
+                status = DriverStatus.SECOND_DRIVER;
                 break;
             case ("LOAD_UNLOAD_WORK"):
-                driver.setDriverStatus(DriverStatus.LOAD_UNLOAD_WORK);
+                status = DriverStatus.LOAD_UNLOAD_WORK;
                 break;
             default:
                 logger.error("Driver status '{}' not found", driverStatus);
-                throw new DriverStatusException("Driver status not found");
+                throw new DriverStatusNotFoundException("Driver status not found");
         }
 
-        return driver.getDriverStatus();
+        return status;
     }
 
     //TODO: refactor
-    private CargoStatus computeCargoStatus(String cargoStatus, CargoStatus status) {
+    private CargoStatus computeCargoStatus(String cargoStatus, CargoStatus status) throws CargoStatusException {
         String statusName = status.name();
         if(cargoStatus.equals("LOAD ")) {
             if (status == CargoStatus.PREPARED) {
                 status = CargoStatus.SHIPPED;
             } else {
                 logger.error("Can not update '{}' status", statusName);
-                throw new CargoStatusException();
+                throw new CargoStatusException("Cargo status conflict");
             }
         } else {
             if (status == CargoStatus.SHIPPED) {
                 status = CargoStatus.DELIVERED;
             } else {
                 logger.error("Can not update '{}' status", statusName);
-                throw new CargoStatusException();
+                throw new CargoStatusException("Cargo status conflict");
             }
         }
         return status;

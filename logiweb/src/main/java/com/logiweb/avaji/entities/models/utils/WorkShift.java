@@ -19,7 +19,7 @@ public class WorkShift {
     @Column(name = "id",updatable = false, nullable = false)
     private long id;
     @MapsId
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "id", referencedColumnName = "id")
     private User user;
     @Column(name = "active")

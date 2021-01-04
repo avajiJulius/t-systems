@@ -3,6 +3,8 @@ package com.logiweb.avaji.crud.order.service.api;
 
 import com.logiweb.avaji.crud.order.dto.WaypointDto;
 import com.logiweb.avaji.entities.models.Order;
+import com.logiweb.avaji.exceptions.CityValidateException;
+import com.logiweb.avaji.exceptions.LoadAndUnloadValidateException;
 
 import java.util.List;
 
@@ -37,7 +39,7 @@ public interface OrderService {
      * @param order in which waypoint list insert.
      * @param waypointsDto convert into waypoint list and go across validate.
      */
-    void createOrderByWaypoints(Order order,List<WaypointDto> waypointsDto);
+    void createOrderByWaypoints(Order order,List<WaypointDto> waypointsDto) throws CityValidateException, LoadAndUnloadValidateException;
 
     /**
      * The <code>deleteOrder</code> delete order by id.

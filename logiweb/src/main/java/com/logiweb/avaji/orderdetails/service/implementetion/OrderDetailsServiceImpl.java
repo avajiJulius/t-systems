@@ -40,7 +40,6 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
         this.path = getDumpPath();
     }
 
-
     private List<City> getDumpPath() {
             List<City> cities = waypoints.stream().map(Waypoint::getWaypointCity)
                     .distinct().collect(Collectors.toList());
@@ -100,6 +99,8 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
         getCityPath(waypoints);
     }
 
+
+    //TODO: smart path created
     public Set<City> getCityPath(List<Waypoint> waypoints) {
         Deque<City> cityPath = new ArrayDeque<>();
         List<City> cities = waypoints.stream().map(Waypoint::getWaypointCity).distinct().collect(Collectors.toList());

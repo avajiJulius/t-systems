@@ -46,6 +46,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public List<Order> readAllOrders() {
         return orderDAO.findAllOrders();
     }
@@ -57,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void createOrderByWaypoints(Order order, List<WaypointDto> waypointsDto) {
+    public void createOrderByWaypoints(Order order, List<WaypointDto> waypointsDto) throws CityValidateException, LoadAndUnloadValidateException {
         List<Waypoint> waypoints = converter.dtosToWaypoints(waypointsDto, order);
         order.setWaypoints(waypoints);
         if(validateOrderByWaypoints(waypoints)) {
@@ -74,7 +75,7 @@ public class OrderServiceImpl implements OrderService {
 
 
 
-    private boolean  validateOrderByWaypoints(List<Waypoint> waypoints) {
+    private boolean  validateOrderByWaypoints(List<Waypoint> waypoints) throws LoadAndUnloadValidateException, CityValidateException {
         int count = 0;
         Map<Cargo,City> load = waypoints.stream()
                 .filter(w -> w.getWaypointType() == WaypointType.LOADING)

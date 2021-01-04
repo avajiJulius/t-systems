@@ -6,6 +6,7 @@ import com.logiweb.avaji.crud.workdetails.dto.WorkDetailsDto;
 import com.logiweb.avaji.crud.workdetails.service.api.WorkDetailsService;
 import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.models.User;
+import com.logiweb.avaji.exceptions.DriverStatusNotFoundException;
 import com.logiweb.avaji.exceptions.ShiftValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -46,7 +47,7 @@ public class WorkDetailsController {
     @PatchMapping("/shift")
     @PreAuthorize("hasAuthority('driver:write')")
     public String updateShiftDetails(@ModelAttribute("shiftDetails") ShiftDetailsDto shiftDetails,
-                                     Principal principal) throws ShiftValidationException {
+                                     Principal principal) throws ShiftValidationException, DriverStatusNotFoundException {
         User user = userDAO.findUserByEmail(principal.getName());
 
         workDetailsService.updateShiftDetails(user.getId(), shiftDetails);

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Work Details Exception</title>
+</head>
+<body>
+<nav th:replace="fragments/navbar.html :: navigation"></nav>
+<h1 th:text="${message}"></h1>
+<a th:href="@{/profile}">Return back to Profile</a>
+<script th:replace="fragments/script.html :: jquery"></script>
+<script th:replace="fragments/script.html :: popper"></script>
+<script th:replace="fragments/script.html :: bootstrap"></script>
+</body>
+</html>

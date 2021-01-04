@@ -1,6 +1,6 @@
 package com.logiweb.avaji.exceptions;
 
-public class DriverNotFoundException extends RuntimeException{
+public class DriverNotFoundException extends RuntimeException {
     public DriverNotFoundException() {
     }
 

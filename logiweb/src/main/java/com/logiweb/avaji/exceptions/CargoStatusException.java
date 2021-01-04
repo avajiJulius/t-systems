@@ -1,6 +1,6 @@
 package com.logiweb.avaji.exceptions;
 
-public class CargoStatusException extends RuntimeException {
+public class CargoStatusException extends Exception {
     public CargoStatusException() {
     }
 

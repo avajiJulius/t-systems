@@ -1,6 +1,6 @@
 package com.logiweb.avaji.exceptions;
 
-public class CityValidateException extends RuntimeException {
+public class CityValidateException extends Exception {
     public CityValidateException() {
     }
 

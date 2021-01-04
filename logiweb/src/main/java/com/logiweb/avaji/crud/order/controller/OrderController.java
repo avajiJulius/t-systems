@@ -8,6 +8,8 @@ import com.logiweb.avaji.crud.cargo.service.api.CargoService;
 import com.logiweb.avaji.crud.countrymap.service.api.CountryMapService;
 import com.logiweb.avaji.crud.order.service.api.OrderService;
 import com.logiweb.avaji.crud.truck.service.api.TruckService;
+import com.logiweb.avaji.exceptions.CityValidateException;
+import com.logiweb.avaji.exceptions.LoadAndUnloadValidateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -70,7 +72,7 @@ public class OrderController {
     @PostMapping()
     @PreAuthorize("hasAuthority('employee:write')")
     public String createOrder(@ModelAttribute(name = "form") WaypointsCreationDto waypoints,
-                              Model model) {
+                              Model model) throws CityValidateException, LoadAndUnloadValidateException {
 
         orderService.createOrderByWaypoints(new Order(), waypoints.getWaypointsDto());
 

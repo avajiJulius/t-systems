@@ -22,9 +22,10 @@
             </li>
         </ul>
         <div class="d-flex">
-            <button class="btn btn-outline-success" data-toggle="modal"
-                    data-targer="#example">Sign in</button>
-            <button class="btn btn-outline-danger ml-3">Sign Out</button>
+            <button th:href="@{/login}" class="btn btn-outline-success" >Sign in</button>
+            <form action="#" th:action="@{/logout}" th:method="POST">
+                <button class="btn btn-outline-danger ml-3">Sign Out</button>
+            </form>
         </div>
     </div>
 </nav>
