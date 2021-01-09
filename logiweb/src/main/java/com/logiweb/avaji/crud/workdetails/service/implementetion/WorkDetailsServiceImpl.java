@@ -1,12 +1,11 @@
 package com.logiweb.avaji.crud.workdetails.service.implementetion;
 
 import com.logiweb.avaji.crud.workdetails.dto.ShiftDetailsDto;
-import com.logiweb.avaji.dtoconverter.DtoConverter;
-import com.logiweb.avaji.entities.models.utils.WorkDetails;
+import com.logiweb.avaji.mapper.Mapper;
 import com.logiweb.avaji.crud.cargo.dao.CargoDAO;
 import com.logiweb.avaji.crud.driver.dao.DriverDAO;
 import com.logiweb.avaji.crud.workdetails.dao.WorkDetailsDAO;
-import com.logiweb.avaji.crud.workdetails.dto.WorkDetailsDto;
+import com.logiweb.avaji.crud.workdetails.dto.WorkDetailsDTO;
 import com.logiweb.avaji.entities.enums.CargoStatus;
 import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.models.Cargo;
@@ -33,11 +32,11 @@ public class WorkDetailsServiceImpl implements WorkDetailsService {
     private final DriverDAO driverDAO;
     private final CargoDAO cargoDAO;
     private final WorkDetailsDAO workDetailsDAO;
-    private final DtoConverter converter;
+    private final Mapper converter;
 
     @Autowired
     public WorkDetailsServiceImpl(DriverDAO driverDAO, CargoDAO cargoDAO,
-                                  WorkDetailsDAO workDetailsDAO, DtoConverter converter) {
+                                  WorkDetailsDAO workDetailsDAO, Mapper converter) {
         this.driverDAO = driverDAO;
         this.cargoDAO = cargoDAO;
         this.workDetailsDAO = workDetailsDAO;
@@ -46,10 +45,9 @@ public class WorkDetailsServiceImpl implements WorkDetailsService {
 
     @Override
     @Transactional
-    public WorkDetailsDto readWorkDetailsByUserId(long userId) {
+    public WorkDetailsDTO readWorkDetailsByUserId(long userId) {
         //TODO CHANGE FOR ALL USERS
-        WorkDetails workDetails = workDetailsDAO.findWorkDetailsByDriverId(userId);
-        return converter.workDetailsToDto(workDetails);
+        return workDetailsDAO.findWorkDetailsById(userId);
     }
 
 
@@ -68,11 +66,11 @@ public class WorkDetailsServiceImpl implements WorkDetailsService {
     @Transactional
     public void updateShiftDetails(long id, ShiftDetailsDto shiftDetails)
             throws ShiftValidationException, DriverStatusNotFoundException {
-        WorkDetails workDetails = workDetailsDAO.findWorkDetailsByDriverId(id);
         Driver driver = driverDAO.findDriverById(id);
+        WorkShift shift = workDetailsDAO.findShiftById(id);
 
         DriverStatus status = driver.getDriverStatus();
-        WorkShift shift = workDetailsDAO.findShiftById(id);
+
         if(!shiftDetails.getDriverStatus().equals(status.name())) {
             status = convertToDriverStatus(shiftDetails.getDriverStatus());
         }
@@ -83,8 +81,7 @@ public class WorkDetailsServiceImpl implements WorkDetailsService {
 
         if(shift.isActive() != shiftDetails.isActive()) {
             shift = updateWorkShiftStatus(shiftDetails.isActive(), shift, driver);
-            workDetails.setWorkShift(shift);
-            workDetailsDAO.updateWorkDetails(workDetails);
+            workDetailsDAO.updateWorkShift(shift);
         }
 
         driver.setDriverStatus(status);

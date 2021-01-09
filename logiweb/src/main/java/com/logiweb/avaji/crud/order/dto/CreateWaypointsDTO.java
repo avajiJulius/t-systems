@@ -10,10 +10,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WaypointsCreationDto {
-    private List<WaypointDto> waypointsDto = new ArrayList<>();
+public class CreateWaypointsDTO {
+    private List<WaypointDTO> waypointsDto = new ArrayList<>();
 
-    public void addWaypointDto(WaypointDto waypoint) {
+    public void addWaypointDto(WaypointDTO waypoint) {
         this.waypointsDto.add(waypoint);
     }
 }

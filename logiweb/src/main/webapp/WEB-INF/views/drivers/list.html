@@ -11,6 +11,7 @@
 <nav th:replace="fragments/navbar.html :: navigation"></nav>
 <div align="center">
     <h1>Drivers List</h1>
+    <a th:href="@{/drivers/new}">Create driver</a>
     <table class="table table-hover">
         <thead class="thead-light">
         <tr>
@@ -29,11 +30,11 @@
             <td th:text="${driver.firstName}" />
             <td th:text="${driver.lastName}" />
             <td th:text="${driver.hoursWorked}" />
-            <td th:text="${driver.driverStatus}" />
-            <td th:text="${driver.currentCity.cityName}" />
+            <td th:text="${driver.driverStatus.name()}" />
+            <td th:text="${driver.cityName}" />
             <td>
-                <span th:text="${driver?.currentTruck?.truckId}" />
-                <a href="#" th:if="${driver.currentTruck == null}">Choose Order</a>
+                <span th:text="${driver?.truckId}" />
+                <a href="#" th:if="${driver.truckId == null}">Choose Order</a>
             </td>
         </tr>
         </tbody>

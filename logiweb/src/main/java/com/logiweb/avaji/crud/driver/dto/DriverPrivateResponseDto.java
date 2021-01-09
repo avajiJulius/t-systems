@@ -1,6 +1,6 @@
 package com.logiweb.avaji.crud.driver.dto;
 
-import com.logiweb.avaji.crud.order.dto.WaypointDto;
+import com.logiweb.avaji.crud.order.dto.WaypointDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +16,6 @@ public class DriverPrivateResponseDto {
     private List<Optional<Long>> soDriversIds;
     private String truckId;
     private long orderId;
-    private List<WaypointDto> waypoints;
+    private List<WaypointDTO> waypoints;
 
 }

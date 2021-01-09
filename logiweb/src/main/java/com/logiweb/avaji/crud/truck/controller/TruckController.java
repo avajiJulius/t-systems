@@ -1,13 +1,12 @@
 package com.logiweb.avaji.crud.truck.controller;
 
-import com.logiweb.avaji.crud.truck.dto.TruckDto;
+import com.logiweb.avaji.crud.truck.dto.TruckDTO;
 import com.logiweb.avaji.entities.models.Truck;
 import com.logiweb.avaji.crud.countrymap.service.api.CountryMapService;
 import com.logiweb.avaji.crud.truck.service.api.TruckService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +18,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/trucks")
-public class    TruckController {
+public class TruckController {
 
     private static final Logger log = LoggerFactory.getLogger(TruckController.class);
 
@@ -35,7 +34,7 @@ public class    TruckController {
     @GetMapping()
     @PreAuthorize("hasAuthority('employee:read')")
     public String getTrucks(Model model) {
-        List<Truck> truckList = truckService.readTrucks();
+        List<TruckDTO> truckList = truckService.readTrucks();
 
         model.addAttribute("truckList", truckList);
         return "trucks/list";
@@ -43,7 +42,7 @@ public class    TruckController {
 
     @GetMapping("/new")
     @PreAuthorize("hasAuthority('employee:write')")
-    public String getTruckForm(@ModelAttribute("truck") TruckDto truckDto, Model model) {
+    public String getTruckForm(@ModelAttribute("truck") TruckDTO truckDto, Model model) {
 
         model.addAttribute("cities", mapService.readAllCities());
         return "trucks/create";
@@ -51,7 +50,7 @@ public class    TruckController {
 
     @PostMapping()
     @PreAuthorize("hasAuthority('employee:write')")
-    public String createTruck(@ModelAttribute("truck") @Validated(TruckDto.Create.class) TruckDto truckDto,
+    public String createTruck(@ModelAttribute("truck") @Validated(TruckDTO.Create.class) TruckDTO truckDto,
                               BindingResult result) {
         if (result.hasErrors()) {
             return "trucks/create";
@@ -71,7 +70,7 @@ public class    TruckController {
     @PatchMapping("/{id}")
     @PreAuthorize("hasAuthority('employee:write')")
     public String editTruck(@PathVariable("id") String id,
-                            @ModelAttribute("truck") @Validated(TruckDto.Update.class) TruckDto editTruck,
+                            @ModelAttribute("truck") @Validated(TruckDTO.Update.class) TruckDTO editTruck,
                             BindingResult result) {
         if (result.hasErrors()) {
             return "trucks/edit";

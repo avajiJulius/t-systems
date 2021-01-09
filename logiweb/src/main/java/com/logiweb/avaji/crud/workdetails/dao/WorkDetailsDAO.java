@@ -1,5 +1,6 @@
 package com.logiweb.avaji.crud.workdetails.dao;
 
+import com.logiweb.avaji.crud.workdetails.dto.WorkDetailsDTO;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.utils.WorkDetails;
 import com.logiweb.avaji.entities.models.utils.WorkShift;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
@@ -18,16 +20,15 @@ public class WorkDetailsDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public WorkDetails findWorkDetailsById(long workDetailsId) {
-        return entityManager.find(WorkDetails.class, workDetailsId);
-    }
 
     public WorkShift findShiftById(long id) {
         return entityManager.find(WorkShift.class, id);
     }
 
-    public WorkDetails findWorkDetailsByDriverId(long id) {
-        return entityManager.find(WorkDetails.class, id);
+    public WorkDetailsDTO findWorkDetailsById(long id) {
+        TypedQuery<WorkDetailsDTO> query = entityManager.createNamedQuery("WorkDetails.findWorkDetailsById", WorkDetailsDTO.class)
+                .setParameter("id", id);
+        return query.getSingleResult();
     }
 
     public List<Driver> findDriversByIds(List<Long> driversIds) {
@@ -36,8 +37,11 @@ public class WorkDetailsDAO {
         return query.getResultList();
     }
 
-
     public void updateWorkDetails(WorkDetails workDetails) {
         entityManager.merge(workDetails);
+    }
+
+    public void updateWorkShift(WorkShift shift) {
+        entityManager.merge(shift);
     }
 }

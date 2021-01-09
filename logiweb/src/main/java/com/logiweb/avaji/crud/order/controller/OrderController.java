@@ -1,21 +1,18 @@
 package com.logiweb.avaji.crud.order.controller;
 
-import com.logiweb.avaji.crud.order.dto.WaypointDto;
-import com.logiweb.avaji.crud.order.dto.WaypointsCreationDto;
+import com.logiweb.avaji.crud.order.dto.WaypointDTO;
+import com.logiweb.avaji.crud.order.dto.CreateWaypointsDTO;
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.crud.cargo.service.api.CargoService;
 import com.logiweb.avaji.crud.countrymap.service.api.CountryMapService;
 import com.logiweb.avaji.crud.order.service.api.OrderService;
-import com.logiweb.avaji.crud.truck.service.api.TruckService;
 import com.logiweb.avaji.exceptions.CityValidateException;
 import com.logiweb.avaji.exceptions.LoadAndUnloadValidateException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,15 +23,13 @@ public class OrderController {
 
     private final OrderService orderService;
     private final CargoService cargoService;
-    private final TruckService truckService;
     private final CountryMapService countryMapService;
 
     @Autowired
     public OrderController(OrderService orderService, CargoService cargoService,
-                           TruckService truckService, CountryMapService countryMapService) {
+                           CountryMapService countryMapService) {
         this.orderService = orderService;
         this.cargoService = cargoService;
-        this.truckService = truckService;
         this.countryMapService = countryMapService;
     }
 
@@ -58,9 +53,9 @@ public class OrderController {
     @GetMapping("/new")
     @PreAuthorize("hasAuthority('employee:write')")
     public String getOrderForm(Model model) {
-        WaypointsCreationDto waypointForm = new WaypointsCreationDto();
+        CreateWaypointsDTO waypointForm = new CreateWaypointsDTO();
         for (int i = 1; i <= 4; i++) {
-            waypointForm.addWaypointDto(new WaypointDto());
+            waypointForm.addWaypointDto(new WaypointDTO());
         }
         model.addAttribute("cities", countryMapService.readAllCities());
         model.addAttribute("cargo", cargoService.readAllCargo());
@@ -71,10 +66,10 @@ public class OrderController {
 
     @PostMapping()
     @PreAuthorize("hasAuthority('employee:write')")
-    public String createOrder(@ModelAttribute(name = "form") WaypointsCreationDto waypoints,
+    public String createOrder(@ModelAttribute(name = "form") CreateWaypointsDTO waypoints,
                               Model model) throws CityValidateException, LoadAndUnloadValidateException {
 
-        orderService.createOrderByWaypoints(new Order(), waypoints.getWaypointsDto());
+        orderService.createOrderByWaypoints(new Order(), waypoints);
 
         model.addAttribute("orders", orderService.readAllOrders());
         return "redirect:/orders";

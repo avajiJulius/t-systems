@@ -18,28 +18,25 @@
             <th scope="col"> ID</th>
             <th scope="col"> Status</th>
             <th scope="col"> Truck</th>
-            <th scope="col"> Drivers</th>
+            <th scope="col"> Drivers in Shift</th>
             <th scope="col"> Cargo</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="order : ${orders}">
-            <td scope="row" th:text="${order.orderId}"></td>
-            <td th:text="${order.completed}"></td>
+            <td scope="row" th:text="${order.orderId}" />
+            <td th:text="${order.completed}" />
             <td>
-                <span th:text="${order?.designatedTruckId}" />
+                <span th:text="${order?.truckId}" />
                 <a th:href="@{/{id}/trucks(id=${order.orderId})}"
-                   th:if="${order.designatedTruckId == null}">Choose Truck</a>
+                   th:if="${order.truckId == null}">Choose Truck</a>
             </td>
             <td>
-                <div th:if="${order.designatedTruckId == null}">
+                <div th:if="${order.truckId == null}">
                     <a th:href="@{/{id}/trucks(id=${order.orderId})}">Choose Truck</a>
                 </div>
-                <div th:unless="${order.designatedTruckId == null}">
-                    <a th:if="${order.currentShiftSize < order.totalShiftSize}"
-                       th:href="@{/{id}/drivers(id=${order.orderId})}">Choose Driver</a>
-                    <span th:unless="${order.currentShiftSize < order.totalShiftSize}"
-                          th:text="${order?.totalShiftSize}" />
+                <div th:unless="${order.truckId == null}">
+                    <a th:href="@{/{id}/drivers(id=${order.orderId})}" th:text="${order.currentShiftSize}"></a>
                 </div>
             </td>
             <td><a th:href="@{/orders/{id}/cargo(id=${order.orderId})}">Go to Cargo</a></td>

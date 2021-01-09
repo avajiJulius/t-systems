@@ -1,5 +1,7 @@
 package com.logiweb.avaji.orderdetails.dao;
 
+import com.logiweb.avaji.crud.truck.dto.TruckDTO;
+import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.Truck;
 import com.logiweb.avaji.entities.models.utils.Waypoint;
 import org.springframework.stereotype.Repository;
@@ -36,9 +38,25 @@ public class OrderDetailsDAO {
         return query.getSingleResult();
     }
 
-    public Object findDriversByTruckIdAndCount(String truckId) {
-        Query query = entityManager.createNamedQuery("Driver.findDriversByTruckIdAndCount")
+    public List<TruckDTO> findTrucksForOrder(Double maxCapacity) {
+        TypedQuery<TruckDTO> query = entityManager.createNamedQuery("Truck.findTrucksForOrder", TruckDTO.class)
+                .setParameter("maxCapacity", maxCapacity);
+        return query.getResultList();
+    }
+
+
+    public Order findOrderById(long orderId) {
+        TypedQuery<Order> query = entityManager.createNamedQuery("Order.findOrderById", Order.class)
+                .setParameter("orderId", orderId);
+        return query.getSingleResult();
+    }
+    public Order findOrderByTruckId(String truckId) {
+        TypedQuery<Order> query = entityManager.createNamedQuery("Order.findOrderByTruckId", Order.class)
                 .setParameter("truckId", truckId);
         return query.getSingleResult();
+    }
+
+    public Truck findTruckEntityById(String truckId) {
+         return entityManager.find(Truck.class, truckId);
     }
 }

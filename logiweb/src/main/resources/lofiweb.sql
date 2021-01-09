@@ -94,7 +94,7 @@ create table drivers (
     hours_worked double precision default 0,
     driver_status varchar(50),
     city_code bigint,
-    truck_id varchar(7) default null,
+    truck_id varchar(7),
     primary key(id),
     foreign key (id) references users(id),
     foreign key (city_code) references cities(city_code),

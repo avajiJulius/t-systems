@@ -1,5 +1,6 @@
 package com.logiweb.avaji.crud.truck.dao;
 
+import com.logiweb.avaji.crud.truck.dto.TruckDTO;
 import com.logiweb.avaji.entities.models.Truck;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,13 +20,15 @@ public class TruckDAO {
     private EntityManager entityManager;
 
 
-    public List<Truck> findTrucks() {
-        Query query = entityManager.createNamedQuery("Truck.findTrucks");
+    public List<TruckDTO> findTrucks() {
+        Query query = entityManager.createNamedQuery("Truck.findAllTrucks", TruckDTO.class);
         return query.getResultList();
     }
 
-    public Truck findTruckById(String truckId) {
-         return entityManager.find(Truck.class, truckId);
+    public TruckDTO findTruckById(String id) {
+        TypedQuery<TruckDTO> query = entityManager.createNamedQuery("Truck.findTruckById", TruckDTO.class)
+                .setParameter("id", id);
+        return query.getSingleResult();
     }
 
     public void saveTruck(Truck truck) {
@@ -33,11 +36,7 @@ public class TruckDAO {
         entityManager.flush();
     }
 
-    public List<Truck> findTrucksForOrder(Double maxCapacity) {
-        TypedQuery<Truck> query = entityManager.createNamedQuery("Truck.findTrucksForOrder", Truck.class)
-                .setParameter("maxCapacity", maxCapacity);
-        return query.getResultList();
-    }
+
 
     public void updateTruck(Truck truck) {
         entityManager.merge(truck);

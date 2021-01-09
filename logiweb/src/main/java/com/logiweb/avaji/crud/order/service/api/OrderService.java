@@ -1,8 +1,9 @@
 package com.logiweb.avaji.crud.order.service.api;
 
 
-import com.logiweb.avaji.crud.order.dto.OrderDto;
-import com.logiweb.avaji.crud.order.dto.WaypointDto;
+import com.logiweb.avaji.crud.order.dto.CreateWaypointsDTO;
+import com.logiweb.avaji.crud.order.dto.OrderDTO;
+import com.logiweb.avaji.crud.order.dto.WaypointDTO;
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.exceptions.CityValidateException;
 import com.logiweb.avaji.exceptions.LoadAndUnloadValidateException;
@@ -21,7 +22,7 @@ public interface OrderService {
      *
      * @return list of order entities
      */
-    List<OrderDto> readAllOrders();
+    List<OrderDTO> readAllOrders();
 
 
     /**
@@ -30,9 +31,9 @@ public interface OrderService {
      * loaded and unloaded. After success validation save order into database.
      *
      * @param order in which waypoint list insert.
-     * @param waypointsDto convert into waypoint list and go across validate.
+     * @param dto CreateWaypointDTO
      */
-    void createOrderByWaypoints(Order order,List<WaypointDto> waypointsDto) throws CityValidateException, LoadAndUnloadValidateException;
+    void createOrderByWaypoints(Order order, CreateWaypointsDTO dto) throws CityValidateException, LoadAndUnloadValidateException;
 
     /**
      * The <code>deleteOrder</code> delete order by id.

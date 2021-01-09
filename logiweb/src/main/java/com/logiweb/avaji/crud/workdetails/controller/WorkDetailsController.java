@@ -2,17 +2,14 @@ package com.logiweb.avaji.crud.workdetails.controller;
 
 import com.logiweb.avaji.auth.dao.UserDAO;
 import com.logiweb.avaji.crud.workdetails.dto.ShiftDetailsDto;
-import com.logiweb.avaji.crud.workdetails.dto.WorkDetailsDto;
+import com.logiweb.avaji.crud.workdetails.dto.WorkDetailsDTO;
 import com.logiweb.avaji.crud.workdetails.service.api.WorkDetailsService;
 import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.models.User;
 import com.logiweb.avaji.exceptions.DriverStatusNotFoundException;
 import com.logiweb.avaji.exceptions.ShiftValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,10 +34,10 @@ public class WorkDetailsController {
     public String getWorkDetails(Principal principal,
                                  Model model) {
         User user = userDAO.findUserByEmail(principal.getName());
-        WorkDetailsDto details = workDetailsService.readWorkDetailsByUserId(user.getId());
+        WorkDetailsDTO details = workDetailsService.readWorkDetailsByUserId(user.getId());
         model.addAttribute("driverStatus", DriverStatus.values());
         model.addAttribute("details", details);
-        model.addAttribute("shiftDetails", new ShiftDetailsDto(details.isShiftActive(), details.getDriverStatus()));
+        model.addAttribute("shiftDetails", new ShiftDetailsDto(details.isShiftActive(), details.getDriverStatus().name()));
         return "workDetails";
     }
 

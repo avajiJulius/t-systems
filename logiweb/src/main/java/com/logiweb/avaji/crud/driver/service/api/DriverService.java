@@ -1,5 +1,6 @@
 package com.logiweb.avaji.crud.driver.service.api;
 
+import com.logiweb.avaji.crud.driver.dto.DriverDTO;
 import com.logiweb.avaji.crud.driver.dto.DriverPrivateResponseDto;
 import com.logiweb.avaji.crud.driver.dto.DriverPublicResponseDto;
 import com.logiweb.avaji.entities.enums.DriverStatus;
@@ -13,12 +14,6 @@ import java.util.List;
  * update and delete driver from drivers list from database;
  */
 public interface DriverService {
-    /**
-     * The <code>createDriver</code> create and insert driver entity into database.
-     *
-     * @param driver entity.
-     */
-    void createDriver(Driver driver);
 
     /**
      * The <code>readDrivers</code> read all drivers from database and convert driver entities
@@ -26,15 +21,15 @@ public interface DriverService {
      *
      * @return list of DriverPublicResponseDto.
      */
-    List<DriverPublicResponseDto> readDrivers();
+    List<DriverDTO> readAllDrivers();
 
     /**
-     * The <code>readDriverById</code> read driver with current driverId.
+     * The <code>createDriver</code> create and insert driver entity into database.
      *
-     * @return DriverPrivateResponseDto
-     * @see DriverPrivateResponseDto
+     * @param driver entity.
      */
-    DriverPrivateResponseDto readDriverById(long driverId);
+    void createDriver(DriverDTO driver);
+
 
     /**
      * The <code>updateDriver</code> create updated driver entity
@@ -42,7 +37,7 @@ public interface DriverService {
      *
      * @param updatedDriver entity.
      */
-    void updateDriver(long driverId,Driver updatedDriver);
+    void updateDriver(DriverDTO updatedDriver);
 
     /**
      * The <code>deleteDriver</code> delete driver entity from the database by driver id.
@@ -51,19 +46,5 @@ public interface DriverService {
      */
     void deleteDriver(long driverId);
 
-
-    /**
-     * The <code>updateDriverStatus</code> update status for driver.
-     *
-     * @param driverStatus for change.
-     */
-    void updateDriverStatus(DriverStatus driverStatus);
-
-    /**
-     * The <code>updateWorkShiftStatus</code> change worked shift status
-     * to start if status is stop and vice versa.
-     *
-     */
-    void updateWorkShiftStatus();
 
 }

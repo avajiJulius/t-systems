@@ -1,6 +1,5 @@
 package com.logiweb.avaji.crud.truck.dto;
 
-import com.logiweb.avaji.annotation.ValueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,7 @@ import javax.validation.constraints.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TruckDto {
+public class TruckDTO {
     public interface Create{}
     public interface Update{}
 
@@ -29,4 +28,5 @@ public class TruckDto {
     private boolean serviceable;
     @NotBlank(message = "Must be filed")
     private long currentCityCode;
+    private String currentCityName;
 }

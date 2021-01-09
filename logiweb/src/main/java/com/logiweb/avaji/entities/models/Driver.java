@@ -2,7 +2,6 @@ package com.logiweb.avaji.entities.models;
 
 import com.logiweb.avaji.entities.models.utils.City;
 import com.logiweb.avaji.entities.enums.DriverStatus;
-import com.logiweb.avaji.entities.models.utils.WorkShift;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +11,9 @@ import javax.persistence.*;
 @Entity
 @Table(name = "drivers")
 @NamedQuery(name = "Driver.findAllDrivers",
-    query = "select d from Driver d")
+    query = "select new com.logiweb.avaji.crud.driver.dto.DriverDTO(d.id, d.firstName, d.lastName, " +
+            "d.hoursWorked, d.driverStatus , d.currentTruck.truckId, d.currentCity.cityCode, d.currentCity.cityName) " +
+            "from Driver d")
 @NamedQuery(name = "Driver.findDriversForOrder",
         query = "select d from Driver d " +
                 "where (176 - d.hoursWorked) > :shiftHours " +
@@ -41,7 +42,7 @@ public class Driver extends User{
     @Column(name = "driver_status")
     @Enumerated(value = EnumType.STRING)
     private DriverStatus driverStatus;
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn(name = "city_code")
     private City currentCity;
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)

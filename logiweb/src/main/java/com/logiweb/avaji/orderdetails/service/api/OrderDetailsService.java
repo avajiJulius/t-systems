@@ -1,6 +1,7 @@
 package com.logiweb.avaji.orderdetails.service.api;
 
 import com.logiweb.avaji.crud.driver.dto.DriverPublicResponseDto;
+import com.logiweb.avaji.crud.truck.dto.TruckDTO;
 import com.logiweb.avaji.entities.models.Truck;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public interface OrderDetailsService {
      * @param orderId
      * @return all free, serviceable and suitable for capacity.
      */
-    List<Truck> readTrucksForOrder(long orderId);
+    List<TruckDTO> readTrucksForOrder(long orderId);
 
     /**
      * The <code>addTruckToOrder</code> find truck by truckId and add it to order with orderId.

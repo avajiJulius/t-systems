@@ -28,7 +28,7 @@
             <td th:text="${truck.shiftSize}" />
             <td th:text="${truck.capacity}" />
             <td th:text="${truck.serviceable}" />
-            <td th:text="${truck?.currentCity?.cityName}"/>
+            <td th:text="${truck.currentCityName}"/>
             <td>
                 <form th:method="PATCH"
                       th:action="@{/{orderId}/trucks/{truckId}(orderId=${orderId}, truckId=${truck.truckId})}">

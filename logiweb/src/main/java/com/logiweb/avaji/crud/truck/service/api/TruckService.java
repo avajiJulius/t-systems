@@ -1,8 +1,6 @@
 package com.logiweb.avaji.crud.truck.service.api;
 
-import com.logiweb.avaji.crud.truck.dto.TruckDto;
-import com.logiweb.avaji.entities.models.Truck;
-import org.springframework.security.access.annotation.Secured;
+import com.logiweb.avaji.crud.truck.dto.TruckDTO;
 
 import java.util.List;
 
@@ -18,14 +16,14 @@ public interface TruckService {
      *
      * @param truckDto
      */
-    void createTruck(TruckDto truckDto);
+    void createTruck(TruckDTO truckDto);
 
     /**
      * The <code>readTrucks</code> read all trucks from database.
      *
      * @return list of trucks entities.
      */
-    List<Truck> readTrucks();
+    List<TruckDTO> readTrucks();
 
     /**
      * The <code>readTruckById</code> read truck from database by id and convert
@@ -34,7 +32,7 @@ public interface TruckService {
      * @param truckID unique identifier for truck.
      * @return truckDto
      */
-    TruckDto readTruckById(String truckID);
+    TruckDTO readTruckById(String truckID);
 
 
     /**
@@ -43,7 +41,7 @@ public interface TruckService {
      *
      * @param updatedTruck truckDto
      */
-    void updateTruck(String truckId, TruckDto updatedTruck);
+    void updateTruck(String truckId, TruckDTO updatedTruck);
 
     /**
      * The <code>deleteTruck</code> delete truck entity from the database by truck id.

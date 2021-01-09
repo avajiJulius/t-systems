@@ -15,15 +15,23 @@ import java.util.List;
 
 @Entity
 @Table(name = "trucks")
-@NamedQueries({
-        @NamedQuery(name = "Truck.findTrucks",
-                query = "select t from Truck t"),
-        @NamedQuery(name = "Truck.findTrucksForOrder",
-                query = "select t from Truck t " +
-                        "where t.serviceable = true " +
-                        "and t.capacity > :maxCapacity " +
-                        "and t not in (select o.designatedTruck from Order o)")
-})
+@NamedQuery(name = "Truck.findAllTrucks",
+        query = "select new com.logiweb.avaji.crud.truck.dto.TruckDTO(" +
+                "t.truckId, t.capacity, t.shiftSize, t.serviceable, " +
+                "c.cityCode, c.cityName) from Truck t " +
+                "join t.currentCity c")
+@NamedQuery(name = "Truck.findTruckById",
+        query = "select new com.logiweb.avaji.crud.truck.dto.TruckDTO(" +
+                "t.truckId, t.capacity, t.shiftSize, t.serviceable, " +
+                "t.currentCity.cityCode, t.currentCity.cityName) from Truck t " +
+                "where t.truckId = :id")
+@NamedQuery(name = "Truck.findTrucksForOrder",
+        query = "select new com.logiweb.avaji.crud.truck.dto.TruckDTO(" +
+                "t.truckId, t.capacity, t.shiftSize, t.serviceable, " +
+                "t.currentCity.cityCode, t.currentCity.cityName) from Truck t " +
+                "where t.serviceable = true " +
+                "and t.capacity >= :maxCapacity " +
+                "and t not in (select o.designatedTruck from Order o)")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,7 +46,7 @@ public class Truck {
     private double capacity;
     @Column(name = "serviceable")
     private boolean serviceable;
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn(name = "city_code")
     private City currentCity;
     @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY,

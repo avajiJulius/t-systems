@@ -3,7 +3,7 @@ package com.logiweb.avaji.crud.countrymap.service.implementetion;
 import com.logiweb.avaji.crud.countrymap.service.api.CountryMapService;
 import com.logiweb.avaji.crud.countrymap.dao.CountryMapDAO;
 import com.logiweb.avaji.crud.countrymap.dto.CityDto;
-import com.logiweb.avaji.dtoconverter.DtoConverter;
+import com.logiweb.avaji.mapper.Mapper;
 import com.logiweb.avaji.entities.models.utils.City;
 import com.logiweb.avaji.entities.models.utils.Road;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +18,11 @@ import java.util.List;
 public class CountryMapServiceImpl implements CountryMapService {
 
     private final CountryMapDAO countryMapDAO;
-    private final DtoConverter converter;
+    private final Mapper converter;
 
     @Autowired
-    public CountryMapServiceImpl(CountryMapDAO countryMapDAO, DtoConverter dtoConverter) {
-        this.converter = dtoConverter;
+    public CountryMapServiceImpl(CountryMapDAO countryMapDAO, Mapper mapper) {
+        this.converter = mapper;
         this.countryMapDAO = countryMapDAO;
     }
 

@@ -8,10 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderDto {
+public class OrderDTO {
     private long orderId;
     private boolean completed;
-    private String designatedTruckId;
-    private int totalShiftSize;
-    private int currentShiftSize;
+    private String truckId;
+    private long currentShiftSize;
 }
