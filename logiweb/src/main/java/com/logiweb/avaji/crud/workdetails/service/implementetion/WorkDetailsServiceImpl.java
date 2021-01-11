@@ -15,6 +15,7 @@ import com.logiweb.avaji.exceptions.CargoStatusException;
 import com.logiweb.avaji.exceptions.DriverStatusNotFoundException;
 import com.logiweb.avaji.crud.workdetails.service.api.WorkDetailsService;
 import com.logiweb.avaji.exceptions.ShiftValidationException;
+import com.logiweb.avaji.orderdetails.dao.OrderDetailsDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Service
 public class WorkDetailsServiceImpl implements WorkDetailsService {
@@ -32,33 +34,35 @@ public class WorkDetailsServiceImpl implements WorkDetailsService {
     private final DriverDAO driverDAO;
     private final CargoDAO cargoDAO;
     private final WorkDetailsDAO workDetailsDAO;
-    private final Mapper converter;
+    private final OrderDetailsDAO orderDetailsDAO;
 
-    @Autowired
     public WorkDetailsServiceImpl(DriverDAO driverDAO, CargoDAO cargoDAO,
-                                  WorkDetailsDAO workDetailsDAO, Mapper converter) {
+                                  WorkDetailsDAO workDetailsDAO, OrderDetailsDAO orderDetailsDAO) {
         this.driverDAO = driverDAO;
         this.cargoDAO = cargoDAO;
         this.workDetailsDAO = workDetailsDAO;
-        this.converter = converter;
+        this.orderDetailsDAO = orderDetailsDAO;
     }
 
     @Override
     @Transactional
-    public WorkDetailsDTO readWorkDetailsByUserId(long userId) {
-        //TODO CHANGE FOR ALL USERS
-        return workDetailsDAO.findWorkDetailsById(userId);
+    public WorkDetailsDTO readWorkDetailsById(long userId) {
+        WorkDetailsDTO workDetails = workDetailsDAO.findWorkDetailsById(userId);
+        workDetails.setDriversIds(workDetailsDAO.findDriversIds(workDetails.getTruckId()));
+        workDetails.setWaypointsList(orderDetailsDAO.findWaypointsOfThisOrder(workDetails.getOrderId()));
+        return workDetails;
     }
 
 
 
     @Override
-    public void updateCargoStatus(String cargoStatus, long cargoId) throws CargoStatusException {
-        Cargo cargo = cargoDAO.findCargoById(cargoId);
-        CargoStatus status = cargo.getCargoStatus();
-        CargoStatus newStatus = computeCargoStatus(cargoStatus, status);
-        cargo.setCargoStatus(newStatus);
-        cargoDAO.updateCargo(cargo);
+    public void updateCargoStatus(List<Long> cargoIds) {
+        for(long id : cargoIds) {
+            Cargo cargo = cargoDAO.findCargoById(id);
+            int index = cargo.getCargoStatus().ordinal() + 1;
+            cargo.setCargoStatus(CargoStatus.values()[index]);
+            cargoDAO.updateCargo(cargo);
+        }
         //TODO: update order if all cargo are DELIVERED
     }
 
@@ -86,6 +90,11 @@ public class WorkDetailsServiceImpl implements WorkDetailsService {
 
         driver.setDriverStatus(status);
         driverDAO.updateDriver(driver);
+    }
+
+    @Override
+    public List<Long> readCoDriversIds(String id) {
+        return workDetailsDAO.findDriversIds(id);
     }
 
     public boolean validateShiftAndDriverStatus(boolean active, DriverStatus status) {
@@ -135,26 +144,6 @@ public class WorkDetailsServiceImpl implements WorkDetailsService {
         return status;
     }
 
-    //TODO: refactor
-    private CargoStatus computeCargoStatus(String cargoStatus, CargoStatus status) throws CargoStatusException {
-        String statusName = status.name();
-        if(cargoStatus.equals("LOAD ")) {
-            if (status == CargoStatus.PREPARED) {
-                status = CargoStatus.SHIPPED;
-            } else {
-                logger.error("Can not update '{}' status", statusName);
-                throw new CargoStatusException("Cargo status conflict");
-            }
-        } else {
-            if (status == CargoStatus.SHIPPED) {
-                status = CargoStatus.DELIVERED;
-            } else {
-                logger.error("Can not update '{}' status", statusName);
-                throw new CargoStatusException("Cargo status conflict");
-            }
-        }
-        return status;
-    }
 }
 
 

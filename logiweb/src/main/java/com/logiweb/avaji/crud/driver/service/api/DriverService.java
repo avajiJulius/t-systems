@@ -1,10 +1,6 @@
 package com.logiweb.avaji.crud.driver.service.api;
 
 import com.logiweb.avaji.crud.driver.dto.DriverDTO;
-import com.logiweb.avaji.crud.driver.dto.DriverPrivateResponseDto;
-import com.logiweb.avaji.crud.driver.dto.DriverPublicResponseDto;
-import com.logiweb.avaji.entities.enums.DriverStatus;
-import com.logiweb.avaji.entities.models.Driver;
 
 import java.util.List;
 
@@ -17,9 +13,8 @@ public interface DriverService {
 
     /**
      * The <code>readDrivers</code> read all drivers from database and convert driver entities
-     * into DriverPublicResponseDto.
      *
-     * @return list of DriverPublicResponseDto.
+     * @return list of DriverDTO.
      */
     List<DriverDTO> readAllDrivers();
 

@@ -15,7 +15,9 @@ import javax.persistence.*;
             "d.hoursWorked, d.driverStatus , d.currentTruck.truckId, d.currentCity.cityCode, d.currentCity.cityName) " +
             "from Driver d")
 @NamedQuery(name = "Driver.findDriversForOrder",
-        query = "select d from Driver d " +
+        query = "select new com.logiweb.avaji.crud.driver.dto.DriverDTO(d.id, d.firstName, d.lastName, " +
+                "d.hoursWorked, d.driverStatus , d.currentCity.cityCode, d.currentCity.cityName) " +
+                "from Driver d " +
                 "where (176 - d.hoursWorked) > :shiftHours " +
                 "and d.currentCity.cityCode = :cityCode " +
                 "and d.currentTruck is null")

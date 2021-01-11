@@ -6,16 +6,15 @@ import com.logiweb.avaji.crud.driver.dto.DriverDTO;
 import com.logiweb.avaji.crud.order.dto.CreateWaypointsDTO;
 import com.logiweb.avaji.crud.order.dto.OrderDTO;
 import com.logiweb.avaji.crud.truck.dto.TruckDTO;
+import com.logiweb.avaji.crud.workdetails.dto.WorkDetailsDTO;
 import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.enums.Role;
+import com.logiweb.avaji.entities.models.utils.WorkDetails;
 import com.logiweb.avaji.orderdetails.dao.OrderDetailsDAO;
 import com.logiweb.avaji.crud.cargo.dao.CargoDAO;
 import com.logiweb.avaji.crud.driver.dao.DriverDAO;
-import com.logiweb.avaji.crud.driver.dto.DriverPrivateResponseDto;
-import com.logiweb.avaji.crud.driver.dto.DriverPublicResponseDto;
 import com.logiweb.avaji.crud.order.dao.OrderDAO;
 import com.logiweb.avaji.crud.order.dto.WaypointDTO;
-import com.logiweb.avaji.entities.enums.WaypointType;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.Truck;
@@ -27,7 +26,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -102,23 +100,6 @@ public class Mapper {
 
 
 
-    /**
-     * Convert list of Driver entities to DriverPublicResponseDto.
-     *
-     * @param allDrivers
-     * @return DriverPublicResponseDto
-     * @see DriverPublicResponseDto
-     */
-    public List<DriverPublicResponseDto> driversToDtos(List<Driver> allDrivers) {
-        List<DriverPublicResponseDto> dtos = new ArrayList<>();
-        for(Driver driver: allDrivers) {
-            dtos.add(new DriverPublicResponseDto(driver.getId(), driver.getFirstName(),
-                    driver.getLastName(), driver.getHoursWorked(), driver.getDriverStatus().name(),
-                    driver.getCurrentCity(), driver.getCurrentTruck()));
-        }
-        return dtos;
-    }
-
 
 
     /**
@@ -174,4 +155,5 @@ public class Mapper {
 //        driver.setCurrentTruck(truckDAO.findTruckById(driverDTO.getTruckId()));
         return driver;
     }
+
 }

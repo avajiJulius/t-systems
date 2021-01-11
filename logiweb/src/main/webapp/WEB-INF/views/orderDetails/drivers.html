@@ -32,8 +32,8 @@
                 <td th:text="${driver.firstName}" />
                 <td th:text="${driver.lastName}" />
                 <td th:text="${driver.hoursWorked}" />
-                <td th:text="${driver.driverStatus}" />
-                <td th:text="${driver.currentCity.cityName}" />
+                <td th:text="${driver.driverStatus.name()}" />
+                <td th:text="${driver.cityName}" />
                 <td>
                     <input type="checkbox" th:value="${driver.id}" th:field="*{ids}"/>
                 </td>

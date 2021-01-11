@@ -13,12 +13,8 @@ import java.util.List;
 @Transactional
 public class CargoDAO {
 
+    @PersistenceContext
     private EntityManager entityManager;
-
-    @Autowired
-    public CargoDAO(EntityManagerFactory entityManagerFactory) {
-        this.entityManager = entityManagerFactory.createEntityManager();
-    }
 
     public List<Cargo> findAllCargo() {
         TypedQuery<Cargo> query = entityManager.createNamedQuery("Cargo.findAllCargo", Cargo.class);

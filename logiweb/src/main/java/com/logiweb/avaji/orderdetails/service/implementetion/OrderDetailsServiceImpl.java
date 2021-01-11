@@ -1,10 +1,10 @@
 package com.logiweb.avaji.orderdetails.service.implementetion;
 
+import com.logiweb.avaji.crud.driver.dto.DriverDTO;
 import com.logiweb.avaji.crud.truck.dto.TruckDTO;
 import com.logiweb.avaji.orderdetails.dao.OrderDetailsDAO;
 import com.logiweb.avaji.orderdetails.service.api.OrderDetailsService;
 import com.logiweb.avaji.crud.driver.dao.DriverDAO;
-import com.logiweb.avaji.crud.driver.dto.DriverPublicResponseDto;
 import com.logiweb.avaji.crud.order.dao.OrderDAO;
 import com.logiweb.avaji.crud.truck.dao.TruckDAO;
 import com.logiweb.avaji.crud.workdetails.dao.WorkDetailsDAO;
@@ -58,10 +58,9 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
     }
 
     @Override
-    public List<DriverPublicResponseDto> readDriverForOrder(long orderId) {
+    public List<DriverDTO> readDriversForOrder(long orderId) {
         shiftDetailsService.init(orderId);
-        Order order = orderDetailsDAO.findOrderById(orderId);
-        long cityCode = order.getDesignatedTruck().getCurrentCity().getCityCode();
+        long cityCode = orderDetailsDAO.findTruckByOrderId(orderId).getCurrentCity().getCityCode();
         Double shiftHours = shiftDetailsService.getShiftHours();
 
         long untilEndOfMonth = shiftDetailsService.calculateTimeUntilEndOfMonth();
@@ -69,7 +68,7 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
             shiftHours = (double) untilEndOfMonth;
         }
 
-        return mapper.driversToDtos(driverDAO.findDriverForOrder(shiftHours, cityCode));
+        return orderDetailsDAO.findDriverForOrder(shiftHours, cityCode);
     }
 
     @Override

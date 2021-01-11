@@ -1,8 +1,7 @@
 package com.logiweb.avaji.orderdetails.service.api;
 
-import com.logiweb.avaji.crud.driver.dto.DriverPublicResponseDto;
+import com.logiweb.avaji.crud.driver.dto.DriverDTO;
 import com.logiweb.avaji.crud.truck.dto.TruckDTO;
-import com.logiweb.avaji.entities.models.Truck;
 
 import java.util.List;
 
@@ -32,8 +31,9 @@ public interface OrderDetailsService {
      * is the same as driver current city.
      *
      * @param orderId
+     * @return
      */
-    List<DriverPublicResponseDto> readDriverForOrder(long orderId);
+    List<DriverDTO> readDriversForOrder(long orderId);
 
 
     /**

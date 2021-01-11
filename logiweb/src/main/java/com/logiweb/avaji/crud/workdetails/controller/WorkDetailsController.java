@@ -1,6 +1,7 @@
 package com.logiweb.avaji.crud.workdetails.controller;
 
 import com.logiweb.avaji.auth.dao.UserDAO;
+import com.logiweb.avaji.crud.workdetails.dto.CargoChangeDTO;
 import com.logiweb.avaji.crud.workdetails.dto.ShiftDetailsDto;
 import com.logiweb.avaji.crud.workdetails.dto.WorkDetailsDTO;
 import com.logiweb.avaji.crud.workdetails.service.api.WorkDetailsService;
@@ -8,6 +9,7 @@ import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.models.User;
 import com.logiweb.avaji.exceptions.DriverStatusNotFoundException;
 import com.logiweb.avaji.exceptions.ShiftValidationException;
+import com.logiweb.avaji.orderdetails.dto.AddedDriversDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -34,10 +36,11 @@ public class WorkDetailsController {
     public String getWorkDetails(Principal principal,
                                  Model model) {
         User user = userDAO.findUserByEmail(principal.getName());
-        WorkDetailsDTO details = workDetailsService.readWorkDetailsByUserId(user.getId());
+        WorkDetailsDTO details = workDetailsService.readWorkDetailsById(user.getId());
         model.addAttribute("driverStatus", DriverStatus.values());
         model.addAttribute("details", details);
         model.addAttribute("shiftDetails", new ShiftDetailsDto(details.isShiftActive(), details.getDriverStatus().name()));
+        model.addAttribute("cargoIds", new CargoChangeDTO());
         return "workDetails";
     }
 
@@ -48,6 +51,14 @@ public class WorkDetailsController {
         User user = userDAO.findUserByEmail(principal.getName());
 
         workDetailsService.updateShiftDetails(user.getId(), shiftDetails);
+        return "redirect:/profile";
+    }
+
+    @PatchMapping("/cargo")
+    @PreAuthorize("hasAuthority('driver:write')")
+    public String updateCargoStatus(@ModelAttribute("cargoIds") CargoChangeDTO cargoIds){
+
+        workDetailsService.updateCargoStatus(cargoIds.getIds());
         return "redirect:/profile";
     }
 }

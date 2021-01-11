@@ -7,8 +7,12 @@ import com.logiweb.avaji.exceptions.CargoStatusException;
 import com.logiweb.avaji.exceptions.DriverStatusNotFoundException;
 import com.logiweb.avaji.exceptions.ShiftValidationException;
 
+import java.util.List;
+
 public interface WorkDetailsService {
-    WorkDetailsDTO readWorkDetailsByUserId(long userId);
-    void updateCargoStatus(String status, long cargoId) throws CargoStatusException;
+    WorkDetailsDTO readWorkDetailsById(long userId);
+    void updateCargoStatus(List<Long> cargoIds);
     void updateShiftDetails(long id, ShiftDetailsDto shiftDetails) throws ShiftValidationException, DriverStatusNotFoundException;
+
+    List<Long> readCoDriversIds(String id);
 }

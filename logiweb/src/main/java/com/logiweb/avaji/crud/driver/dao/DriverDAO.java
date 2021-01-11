@@ -63,16 +63,6 @@ public class DriverDAO {
 
 
 
-    public List<Driver> findDriverForOrder(Double shiftHours, long cityCode) {
-        TypedQuery<Driver> query = entityManager.createNamedQuery("Driver.findDriversForOrder", Driver.class)
-                .setParameter("shiftHours", shiftHours).setParameter("cityCode", cityCode);
-        return Optional.ofNullable(query.getResultList())
-                .<DriverNotFoundException>orElseThrow(()  -> {
-                    logger.error("Free Drivers with rest of worked hours less then {} " +
-                            "and city code {} not found", shiftHours, cityCode);
-                    throw new DriverNotFoundException("Driver by such parameters not found");
-                });
-    }
 
     public List<Driver> findDriversByTruckId(String truckId) {
         TypedQuery<Driver> query = entityManager.createNamedQuery("Driver.findDriversByTruckId", Driver.class)

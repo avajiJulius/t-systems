@@ -14,11 +14,12 @@ import javax.persistence.*;
 @Table(name = "work_details")
 @NamedQuery(name = "WorkDetails.findWorkDetailsById",
 query = "select new com.logiweb.avaji.crud.workdetails.dto.WorkDetailsDTO(" +
-        "wd.id, t.drivers, wd.truck.truckId, wd.order.orderId, wd.order.waypoints," +
+        "wd.id, wd.truck.truckId, wd.order.orderId, " +
         "wd.workShift.active, wd.driver.driverStatus) " +
         "from WorkDetails wd " +
-        "left join fetch Truck t where t = wd.truck " +
-        "and wd.id = :id")
+        "where wd.id = :id")
+@NamedQuery(name = "WorkDetails.findDriversIds",
+query = "select d.id from Driver d where d.currentTruck.truckId = :id")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

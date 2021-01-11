@@ -52,4 +52,18 @@ public class DriverDTO {
         this.cityCode = cityCode;
         this.cityName = cityName;
     }
+
+    public DriverDTO(@Null(groups = {Update.class, Create.class}) @NotNull(groups = {Read.class}) long id,
+                     @NotNull String firstName, @NotNull String lastName,
+                     @Null(groups = {Create.class}) @NotNull(groups = {Read.class, Update.class}) double hoursWorked,
+                     @Null(groups = {Create.class}) @NotNull(groups = {Read.class, Update.class}) DriverStatus driverStatus,
+                     long cityCode, String cityName) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.hoursWorked = hoursWorked;
+        this.driverStatus = driverStatus;
+        this.cityCode = cityCode;
+        this.cityName = cityName;
+    }
 }

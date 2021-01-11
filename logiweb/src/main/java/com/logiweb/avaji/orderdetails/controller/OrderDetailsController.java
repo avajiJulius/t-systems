@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.List;
-
 @Controller
 public class OrderDetailsController {
 
@@ -49,7 +47,7 @@ public class OrderDetailsController {
     @PreAuthorize("hasAuthority('employee:read')")
     public String getDriversForOrder(@PathVariable("id") long orderId,
                                      Model model) {
-        model.addAttribute("drivers", orderDetailsService.readDriverForOrder(orderId));
+        model.addAttribute("drivers", orderDetailsService.readDriversForOrder(orderId));
         model.addAttribute("shiftSize", shiftDetailsService.calculateFreeSpaceInShift(orderId));
         model.addAttribute("orderId", orderId);
         model.addAttribute("driversIds", new AddedDriversDto());

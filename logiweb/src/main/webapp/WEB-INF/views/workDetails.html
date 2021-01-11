@@ -37,9 +37,9 @@
         <div class="col">
             <table>
                 <tr>
-                    <th th:colspan="${#lists.size(details.coDriversId)}" >Co-Drivers IDs</th>
+                    <th th:colspan="${#lists.size(details.driversIds)}" >Co-Drivers IDs</th>
                 </tr>
-                <tr th:each="ids : ${details?.coDriversId}">
+                <tr th:each="ids : ${details?.driversIds}">
                     <td th:text="${ids}"></td>
                 </tr>
             </table>
@@ -61,6 +61,8 @@
     </div>
     <div class="row">
         <div class="col">
+            <form th:method="PATCH"
+                  th:action="@{/profile/cargo}" th:object="${cargoIds}">
             <label for="path">Path</label>
             <table id="path">
                 <thead>
@@ -69,17 +71,28 @@
                     <th>Loading Status</th>
                     <th>Cargo</th>
                     <th>Cargo Status</th>
+                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="waypoint : ${details.waypointList}">
+                <tr th:each="waypoint : ${details.waypointsList}">
                     <td th:text="${waypoint.waypointCity.cityName}"></td>
                     <td th:text="${waypoint.waypointType}"></td>
                     <td th:text="${waypoint.waypointCargo.cargoTitle}"></td>
                     <td th:text="${waypoint.waypointCargo.cargoStatus}"></td>
+                    <td>
+                        <div th:if="${waypoint.waypointType.ordinal() == 0}">Received
+                            <input type="checkbox" th:value="${waypoint.waypointCargo.cargoId}" th:field="*{ids}"/>
+                        </div>
+                        <div th:unless="${waypoint.waypointType.ordinal() == 0}">Unloaded
+                            <input type="checkbox" th:value="${waypoint.waypointCargo.cargoId}" th:field="*{ids}"/>
+                        </div>
+                    </td>
                 </tr>
                 </tbody>
             </table>
+                <input type="submit" value="Update" />
+            </form>
         </div>
     </div>
 </div>
