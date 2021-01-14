@@ -1,7 +1,6 @@
 package com.logiweb.avaji.crud.workdetails.service.implementetion;
 
 import com.logiweb.avaji.crud.workdetails.dto.ShiftDetailsDto;
-import com.logiweb.avaji.mapper.Mapper;
 import com.logiweb.avaji.crud.cargo.dao.CargoDAO;
 import com.logiweb.avaji.crud.driver.dao.DriverDAO;
 import com.logiweb.avaji.crud.workdetails.dao.WorkDetailsDAO;
@@ -11,14 +10,12 @@ import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.utils.WorkShift;
-import com.logiweb.avaji.exceptions.CargoStatusException;
 import com.logiweb.avaji.exceptions.DriverStatusNotFoundException;
 import com.logiweb.avaji.crud.workdetails.service.api.WorkDetailsService;
 import com.logiweb.avaji.exceptions.ShiftValidationException;
 import com.logiweb.avaji.orderdetails.dao.OrderDetailsDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

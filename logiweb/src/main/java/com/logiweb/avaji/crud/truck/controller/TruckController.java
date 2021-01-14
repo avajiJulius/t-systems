@@ -1,7 +1,6 @@
 package com.logiweb.avaji.crud.truck.controller;
 
 import com.logiweb.avaji.crud.truck.dto.TruckDTO;
-import com.logiweb.avaji.entities.models.Truck;
 import com.logiweb.avaji.crud.countrymap.service.api.CountryMapService;
 import com.logiweb.avaji.crud.truck.service.api.TruckService;
 import org.slf4j.Logger;
@@ -19,8 +18,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/trucks")
 public class TruckController {
-
-    private static final Logger log = LoggerFactory.getLogger(TruckController.class);
 
     private final TruckService truckService;
     private final CountryMapService mapService;
@@ -51,8 +48,9 @@ public class TruckController {
     @PostMapping()
     @PreAuthorize("hasAuthority('employee:write')")
     public String createTruck(@ModelAttribute("truck") @Validated(TruckDTO.Create.class) TruckDTO truckDto,
-                              BindingResult result) {
+                              BindingResult result, Model model) {
         if (result.hasErrors()) {
+            model.addAttribute("cities", mapService.readAllCities());
             return "trucks/create";
         }
         truckService.createTruck(truckDto);
@@ -71,8 +69,10 @@ public class TruckController {
     @PreAuthorize("hasAuthority('employee:write')")
     public String editTruck(@PathVariable("id") String id,
                             @ModelAttribute("truck") @Validated(TruckDTO.Update.class) TruckDTO editTruck,
-                            BindingResult result) {
+                            BindingResult result, Model model) {
         if (result.hasErrors()) {
+            model.addAttribute("truck", truckService.readTruckById(id));
+            model.addAttribute("cities", mapService.readAllCities());
             return "trucks/edit";
         }
         truckService.updateTruck(id, editTruck);

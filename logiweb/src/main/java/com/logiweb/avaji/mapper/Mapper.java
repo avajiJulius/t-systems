@@ -1,24 +1,17 @@
 package com.logiweb.avaji.mapper;
 
 import com.logiweb.avaji.crud.countrymap.dao.CountryMapDAO;
-import com.logiweb.avaji.crud.countrymap.dto.CityDto;
 import com.logiweb.avaji.crud.driver.dto.DriverDTO;
 import com.logiweb.avaji.crud.order.dto.CreateWaypointsDTO;
-import com.logiweb.avaji.crud.order.dto.OrderDTO;
 import com.logiweb.avaji.crud.truck.dto.TruckDTO;
-import com.logiweb.avaji.crud.workdetails.dto.WorkDetailsDTO;
 import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.enums.Role;
-import com.logiweb.avaji.entities.models.utils.WorkDetails;
-import com.logiweb.avaji.orderdetails.dao.OrderDetailsDAO;
 import com.logiweb.avaji.crud.cargo.dao.CargoDAO;
 import com.logiweb.avaji.crud.driver.dao.DriverDAO;
-import com.logiweb.avaji.crud.order.dao.OrderDAO;
 import com.logiweb.avaji.crud.order.dto.WaypointDTO;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.Truck;
-import com.logiweb.avaji.entities.models.utils.City;
 import com.logiweb.avaji.entities.models.utils.Waypoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This service convert DTO to Entities and vice versa.
@@ -40,46 +32,15 @@ public class Mapper {
     private PasswordEncoder encoder;
 
     private final CountryMapDAO mapDAO;
-    private final OrderDAO orderDAO;
     private final CargoDAO cargoDAO;
     private final DriverDAO driverDAO;
-    private final OrderDetailsDAO orderDetailsDAO;
 
     @Autowired
-    public Mapper(CountryMapDAO mapDAO, OrderDAO orderDAO,
-                  CargoDAO cargoDAO, DriverDAO driverDAO, OrderDetailsDAO orderDetailsDAO) {
+    public Mapper(CountryMapDAO mapDAO,
+                  CargoDAO cargoDAO, DriverDAO driverDAO) {
         this.mapDAO = mapDAO;
-        this.orderDAO = orderDAO;
         this.cargoDAO = cargoDAO;
         this.driverDAO = driverDAO;
-        this.orderDetailsDAO = orderDetailsDAO;
-    }
-
-    /**
-     * Convert list of city to cityDto
-     *
-     * @param cities
-     * @return cityDto list
-     */
-    public List<CityDto> citiesToDtos(List<City> cities) {
-        List<CityDto> dtos = new ArrayList<>();
-        for(City city: cities) {
-            dtos.add(new CityDto(city.getCityCode(), city.getCityName()));
-        }
-        return dtos;
-    }
-
-    /**
-     * Convert cityDto to City entity.
-     *
-     * @param cityDto
-     * @return city entity.
-     */
-    public City dtoToCity(CityDto cityDto) {
-        City city = new City();
-        city.setCityCode(cityDto.getCityCode());
-        city.setCityName(cityDto.getCityName());
-        return city;
     }
 
     /**
@@ -91,6 +52,7 @@ public class Mapper {
     public Truck dtoToTruck(TruckDTO truckDto) {
         Truck truck = new Truck();
         truck.setTruckId(truckDto.getTruckId());
+        truck.setVersion(truckDto.getVersion());
         truck.setShiftSize(truckDto.getShiftSize());
         truck.setCurrentCity(mapDAO.findCityByCode(truckDto.getCurrentCityCode()));
         truck.setCapacity(truckDto.getCapacity());
@@ -132,6 +94,7 @@ public class Mapper {
 
     public Driver createDriverFromDto(DriverDTO driverDTO) {
         Driver driver = new Driver();
+        driver.setVersion(1);
         driver.setEmail(driverDTO.getEmail());
         driver.setPassword(encoder.encode(driverDTO.getPassword()));
         driver.setEnable(true);
@@ -146,13 +109,13 @@ public class Mapper {
 
     public Driver updateDriverFromDto(DriverDTO driverDTO) {
         Driver driver = driverDAO.findDriverById(driverDTO.getId());
+        driver.setVersion(driverDTO.getVersion());
         driver.setEnable(driverDTO.isEnable());
         driver.setFirstName(driverDTO.getFirstName());
         driver.setLastName(driverDTO.getLastName());
         driver.setHoursWorked(driverDTO.getHoursWorked());
         driver.setDriverStatus(driverDTO.getDriverStatus());
         driver.setCurrentCity(mapDAO.findCityByCode(driverDTO.getCityCode()));
-//        driver.setCurrentTruck(truckDAO.findTruckById(driverDTO.getTruckId()));
         return driver;
     }
 

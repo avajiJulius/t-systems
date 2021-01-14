@@ -1,5 +1,6 @@
 package com.logiweb.avaji.crud.countrymap.dao;
 
+import com.logiweb.avaji.crud.countrymap.dto.CityDTO;
 import com.logiweb.avaji.entities.models.utils.City;
 import com.logiweb.avaji.entities.models.utils.Road;
 import org.springframework.stereotype.Repository;
@@ -16,10 +17,11 @@ public class CountryMapDAO {
     private EntityManager entityManager;
 
 
-    public List<City> findAllCities() {
-        TypedQuery<City> query = entityManager.createNamedQuery("City.findAllCities", City.class);
+    public List<CityDTO> findAllCities() {
+        TypedQuery<CityDTO> query = entityManager.createNamedQuery("City.findAllCities", CityDTO.class);
         return query.getResultList();
     }
+
 
     public City findCityByCode(long cityCode) {
         return entityManager.find(City.class, cityCode);

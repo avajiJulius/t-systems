@@ -3,6 +3,8 @@ package com.logiweb.avaji.auth.service.implementation;
 import com.logiweb.avaji.entities.models.User;
 import com.logiweb.avaji.entities.enums.Role;
 import com.logiweb.avaji.auth.dao.UserDAO;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 @Service("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService {
 
+    private static final Logger logger = LogManager.getLogger(UserDetailsServiceImpl.class);
+
     private final UserDAO userDAO;
 
     @Autowired
@@ -28,9 +32,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = Optional.ofNullable(userDAO.findUserByEmail(email)).orElseThrow(() ->
-                new UsernameNotFoundException("User doesn't exists")
-        );
+        User user = Optional.ofNullable(userDAO.findUserByEmail(email)).<UsernameNotFoundException>orElseThrow(() -> {
+            logger.error("User doesn't exists");
+            throw new UsernameNotFoundException("User doesn't exists");
+        });
 
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(), user.getPassword(),

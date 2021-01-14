@@ -2,20 +2,16 @@ package com.logiweb.avaji.orderdetails.dao;
 
 import com.logiweb.avaji.crud.driver.dto.DriverDTO;
 import com.logiweb.avaji.crud.truck.dto.TruckDTO;
-import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.Truck;
 import com.logiweb.avaji.entities.models.utils.Waypoint;
-import com.logiweb.avaji.exceptions.DriverNotFoundException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 @Transactional

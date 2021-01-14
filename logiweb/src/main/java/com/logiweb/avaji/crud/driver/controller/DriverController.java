@@ -1,10 +1,8 @@
 package com.logiweb.avaji.crud.driver.controller;
 
-import com.logiweb.avaji.crud.countrymap.dao.CountryMapDAO;
 import com.logiweb.avaji.crud.countrymap.service.api.CountryMapService;
 import com.logiweb.avaji.crud.driver.dto.DriverDTO;
 import com.logiweb.avaji.crud.driver.service.api.DriverService;
-import com.logiweb.avaji.entities.models.Driver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;

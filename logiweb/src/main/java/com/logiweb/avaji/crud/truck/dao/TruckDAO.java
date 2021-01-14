@@ -2,8 +2,6 @@ package com.logiweb.avaji.crud.truck.dao;
 
 import com.logiweb.avaji.crud.truck.dto.TruckDTO;
 import com.logiweb.avaji.entities.models.Truck;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,8 +11,6 @@ import java.util.List;
 @Repository
 @Transactional
 public class TruckDAO {
-
-    private static final Logger logger = LogManager.getLogger(TruckDAO.class);
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -30,6 +26,7 @@ public class TruckDAO {
                 .setParameter("id", id);
         return query.getSingleResult();
     }
+
 
     public void saveTruck(Truck truck) {
         entityManager.persist(truck);

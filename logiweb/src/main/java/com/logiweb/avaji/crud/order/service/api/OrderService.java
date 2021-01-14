@@ -3,7 +3,6 @@ package com.logiweb.avaji.crud.order.service.api;
 
 import com.logiweb.avaji.crud.order.dto.CreateWaypointsDTO;
 import com.logiweb.avaji.crud.order.dto.OrderDTO;
-import com.logiweb.avaji.crud.order.dto.WaypointDTO;
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.exceptions.CityValidateException;
 import com.logiweb.avaji.exceptions.LoadAndUnloadValidateException;

@@ -31,6 +31,9 @@ public class WorkDetails {
     @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn(name = "id", referencedColumnName = "id")
     private Driver driver;
+    @Version
+    @Column(name = "version")
+    private int version;
     @OneToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "truck_id")
     private Truck truck;

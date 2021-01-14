@@ -19,19 +19,19 @@ import java.util.List;
         query = "select new com.logiweb.avaji.crud.truck.dto.TruckDTO(" +
                 "t.truckId, t.capacity, t.shiftSize, t.serviceable, " +
                 "c.cityCode, c.cityName) from Truck t " +
-                "join t.currentCity c")
+                "join t.currentCity c", lockMode = LockModeType.READ)
 @NamedQuery(name = "Truck.findTruckById",
         query = "select new com.logiweb.avaji.crud.truck.dto.TruckDTO(" +
-                "t.truckId, t.capacity, t.shiftSize, t.serviceable, " +
+                "t.truckId, t.version, t.capacity, t.shiftSize, t.serviceable, " +
                 "t.currentCity.cityCode, t.currentCity.cityName) from Truck t " +
-                "where t.truckId = :id")
+                "where t.truckId = :id", lockMode = LockModeType.READ)
 @NamedQuery(name = "Truck.findTrucksForOrder",
         query = "select new com.logiweb.avaji.crud.truck.dto.TruckDTO(" +
-                "t.truckId, t.capacity, t.shiftSize, t.serviceable, " +
+                "t.truckId, t.version, t.capacity, t.shiftSize, t.serviceable, " +
                 "t.currentCity.cityCode, t.currentCity.cityName) from Truck t " +
                 "where t.serviceable = true " +
                 "and t.capacity >= :maxCapacity " +
-                "and t not in (select o.designatedTruck from Order o)")
+                "and t not in (select o.designatedTruck from Order o)", lockMode = LockModeType.READ)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -40,6 +40,9 @@ public class Truck {
     @Id
     @Column(name = "truck_id")
     private String truckId;
+    @Version
+    @Column(name = "version")
+    private int version;
     @Column(name= "shift_size")
     private int shiftSize;
     @Column(name = "capacity")

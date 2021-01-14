@@ -19,6 +19,7 @@ public class DriverDTO {
     @Null(groups = {Update.class, Create.class})
     @NotNull(groups = {Read.class})
     private long id;
+    private int version;
     @NotNull
     private String firstName;
     @NotNull
@@ -53,12 +54,15 @@ public class DriverDTO {
         this.cityName = cityName;
     }
 
+
+
     public DriverDTO(@Null(groups = {Update.class, Create.class}) @NotNull(groups = {Read.class}) long id,
-                     @NotNull String firstName, @NotNull String lastName,
+                     int version, @NotNull String firstName, @NotNull String lastName,
                      @Null(groups = {Create.class}) @NotNull(groups = {Read.class, Update.class}) double hoursWorked,
                      @Null(groups = {Create.class}) @NotNull(groups = {Read.class, Update.class}) DriverStatus driverStatus,
                      long cityCode, String cityName) {
         this.id = id;
+        this.version = version;
         this.firstName = firstName;
         this.lastName = lastName;
         this.hoursWorked = hoursWorked;

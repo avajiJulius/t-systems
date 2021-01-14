@@ -9,7 +9,6 @@ import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.models.User;
 import com.logiweb.avaji.exceptions.DriverStatusNotFoundException;
 import com.logiweb.avaji.exceptions.ShiftValidationException;
-import com.logiweb.avaji.orderdetails.dto.AddedDriversDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;

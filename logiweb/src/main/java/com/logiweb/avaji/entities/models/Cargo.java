@@ -29,6 +29,9 @@ public class Cargo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cargo_id")
     private long cargoId;
+    @Version
+    @Column(name = "version")
+    private int version;
     @Column(name = "title")
     private String cargoTitle;
     @Column(name = "weight")

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OrderDTO {
     private long orderId;
+    private int version;
     private boolean completed;
     private String truckId;
     private long currentShiftSize;

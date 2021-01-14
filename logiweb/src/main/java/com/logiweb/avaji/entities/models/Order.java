@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name = "orders")
 @NamedQuery(name = "Order.findAllOrders",
 query = "select new com.logiweb.avaji.crud.order.dto.OrderDTO(" +
-        "o.orderId, o.completed, o.designatedTruck.truckId, " +
+        "o.orderId, o.version, o.completed, o.designatedTruck.truckId, " +
         "(select count(d) from Driver d where d.currentTruck.truckId = o.designatedTruck.truckId)) " +
         "from Order o")
 @NamedQuery(name = "Order.findWaypointsOfThisOrder",
@@ -34,6 +34,9 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
     private long orderId;
+    @Version
+    @Column(name = "version")
+    private int version;
     @Column(name = "completed")
     private boolean completed;
     @OneToMany(cascade = CascadeType.ALL ,fetch = FetchType.LAZY,

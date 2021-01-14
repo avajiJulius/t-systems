@@ -126,8 +126,7 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
     public long calculateTimeUntilEndOfMonth() {
         LocalDateTime to = LocalDateTime.now().withHour(0).with(TemporalAdjusters.firstDayOfNextMonth());
         LocalDateTime from = LocalDateTime.now();
-        long until = from.until(to, ChronoUnit.HOURS);
-        return until;
+        return from.until(to, ChronoUnit.HOURS);
     }
 
     @Override

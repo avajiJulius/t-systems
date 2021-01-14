@@ -4,10 +4,19 @@ import com.logiweb.avaji.exceptions.*;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.view.RedirectView;
+
+import javax.persistence.NoResultException;
 
 @ControllerAdvice
 public class LocalExceptionHandler {
+
+    @ExceptionHandler(NoResultException.class)
+    public String queryExceptionHandle(NoResultException exception,
+                                       Model model) {
+        model.addAttribute("message", exception.getMessage());
+        return "exceptions/details";
+    }
+
     @ExceptionHandler({CityValidateException.class, LoadAndUnloadValidateException.class})
     public String orderExceptionHandler(Exception exception,
                                                Model model) {

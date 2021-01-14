@@ -2,7 +2,6 @@ package com.logiweb.avaji.validation;
 
 import com.logiweb.avaji.crud.order.dto.WaypointDTO;
 import com.logiweb.avaji.entities.enums.WaypointType;
-import com.logiweb.avaji.exceptions.LoadAndUnloadValidateException;
 
 import java.util.List;
 import java.util.stream.Collectors;

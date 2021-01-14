@@ -1,20 +1,13 @@
 package com.logiweb.avaji.crud.order.service.implementetion;
 
-import com.logiweb.avaji.crud.driver.dao.DriverDAO;
 import com.logiweb.avaji.crud.order.dao.OrderDAO;
 import com.logiweb.avaji.crud.order.dto.CreateWaypointsDTO;
 import com.logiweb.avaji.crud.order.dto.OrderDTO;
-import com.logiweb.avaji.crud.truck.dao.TruckDAO;
 import com.logiweb.avaji.crud.order.dto.WaypointDTO;
-import com.logiweb.avaji.entities.enums.WaypointType;
-import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Order;
-import com.logiweb.avaji.entities.models.utils.City;
 import com.logiweb.avaji.entities.models.utils.Waypoint;
-import com.logiweb.avaji.exceptions.CityValidateException;
 import com.logiweb.avaji.exceptions.LoadAndUnloadValidateException;
 import com.logiweb.avaji.crud.order.service.api.OrderService;
-import com.logiweb.avaji.orderdetails.service.implementetion.ShiftDetailsServiceImpl;
 import com.logiweb.avaji.mapper.Mapper;
 import com.logiweb.avaji.validation.Validator;
 import org.apache.logging.log4j.LogManager;
@@ -24,8 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Transactional

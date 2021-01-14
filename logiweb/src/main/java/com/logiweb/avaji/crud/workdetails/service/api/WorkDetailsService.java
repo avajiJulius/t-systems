@@ -3,7 +3,6 @@ package com.logiweb.avaji.crud.workdetails.service.api;
 
 import com.logiweb.avaji.crud.workdetails.dto.ShiftDetailsDto;
 import com.logiweb.avaji.crud.workdetails.dto.WorkDetailsDTO;
-import com.logiweb.avaji.exceptions.CargoStatusException;
 import com.logiweb.avaji.exceptions.DriverStatusNotFoundException;
 import com.logiweb.avaji.exceptions.ShiftValidationException;
 

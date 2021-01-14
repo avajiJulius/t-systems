@@ -52,9 +52,10 @@ public class OrderController {
 
     @GetMapping("/new")
     @PreAuthorize("hasAuthority('employee:write')")
-    public String getOrderForm(Model model) {
+    public String getOrderForm(@RequestParam(name = "quantity", value = "quantity", defaultValue = "2") int quantity,
+                               Model model) {
         CreateWaypointsDTO waypointForm = new CreateWaypointsDTO();
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 0; i < quantity * 2; i++) {
             waypointForm.addWaypointDto(new WaypointDTO());
         }
         model.addAttribute("cities", countryMapService.readAllCities());

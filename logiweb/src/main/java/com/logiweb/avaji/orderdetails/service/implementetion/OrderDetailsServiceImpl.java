@@ -6,9 +6,7 @@ import com.logiweb.avaji.orderdetails.dao.OrderDetailsDAO;
 import com.logiweb.avaji.orderdetails.service.api.OrderDetailsService;
 import com.logiweb.avaji.crud.driver.dao.DriverDAO;
 import com.logiweb.avaji.crud.order.dao.OrderDAO;
-import com.logiweb.avaji.crud.truck.dao.TruckDAO;
 import com.logiweb.avaji.crud.workdetails.dao.WorkDetailsDAO;
-import com.logiweb.avaji.mapper.Mapper;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.Truck;
@@ -27,17 +25,16 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
     private final DriverDAO driverDAO;
     private final WorkDetailsDAO workDetailsDAO;
     private final ShiftDetailsService shiftDetailsService;
-    private final Mapper mapper;
 
     @Autowired
-    public OrderDetailsServiceImpl(OrderDetailsDAO orderDetailsDAO, TruckDAO truckDAO,
-                                   OrderDAO orderDAO, DriverDAO driverDAO, WorkDetailsDAO workDetailsDAO, ShiftDetailsService shiftDetailsService, Mapper mapper) {
+    public OrderDetailsServiceImpl(OrderDetailsDAO orderDetailsDAO,
+                                   OrderDAO orderDAO, DriverDAO driverDAO, WorkDetailsDAO workDetailsDAO,
+                                   ShiftDetailsService shiftDetailsService) {
         this.orderDetailsDAO = orderDetailsDAO;
         this.orderDAO = orderDAO;
         this.driverDAO = driverDAO;
         this.workDetailsDAO = workDetailsDAO;
         this.shiftDetailsService = shiftDetailsService;
-        this.mapper = mapper;
     }
 
     @Override

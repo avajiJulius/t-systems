@@ -10,7 +10,8 @@ import javax.persistence.*;
 @Table(name = "cities")
 @NamedQueries(value = {
         @NamedQuery(name = "City.findAllCities",
-        query = "select c from City c")
+        query = "select distinct new com.logiweb.avaji.crud.countrymap.dto.CityDTO(" +
+                "c.cityCode, c.cityName) from City c")
 })
 @Data
 @NoArgsConstructor
