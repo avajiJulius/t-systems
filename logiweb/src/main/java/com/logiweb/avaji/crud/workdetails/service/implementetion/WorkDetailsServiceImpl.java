@@ -1,5 +1,8 @@
 package com.logiweb.avaji.crud.workdetails.service.implementetion;
 
+import com.logiweb.avaji.crud.countrymap.dao.CountryMapDAO;
+import com.logiweb.avaji.crud.countrymap.service.api.CountryMapService;
+import com.logiweb.avaji.crud.workdetails.dto.ChangeCityDTO;
 import com.logiweb.avaji.crud.workdetails.dto.ShiftDetailsDto;
 import com.logiweb.avaji.crud.cargo.dao.CargoDAO;
 import com.logiweb.avaji.crud.driver.dao.DriverDAO;
@@ -9,13 +12,17 @@ import com.logiweb.avaji.entities.enums.CargoStatus;
 import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Driver;
+import com.logiweb.avaji.entities.models.utils.City;
+import com.logiweb.avaji.entities.models.utils.Waypoint;
 import com.logiweb.avaji.entities.models.utils.WorkShift;
 import com.logiweb.avaji.exceptions.DriverStatusNotFoundException;
 import com.logiweb.avaji.crud.workdetails.service.api.WorkDetailsService;
 import com.logiweb.avaji.exceptions.ShiftValidationException;
 import com.logiweb.avaji.orderdetails.dao.OrderDetailsDAO;
+import com.logiweb.avaji.orderdetails.service.api.ShiftDetailsService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,35 +39,50 @@ public class WorkDetailsServiceImpl implements WorkDetailsService {
     private final CargoDAO cargoDAO;
     private final WorkDetailsDAO workDetailsDAO;
     private final OrderDetailsDAO orderDetailsDAO;
+    private final ShiftDetailsService shiftDetailsService;
+    private final CountryMapDAO mapDAO;
 
-    public WorkDetailsServiceImpl(DriverDAO driverDAO, CargoDAO cargoDAO,
-                                  WorkDetailsDAO workDetailsDAO, OrderDetailsDAO orderDetailsDAO) {
+    public WorkDetailsServiceImpl(DriverDAO driverDAO, CargoDAO cargoDAO, WorkDetailsDAO workDetailsDAO,
+                                  OrderDetailsDAO orderDetailsDAO, ShiftDetailsService shiftDetailsService, CountryMapDAO mapDAO) {
         this.driverDAO = driverDAO;
         this.cargoDAO = cargoDAO;
         this.workDetailsDAO = workDetailsDAO;
         this.orderDetailsDAO = orderDetailsDAO;
+        this.shiftDetailsService = shiftDetailsService;
+        this.mapDAO = mapDAO;
     }
 
     @Override
     @Transactional
     public WorkDetailsDTO readWorkDetailsById(long userId) {
         WorkDetailsDTO workDetails = workDetailsDAO.findWorkDetailsById(userId);
-        workDetails.setDriversIds(workDetailsDAO.findDriversIds(workDetails.getTruckId()));
-        workDetails.setWaypointsList(orderDetailsDAO.findWaypointsOfThisOrder(workDetails.getOrderId()));
+        List<Long> driversIds = workDetailsDAO.findDriversIds(workDetails.getTruckId());
+        driversIds.remove(userId);
+        List<Waypoint> waypoints = orderDetailsDAO.findWaypointsOfThisOrder(workDetails.getOrderId());
+
+        workDetails.setDriversIds(driversIds);
+        workDetails.setWaypointsList(waypoints);
+
+        City nextCity = shiftDetailsService.getNextCity(waypoints, workDetails.getCityCode());
+
+        workDetails.setNextCityCode(nextCity.getCityCode());
+        workDetails.setNextCityName(nextCity.getCityName());
+        workDetails.setOrderCompleted(
+                cargoDAO.findCargoByOrderId(workDetails.getOrderId())
+                        .stream().allMatch(cargo -> cargo.getCargoStatus() == CargoStatus.DELIVERED));
         return workDetails;
     }
 
 
 
     @Override
-    public void updateCargoStatus(List<Long> cargoIds) {
+    public void updateCargoStatus(long orderId,List<Long> cargoIds) {
         for(long id : cargoIds) {
             Cargo cargo = cargoDAO.findCargoById(id);
             int index = cargo.getCargoStatus().ordinal() + 1;
             cargo.setCargoStatus(CargoStatus.values()[index]);
             cargoDAO.updateCargo(cargo);
         }
-        //TODO: update order if all cargo are DELIVERED
     }
 
     @Override
@@ -92,6 +114,13 @@ public class WorkDetailsServiceImpl implements WorkDetailsService {
     @Override
     public List<Long> readCoDriversIds(String id) {
         return workDetailsDAO.findDriversIds(id);
+    }
+
+    @Override
+    public void updateDriverCity(long driverId, long cityCode) {
+        Driver driver = driverDAO.findDriverById(driverId);
+        driver.setCurrentCity(mapDAO.findCityByCode(cityCode));
+        driverDAO.updateDriver(driver);
     }
 
     public boolean validateShiftAndDriverStatus(boolean active, DriverStatus status) {

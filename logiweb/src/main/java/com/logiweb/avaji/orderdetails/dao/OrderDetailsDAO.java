@@ -66,4 +66,5 @@ public class OrderDetailsDAO {
     public Truck findTruckEntityById(String truckId) {
          return entityManager.find(Truck.class, truckId);
     }
+
 }

@@ -50,6 +50,24 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
             return cities;
     }
 
+    public City getNextCity(List<Waypoint> waypoints, long cityCode) {
+        Iterator<City> cityIterator = getPath(waypoints).iterator();
+        while (cityIterator.hasNext()) {
+            City next = cityIterator.next();
+            if(next.getCityCode() == cityCode)
+                return cityIterator.next();
+        }
+        return null;
+    }
+
+    private List<City> getPath(List<Waypoint> waypoints) {
+        List<City> cities = waypoints.stream().map(Waypoint::getWaypointCity)
+                .distinct().collect(Collectors.toList());
+        cities.add(cities.get(0));
+
+        return cities;
+    }
+
     @Override
     public Double getMaxCapacity() {
         int index = 0;
@@ -96,31 +114,6 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
 
         return shiftHours;
     }
-
-
-    public void getPath(List<Waypoint> waypoints) {
-        getCityPath(waypoints);
-    }
-
-
-    //TODO: smart path created
-    public Set<City> getCityPath(List<Waypoint> waypoints) {
-        Deque<City> cityPath = new ArrayDeque<>();
-        List<City> cities = waypoints.stream().map(Waypoint::getWaypointCity).distinct().collect(Collectors.toList());
-        for (City city : cities) {
-            Stream<Waypoint> stream = waypoints.stream().filter(w -> w.getWaypointCity().getCityCode() == city.getCityCode());
-            long waypointsCounterInCity = stream.count();
-            long unloadingCounterInCity = stream.filter(w -> w.getWaypointType() == WaypointType.UNLOADING).count();
-            if (waypointsCounterInCity == unloadingCounterInCity) {
-                cityPath.addLast(city);
-                break;
-            }
-        }
-        if (cityPath.isEmpty()) {
-        }
-        throw new UnsupportedOperationException();
-    }
-
 
     @Override
     public long calculateTimeUntilEndOfMonth() {

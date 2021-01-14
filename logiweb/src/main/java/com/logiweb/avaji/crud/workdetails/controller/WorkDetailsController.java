@@ -1,7 +1,9 @@
 package com.logiweb.avaji.crud.workdetails.controller;
 
 import com.logiweb.avaji.auth.dao.UserDAO;
+import com.logiweb.avaji.crud.driver.service.api.DriverService;
 import com.logiweb.avaji.crud.workdetails.dto.CargoChangeDTO;
+import com.logiweb.avaji.crud.workdetails.dto.ChangeCityDTO;
 import com.logiweb.avaji.crud.workdetails.dto.ShiftDetailsDto;
 import com.logiweb.avaji.crud.workdetails.dto.WorkDetailsDTO;
 import com.logiweb.avaji.crud.workdetails.service.api.WorkDetailsService;
@@ -23,11 +25,14 @@ public class WorkDetailsController {
 
     private final WorkDetailsService workDetailsService;
     private final UserDAO userDAO;
+    private final DriverService driverService;
 
     @Autowired
-    public WorkDetailsController(WorkDetailsService workDetailsService, UserDAO userDAO) {
+    public WorkDetailsController(WorkDetailsService workDetailsService, UserDAO userDAO,
+                                 DriverService driverService) {
         this.workDetailsService = workDetailsService;
         this.userDAO = userDAO;
+        this.driverService = driverService;
     }
 
     @GetMapping()
@@ -53,11 +58,20 @@ public class WorkDetailsController {
         return "redirect:/profile";
     }
 
+    @GetMapping("/{id}/changeCity/{cityCode}")
+    @PreAuthorize("hasAuthority('driver:write')")
+    public String nextCityChange(@PathVariable(name = "id") long driverId,
+                                 @PathVariable(name = "cityCode") long cityCode) {
+        workDetailsService.updateDriverCity(driverId, cityCode);
+
+        return "redirect:/profile";
+    }
+
     @PatchMapping("/cargo")
     @PreAuthorize("hasAuthority('driver:write')")
     public String updateCargoStatus(@ModelAttribute("cargoIds") CargoChangeDTO cargoIds){
 
-        workDetailsService.updateCargoStatus(cargoIds.getIds());
+        workDetailsService.updateCargoStatus(cargoIds.getOrderId(), cargoIds.getIds());
         return "redirect:/profile";
     }
 }

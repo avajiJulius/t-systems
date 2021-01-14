@@ -14,7 +14,9 @@ import javax.persistence.*;
 @Table(name = "work_details")
 @NamedQuery(name = "WorkDetails.findWorkDetailsById",
 query = "select new com.logiweb.avaji.crud.workdetails.dto.WorkDetailsDTO(" +
-        "wd.id, wd.truck.truckId, wd.order.orderId, " +
+        "wd.id, wd.driver.firstName, wd.driver.lastName, " +
+        "wd.driver.currentCity.cityCode, wd.driver.currentCity.cityName, " +
+        "wd.driver.hoursWorked ,wd.truck.truckId, wd.order.orderId, " +
         "wd.workShift.active, wd.driver.driverStatus) " +
         "from WorkDetails wd " +
         "where wd.id = :id")
