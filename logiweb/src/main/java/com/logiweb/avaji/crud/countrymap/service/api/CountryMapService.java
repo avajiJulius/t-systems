@@ -3,6 +3,7 @@ package com.logiweb.avaji.crud.countrymap.service.api;
 import com.logiweb.avaji.crud.countrymap.dto.CityDTO;
 import com.logiweb.avaji.entities.models.utils.City;
 import com.logiweb.avaji.entities.models.utils.Road;
+import com.logiweb.avaji.orderdetails.dto.Vertex;
 
 import java.util.List;
 
@@ -13,6 +14,12 @@ import java.util.List;
 public interface CountryMapService {
 
     List<CityDTO> readAllCities();
-    List<Road> readPathRoads(List<City> path);
+    List<Road> readPathRoads(List<CityDTO> path);
+    List<Road> readAllRoads();
+    List<Vertex> readAllVertex();
+    List<CityDTO> readCitiesByCodes(List<Long> codes);
 
+    double readDistanceBetween(long cityCodeA, long cityCodeB);
+
+    List<Long> findConnected(long cityCode);
 }

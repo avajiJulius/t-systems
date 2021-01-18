@@ -1,15 +1,17 @@
 package com.logiweb.avaji.crud.order.service.implementetion;
 
+import com.logiweb.avaji.crud.countrymap.dto.CityDTO;
+import com.logiweb.avaji.crud.countrymap.service.api.CountryMapService;
 import com.logiweb.avaji.crud.order.dao.OrderDAO;
 import com.logiweb.avaji.crud.order.dto.CreateWaypointsDTO;
 import com.logiweb.avaji.crud.order.dto.OrderDTO;
-import com.logiweb.avaji.crud.order.dto.WaypointDTO;
 import com.logiweb.avaji.entities.models.Order;
+import com.logiweb.avaji.entities.models.utils.City;
 import com.logiweb.avaji.entities.models.utils.Waypoint;
 import com.logiweb.avaji.exceptions.LoadAndUnloadValidateException;
 import com.logiweb.avaji.crud.order.service.api.OrderService;
 import com.logiweb.avaji.mapper.Mapper;
-import com.logiweb.avaji.validation.Validator;
+import com.logiweb.avaji.orderdetails.service.api.ShiftDetailsService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +28,14 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderDAO orderDAO;
     private final Mapper converter;
-    private final Validator validator;
+    private final ShiftDetailsService shiftDetailsService;
+
 
     @Autowired
-    public OrderServiceImpl(OrderDAO orderDAO,
-                            Mapper converter) {
+    public OrderServiceImpl(OrderDAO orderDAO, Mapper converter, ShiftDetailsService shiftDetailsService) {
         this.orderDAO = orderDAO;
         this.converter = converter;
-        this.validator = new Validator();
+        this.shiftDetailsService = shiftDetailsService;
     }
 
     @Override
@@ -44,14 +46,17 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public void createOrderByWaypoints(Order order, CreateWaypointsDTO dto) throws LoadAndUnloadValidateException {
+    public void createOrderByWaypoints(Order order, CreateWaypointsDTO dto) {
         List<Waypoint> waypoints = converter.dtoToWaypoints(dto, order);
-        List<WaypointDTO> waypointsDto = dto.getWaypointsDto();
         order.setWaypoints(waypoints);
-        if(!validator.validateOrderByWaypoints(waypointsDto)) {
-            logger.error("Wrong number of load or unload points");
-            throw new LoadAndUnloadValidateException("Wrong number of load or unload points");
+        List<CityDTO> path = shiftDetailsService.getPath(dto.getWaypointsDto());
+        StringBuffer sb = new StringBuffer();
+        for (CityDTO city: path) {
+            sb.append(city.getCityCode());
+            sb.append("-");
         }
+        String stringPath = sb.toString();
+        order.setPath(stringPath);
         orderDAO.saveOrder(order);
     }
 

@@ -11,7 +11,12 @@ import lombok.NoArgsConstructor;
 public class WaypointDTO {
     private interface Create{}
 
-    private long cityCode;
-    private WaypointType type;
+
+    private final WaypointType load = WaypointType.LOADING;
+    private final WaypointType unload = WaypointType.UNLOADING;
+
+    private long loadCityCode;
+    private long unloadCityCode;
+
     private long cargoId;
 }

@@ -16,7 +16,7 @@ import javax.persistence.*;
 query = "select new com.logiweb.avaji.crud.workdetails.dto.WorkDetailsDTO(" +
         "wd.id, wd.driver.firstName, wd.driver.lastName, " +
         "wd.driver.currentCity.cityCode, wd.driver.currentCity.cityName, " +
-        "wd.driver.hoursWorked ,wd.truck.truckId, wd.order.orderId, " +
+        "wd.driver.hoursWorked ,wd.truck.truckId, wd.order.orderId, wd.order.completed, " +
         "wd.workShift.active, wd.driver.driverStatus) " +
         "from WorkDetails wd " +
         "where wd.id = :id")

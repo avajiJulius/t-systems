@@ -3,7 +3,6 @@ package com.logiweb.avaji.crud.workdetails.controller;
 import com.logiweb.avaji.auth.dao.UserDAO;
 import com.logiweb.avaji.crud.driver.service.api.DriverService;
 import com.logiweb.avaji.crud.workdetails.dto.CargoChangeDTO;
-import com.logiweb.avaji.crud.workdetails.dto.ChangeCityDTO;
 import com.logiweb.avaji.crud.workdetails.dto.ShiftDetailsDto;
 import com.logiweb.avaji.crud.workdetails.dto.WorkDetailsDTO;
 import com.logiweb.avaji.crud.workdetails.service.api.WorkDetailsService;
@@ -71,7 +70,7 @@ public class WorkDetailsController {
     @PreAuthorize("hasAuthority('driver:write')")
     public String updateCargoStatus(@ModelAttribute("cargoIds") CargoChangeDTO cargoIds){
 
-        workDetailsService.updateCargoStatus(cargoIds.getOrderId(), cargoIds.getIds());
+        workDetailsService.updateOrderByCargoStatus(cargoIds.getOrderId(), cargoIds.getIds());
         return "redirect:/profile";
     }
 }

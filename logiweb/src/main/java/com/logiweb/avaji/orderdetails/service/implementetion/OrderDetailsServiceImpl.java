@@ -1,7 +1,11 @@
 package com.logiweb.avaji.orderdetails.service.implementetion;
 
+import com.logiweb.avaji.crud.countrymap.dao.CountryMapDAO;
+import com.logiweb.avaji.crud.countrymap.dto.CityDTO;
+import com.logiweb.avaji.crud.countrymap.service.api.CountryMapService;
 import com.logiweb.avaji.crud.driver.dto.DriverDTO;
 import com.logiweb.avaji.crud.truck.dto.TruckDTO;
+import com.logiweb.avaji.entities.models.utils.Waypoint;
 import com.logiweb.avaji.orderdetails.dao.OrderDetailsDAO;
 import com.logiweb.avaji.orderdetails.service.api.OrderDetailsService;
 import com.logiweb.avaji.crud.driver.dao.DriverDAO;
@@ -15,7 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderDetailsServiceImpl implements OrderDetailsService {
@@ -25,24 +31,36 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
     private final DriverDAO driverDAO;
     private final WorkDetailsDAO workDetailsDAO;
     private final ShiftDetailsService shiftDetailsService;
+    private final CountryMapDAO countryMapDAO;
 
     @Autowired
-    public OrderDetailsServiceImpl(OrderDetailsDAO orderDetailsDAO,
-                                   OrderDAO orderDAO, DriverDAO driverDAO, WorkDetailsDAO workDetailsDAO,
-                                   ShiftDetailsService shiftDetailsService) {
+    public OrderDetailsServiceImpl(OrderDetailsDAO orderDetailsDAO, OrderDAO orderDAO, DriverDAO driverDAO,
+                                   WorkDetailsDAO workDetailsDAO, ShiftDetailsService shiftDetailsService,
+                                   CountryMapDAO countryMapDAO) {
         this.orderDetailsDAO = orderDetailsDAO;
         this.orderDAO = orderDAO;
         this.driverDAO = driverDAO;
         this.workDetailsDAO = workDetailsDAO;
         this.shiftDetailsService = shiftDetailsService;
+        this.countryMapDAO = countryMapDAO;
     }
 
     @Override
     public List<TruckDTO> readTrucksForOrder(long orderId) {
-        shiftDetailsService.init(orderId);
-        Double maxCapacity = shiftDetailsService.getMaxCapacity();
+        Order order = orderDAO.findOrderById(orderId);
+
+
+        Double maxCapacity = shiftDetailsService.getMaxCapacity(
+                pathStringToCityDTOList(order.getPath()),
+                orderDetailsDAO.findWaypointsOfThisOrder(orderId));
 
         return orderDetailsDAO.findTrucksForOrder(maxCapacity);
+    }
+
+    private List<CityDTO> pathStringToCityDTOList(String path) {
+        List<Long> codes = Arrays.stream(path.split("-"))
+                .map(Long::parseLong).collect(Collectors.toList());
+        return countryMapDAO.findCitiesByCodes(codes);
     }
 
 
@@ -56,9 +74,9 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 
     @Override
     public List<DriverDTO> readDriversForOrder(long orderId) {
-        shiftDetailsService.init(orderId);
         long cityCode = orderDetailsDAO.findTruckByOrderId(orderId).getCurrentCity().getCityCode();
-        Double shiftHours = shiftDetailsService.getShiftHours();
+        String path = orderDAO.findOrderById(orderId).getPath();
+        Double shiftHours = shiftDetailsService.getShiftHours(pathStringToCityDTOList(path));
 
         long untilEndOfMonth = shiftDetailsService.calculateTimeUntilEndOfMonth();
         if(shiftHours > untilEndOfMonth) {

@@ -14,8 +14,8 @@ public class CargoDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<Cargo> findAllCargo() {
-        TypedQuery<Cargo> query = entityManager.createNamedQuery("Cargo.findAllCargo", Cargo.class);
+    public List<Cargo> findAllFreeCargo() {
+        TypedQuery<Cargo> query = entityManager.createNamedQuery("Cargo.findAllFreeCargo", Cargo.class);
 
         return query.getResultList();
     }

@@ -1,5 +1,6 @@
 package com.logiweb.avaji.crud.order.dao;
 
+import com.logiweb.avaji.crud.countrymap.dto.CityDTO;
 import com.logiweb.avaji.crud.order.dto.OrderDTO;
 import com.logiweb.avaji.entities.models.Order;
 import org.springframework.stereotype.Repository;
@@ -18,6 +19,12 @@ public class OrderDAO {
     public List<OrderDTO> findAllOrders() {
         TypedQuery<OrderDTO> query = entityManager.createNamedQuery("Order.findAllOrders", OrderDTO.class);
         return query.getResultList();
+    }
+
+    public Order findOrderById(long orderId) {
+        TypedQuery<Order> query = entityManager.createNamedQuery("Order.findOrderById", Order.class)
+                .setParameter("orderId", orderId);
+        return query.getSingleResult();
     }
 
     public void saveOrder(Order order) {

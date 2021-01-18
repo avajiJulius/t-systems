@@ -15,7 +15,7 @@ public interface CargoService {
      *
      * @return list of cargo.
      */
-    List<Cargo> readAllCargo();
+    List<Cargo> readAllFreeCargo();
 
     /**
      * The <code>readCargoByOrderId</code> read list of cargo of certain order specified by order id;

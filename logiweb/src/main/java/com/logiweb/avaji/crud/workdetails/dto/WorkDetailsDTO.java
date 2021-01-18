@@ -32,8 +32,8 @@ public class WorkDetailsDTO {
     private List<Waypoint> waypointsList = new ArrayList<>();
 
     public WorkDetailsDTO(long id, String firstName, String lastName,
-                          long cityCode, String cityName,
-                          double hoursWorked, String truckId, long orderId,
+                          long cityCode, String cityName, double hoursWorked,
+                          String truckId, long orderId, boolean orderCompleted,
                           boolean shiftActive, DriverStatus driverStatus) {
         this.id = id;
         this.firstName = firstName;
@@ -43,6 +43,7 @@ public class WorkDetailsDTO {
         this.hoursWorked = hoursWorked;
         this.truckId = truckId;
         this.orderId = orderId;
+        this.orderCompleted = orderCompleted;
         this.shiftActive = shiftActive;
         this.driverStatus = driverStatus;
     }

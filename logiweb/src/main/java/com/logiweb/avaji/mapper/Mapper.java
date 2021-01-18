@@ -9,6 +9,7 @@ import com.logiweb.avaji.entities.enums.Role;
 import com.logiweb.avaji.crud.cargo.dao.CargoDAO;
 import com.logiweb.avaji.crud.driver.dao.DriverDAO;
 import com.logiweb.avaji.crud.order.dto.WaypointDTO;
+import com.logiweb.avaji.entities.enums.WaypointType;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.Truck;
@@ -60,10 +61,6 @@ public class Mapper {
         return truck;
     }
 
-
-
-
-
     /**
      * Convert list of waypointDto to waypoint list
      *
@@ -74,21 +71,19 @@ public class Mapper {
     public List<Waypoint> dtoToWaypoints(CreateWaypointsDTO dto, Order order) {
         List<Waypoint> waypoints = new ArrayList<>();
         List<WaypointDTO> waypointsDtos = dto.getWaypointsDto();
-        for(WaypointDTO waypointDto: waypointsDtos) {
-            waypoints.add(dtoToWaypoint(waypointDto, order));
-        }
-        return waypoints;
+        return addWaypoints(waypoints, waypointsDtos, order);
     }
 
-    /**
-     * Convert waypointDto to Waypoint entity.
-     *
-     * @param dto
-     * @param order
-     * @return waypoint entity.
-     */
-    public Waypoint dtoToWaypoint(WaypointDTO dto, Order order) {
-        return new Waypoint(mapDAO.findCityByCode(dto.getCityCode()), dto.getType(), order, cargoDAO.findCargoById(dto.getCargoId()));
+    private List<Waypoint> addWaypoints(List<Waypoint> waypoints, List<WaypointDTO> waypointsDtos, Order order) {
+        for (WaypointDTO dto: waypointsDtos) {
+            Waypoint load = new Waypoint(mapDAO.findCityByCode(dto.getLoadCityCode()),
+                    WaypointType.LOADING, order, cargoDAO.findCargoById(dto.getCargoId()));
+            Waypoint unload = new Waypoint(mapDAO.findCityByCode(dto.getUnloadCityCode()),
+                    WaypointType.UNLOADING, order, cargoDAO.findCargoById(dto.getCargoId()));
+            waypoints.add(load);
+            waypoints.add(unload);
+        }
+        return waypoints;
     }
 
 

@@ -1,7 +1,9 @@
 package com.logiweb.avaji.crud.workdetails.service.implementetion;
 
 import com.logiweb.avaji.crud.countrymap.dao.CountryMapDAO;
+import com.logiweb.avaji.crud.countrymap.dto.CityDTO;
 import com.logiweb.avaji.crud.countrymap.service.api.CountryMapService;
+import com.logiweb.avaji.crud.order.dao.OrderDAO;
 import com.logiweb.avaji.crud.workdetails.dto.ChangeCityDTO;
 import com.logiweb.avaji.crud.workdetails.dto.ShiftDetailsDto;
 import com.logiweb.avaji.crud.cargo.dao.CargoDAO;
@@ -37,15 +39,19 @@ public class WorkDetailsServiceImpl implements WorkDetailsService {
 
     private final DriverDAO driverDAO;
     private final CargoDAO cargoDAO;
+    private final OrderDAO orderDAO;
     private final WorkDetailsDAO workDetailsDAO;
     private final OrderDetailsDAO orderDetailsDAO;
     private final ShiftDetailsService shiftDetailsService;
     private final CountryMapDAO mapDAO;
 
-    public WorkDetailsServiceImpl(DriverDAO driverDAO, CargoDAO cargoDAO, WorkDetailsDAO workDetailsDAO,
-                                  OrderDetailsDAO orderDetailsDAO, ShiftDetailsService shiftDetailsService, CountryMapDAO mapDAO) {
+    @Autowired
+    public WorkDetailsServiceImpl(DriverDAO driverDAO, CargoDAO cargoDAO, OrderDAO orderDAO,
+                                  WorkDetailsDAO workDetailsDAO, OrderDetailsDAO orderDetailsDAO,
+                                  ShiftDetailsService shiftDetailsService, CountryMapDAO mapDAO) {
         this.driverDAO = driverDAO;
         this.cargoDAO = cargoDAO;
+        this.orderDAO = orderDAO;
         this.workDetailsDAO = workDetailsDAO;
         this.orderDetailsDAO = orderDetailsDAO;
         this.shiftDetailsService = shiftDetailsService;
@@ -59,29 +65,31 @@ public class WorkDetailsServiceImpl implements WorkDetailsService {
         List<Long> driversIds = workDetailsDAO.findDriversIds(workDetails.getTruckId());
         driversIds.remove(userId);
         List<Waypoint> waypoints = orderDetailsDAO.findWaypointsOfThisOrder(workDetails.getOrderId());
-
         workDetails.setDriversIds(driversIds);
         workDetails.setWaypointsList(waypoints);
 
-        City nextCity = shiftDetailsService.getNextCity(waypoints, workDetails.getCityCode());
+//        List<CityDTO> path = shiftDetailsService.getPath();
+//        CityDTO nextCity = shiftDetailsService.getNextCity(path, workDetails.getCityCode());
 
-        workDetails.setNextCityCode(nextCity.getCityCode());
-        workDetails.setNextCityName(nextCity.getCityName());
-        workDetails.setOrderCompleted(
-                cargoDAO.findCargoByOrderId(workDetails.getOrderId())
-                        .stream().allMatch(cargo -> cargo.getCargoStatus() == CargoStatus.DELIVERED));
+//        workDetails.setNextCityCode(nextCity.getCityCode());
+//        workDetails.setNextCityName(nextCity.getCityName());
+
         return workDetails;
     }
 
 
-
     @Override
-    public void updateCargoStatus(long orderId,List<Long> cargoIds) {
+    public void updateOrderByCargoStatus(long orderId, List<Long> cargoIds) {
         for(long id : cargoIds) {
             Cargo cargo = cargoDAO.findCargoById(id);
             int index = cargo.getCargoStatus().ordinal() + 1;
             cargo.setCargoStatus(CargoStatus.values()[index]);
             cargoDAO.updateCargo(cargo);
+        }
+        boolean orderCompleted = cargoDAO.findCargoByOrderId(orderId)
+                .stream().allMatch(cargo -> cargo.getCargoStatus() == CargoStatus.DELIVERED);
+        if(orderCompleted) {
+            orderDAO.updateOrder(orderDAO.findOrderById(orderId));
         }
     }
 

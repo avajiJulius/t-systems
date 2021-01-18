@@ -2,6 +2,7 @@ package com.logiweb.avaji.crud.order.controller;
 
 import com.logiweb.avaji.crud.order.dto.WaypointDTO;
 import com.logiweb.avaji.crud.order.dto.CreateWaypointsDTO;
+import com.logiweb.avaji.crud.truck.service.api.TruckService;
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.crud.cargo.service.api.CargoService;
@@ -25,6 +26,8 @@ public class OrderController {
     private final CargoService cargoService;
     private final CountryMapService countryMapService;
 
+    private static int quantity = 1;
+
     @Autowired
     public OrderController(OrderService orderService, CargoService cargoService,
                            CountryMapService countryMapService) {
@@ -32,7 +35,6 @@ public class OrderController {
         this.cargoService = cargoService;
         this.countryMapService = countryMapService;
     }
-
 
     @GetMapping()
     @PreAuthorize("hasAuthority('employee:read')")
@@ -52,18 +54,32 @@ public class OrderController {
 
     @GetMapping("/new")
     @PreAuthorize("hasAuthority('employee:write')")
-    public String getOrderForm(@RequestParam(name = "quantity", value = "quantity", defaultValue = "2") int quantity,
-                               Model model) {
+    public String getOrderForm(Model model) {
         CreateWaypointsDTO waypointForm = new CreateWaypointsDTO();
-        for (int i = 0; i < quantity * 2; i++) {
+        for (int i = 0; i < quantity; i++) {
             waypointForm.addWaypointDto(new WaypointDTO());
         }
         model.addAttribute("cities", countryMapService.readAllCities());
-        model.addAttribute("cargo", cargoService.readAllCargo());
+        model.addAttribute("cargo", cargoService.readAllFreeCargo());
         model.addAttribute("form", waypointForm);
         return "orders/create";
     }
 
+    @GetMapping("/new/add")
+    public String addNewWaypoint() {
+        quantity++;
+        return "redirect:/orders/new";
+    }
+
+    @GetMapping("/new/remove")
+    public String removeNewWaypoint(Model model) {
+        if(quantity < 2) {
+            model.addAttribute("message", "Quantity of Waypoint cannot be null");
+            return "redirect:/orders/new";
+        }
+        quantity--;
+        return "redirect:/orders/new";
+    }
 
     @PostMapping()
     @PreAuthorize("hasAuthority('employee:write')")
@@ -75,9 +91,5 @@ public class OrderController {
         model.addAttribute("orders", orderService.readAllOrders());
         return "redirect:/orders";
     }
-
-
-
-
 
 }

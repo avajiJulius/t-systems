@@ -20,8 +20,8 @@ public class CargoServiceImpl implements CargoService {
 
 
     @Override
-    public List<Cargo> readAllCargo() {
-        return cargoDAO.findAllCargo();
+    public List<Cargo> readAllFreeCargo() {
+        return cargoDAO.findAllFreeCargo();
     }
 
     @Override
@@ -33,4 +33,6 @@ public class CargoServiceImpl implements CargoService {
     public void createCargo(Cargo cargo) {
         throw new UnsupportedOperationException();
     }
+
+
 }

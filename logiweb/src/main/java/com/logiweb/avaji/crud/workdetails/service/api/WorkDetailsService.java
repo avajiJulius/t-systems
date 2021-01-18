@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface WorkDetailsService {
     WorkDetailsDTO readWorkDetailsById(long userId);
-    void updateCargoStatus(long orderId, List<Long> cargoIds);
+    void updateOrderByCargoStatus(long orderId, List<Long> cargoIds);
     void updateShiftDetails(long id, ShiftDetailsDto shiftDetails) throws ShiftValidationException, DriverStatusNotFoundException;
 
     List<Long> readCoDriversIds(String id);

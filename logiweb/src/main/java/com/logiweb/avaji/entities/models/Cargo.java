@@ -10,8 +10,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "cargo")
 @NamedQueries(value = {
-        @NamedQuery(name = "Cargo.findAllCargo",
-        query = "select c from Cargo c"),
+        @NamedQuery(name = "Cargo.findAllFreeCargo",
+        query = "select c from Cargo c " +
+                "where c.cargoId not in " +
+                "(select w.waypointCargo.cargoId from Waypoint w where w.waypointOrder is not null)"),
         @NamedQuery(name = "Cargo.findCargoByOrderId",
         query = "select distinct(c) from Waypoint w " +
                 "join w.waypointCargo c " +

@@ -1,5 +1,6 @@
 package com.logiweb.avaji.entities.models;
 
+import com.logiweb.avaji.crud.countrymap.dto.CityDTO;
 import com.logiweb.avaji.entities.models.utils.Waypoint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,8 +21,7 @@ query = "select new com.logiweb.avaji.crud.order.dto.OrderDTO(" +
 query = "select w from Waypoint w where w.waypointOrder.orderId = :orderId " )
 @NamedQuery(name = "Order.findOrderById",
         query = "select o from Order o " +
-                "join fetch o.waypoints w " +
-                "where w.waypointOrder.orderId = :orderId")
+                "where o.orderId = :orderId")
 @NamedQuery(name = "Order.findTruckByOrderId",
 query = "select o.designatedTruck from Order o where o.orderId = :orderId")
 @NamedQuery(name = "Order.findOrderByTruckId",
@@ -39,6 +39,8 @@ public class Order {
     private int version;
     @Column(name = "completed")
     private boolean completed;
+    @Column(name = "path")
+    private String path;
     @OneToMany(cascade = CascadeType.ALL ,fetch = FetchType.LAZY,
             mappedBy = "waypointOrder")
     private List<Waypoint> waypoints = new ArrayList<>();
