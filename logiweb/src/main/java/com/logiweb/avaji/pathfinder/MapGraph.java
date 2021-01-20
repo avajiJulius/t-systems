@@ -1,12 +1,13 @@
 package com.logiweb.avaji.pathfinder;
 
-import com.logiweb.avaji.crud.countrymap.service.api.CountryMapService;
-import com.logiweb.avaji.orderdetails.dto.Vertex;
+import com.logiweb.avaji.services.api.CountryMapService;
+import com.logiweb.avaji.dtos.Vertex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -24,20 +25,27 @@ public class MapGraph {
     }
 
     public Vertex getVertex(long cityCode) {
-        return vertices.stream().filter(v -> v.getCityCode() == cityCode).findFirst().get();
+        Optional<Vertex> vertex = vertices.stream().filter(v -> v.getCityCode() == cityCode).findFirst();
+        if(vertex.isPresent()) {
+            return vertex.get();
+        }
+        return null;
     }
 
     public Set<Vertex> findConnected(Vertex vertex) {
         List<Long> connected = mapService.findConnected(vertex.getCityCode());
         Set<Vertex> vertices = new HashSet<>();
         for (long code: connected) {
-            vertices.add(this.getVertex(code));
+            if(this.getVertex(code) != null) {
+                vertices.add(this.getVertex(code));
+            }
         }
         return vertices;
     }
 
     public void refreshVertices() {
         vertices.addAll(visited);
+        visited.clear();
     }
 
     public void setVisited(Vertex vertex) {

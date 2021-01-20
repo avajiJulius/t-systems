@@ -17,7 +17,7 @@ import javax.persistence.*;
         @NamedQuery(name = "Cargo.findCargoByOrderId",
         query = "select distinct(c) from Waypoint w " +
                 "join w.waypointCargo c " +
-                "where w.waypointOrder.orderId = :orderId"),
+                "where w.waypointOrder.id = :orderId"),
         @NamedQuery(name = "Cargo.findCargoByWaypoints",
         query = "select w.waypointCargo from Waypoint w " +
                 "where w in :waypoints")
@@ -29,7 +29,7 @@ public class Cargo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cargo_id")
+    @Column(name = "id")
     private long cargoId;
     @Version
     @Column(name = "version")

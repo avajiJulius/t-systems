@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Orders</title>
+</head>
+<body>
+<nav th:replace="fragments/navbar.html :: navigation"></nav>
+<div class="container">
+    <p>Welcome, <span th:text="${shiftDetails.lastName + ' ' + shiftDetails.firstName}"></span>!</p>
+    <p>Your worked hours in this month: <span th:text="${shiftDetails.hoursWorked}"></span> </p>
+    <form th:method="PATCH" th:action="@{/profile/shift}" th:object="${shiftDetails}">
+        <div class="col">
+            <div class="row">
+                <span>Your shift status: </span>
+                <input type="checkbox" th:field="*{shiftActive}" data-toggle="toggle" data-on="Active" data-off="Inactive"
+                       data-onstyle="success" data-offstyle="danger">
+            </div>
+            <div class="row">
+                <span>Your driver status: </span>
+                <select th:field="*{driverStatus}">
+                    <option th:value="${shiftDetails.driverStatus}" th:text="${shiftDetails.driverStatus}" selected />
+                    <option th:if="${shiftDetails.driverStatus != ds}" th:each="ds : ${driverStatus}" th:value="${ds}" th:text="${ds}" />
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Change</button>
+    </form>
+    <p>Your current location: <span th:text="${shiftDetails.cityName}"></span></p>
+    <div class="row" >
+        <div class="col">
+            <span>Personal ID : </span>
+            <h5 id="user_id" th:text="${shiftDetails.id}" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <table>
+                <tr>
+                    <th th:colspan="${#lists.size(orderDetails.coDrivers)}" >Co-Drivers IDs</th>
+                </tr>
+                <tr th:each="ids : ${orderDetails?.coDrivers}">
+                    <td th:text="${ids}"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <table>
+                <tr>
+                    <th>Truck ID</th>
+                    <th>Order ID</th>
+                </tr>
+                <tr>
+                    <td th:text="${orderDetails.truckId}"></td>
+                    <td th:text="${orderDetails.id}"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <p>Change city to:
+        <a th:href="@{/profile/changeCity}"
+           th:text="${orderDetails.remainingPath.peekFirst()}"/>
+    </p>
+    <div th:if="${orderDetails.completed == false}" class="row">
+        <div class="col">
+            <form th:method="PATCH"
+                  th:action="@{/profile/cargo}" th:object="${cargoIds}">
+            <label for="path">Path</label>
+            <table id="path">
+                <thead>
+                <tr>
+                    <th>City</th>
+                    <th>Loading Status</th>
+                    <th>Cargo</th>
+                    <th>Cargo Status</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="waypoint : ${orderDetails.waypoints}">
+                    <td th:text="${waypoint.cityName}"></td>
+                    <td th:text="${waypoint.type}"></td>
+                    <td th:text="${waypoint.cargoTitle}"></td>
+                    <td th:text="${waypoint.cargoStatus}"></td>
+                    <td>
+                        <div th:if="${waypoint.cityCode == orderDetails.remainingPath.peekFirst().cityCode}">
+                            <div th:if="${waypoint.type.ordinal() == 0}">
+                                <div th:if="${waypoint.cargoStatus.ordinal() == 0}">Received
+                                    <input  type="checkbox" th:value="${waypoint.cargoId}" th:field="*{ids}"/>
+                                </div>
+                                <div th:unless="${waypoint.cargoStatus.ordinal() == 0}">
+                                    Done
+                                </div>
+                            </div>
+                            <div th:unless="${waypoint.type.ordinal() == 0}">
+                                <div th:if="${waypoint.cargoStatus.ordinal() == 1}">Unloaded
+                                    <input  type="checkbox" th:value="${waypoint.cargoId}" th:field="*{ids}"/>
+                                </div>
+                                <div th:unless="${waypoint.cargoStatus.ordinal() == 1}">
+                                    Done
+                                </div>
+                            </div>
+                        </div>
+                        <div th:unless="${waypoint.cityCode ==  orderDetails.remainingPath.peekFirst().cityCode}">
+                            You need to be in current city for Action
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+                <input type="submit" value="Update" />
+            </form>
+        </div>
+    </div>
+    <div th:unless="${orderDetails.completed == false}">
+        Your order is completed!
+    </div>
+</div>
+<script th:replace="fragments/script.html :: jquery"></script>
+<script th:replace="fragments/script.html :: popper"></script>
+<script th:replace="fragments/script.html :: bootstrap"></script>
+</body>
+</html>

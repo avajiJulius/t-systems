@@ -30,15 +30,15 @@
             <td th:text="${order.completed}" />
             <td>
                 <span th:text="${order?.truckId}" />
-                <a th:href="@{/{id}/trucks(id=${order.orderId})}"
+                <a th:href="@{/orders/{id}/trucks(id=${order.orderId})}"
                    th:if="${order.truckId == null}">Choose Truck</a>
             </td>
             <td>
                 <div th:if="${order.truckId == null}">
-                    <a th:href="@{/{id}/trucks(id=${order.orderId})}">Choose Truck</a>
+                    <a th:href="@{/orders/{id}/trucks(id=${order.orderId})}">Choose Truck</a>
                 </div>
                 <div th:unless="${order.truckId == null}">
-                    <a th:href="@{/{id}/drivers(id=${order.orderId})}" th:text="${order.currentShiftSize}"></a>
+                    <a th:href="@{/orders/{id}/drivers(id=${order.orderId})}" th:text="${order.currentShiftSize}"></a>
                 </div>
             </td>
             <td><a th:href="@{/orders/{id}/cargo(id=${order.orderId})}">Go to Cargo</a></td>

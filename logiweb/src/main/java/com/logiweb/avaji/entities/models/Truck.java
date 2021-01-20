@@ -1,9 +1,6 @@
 package com.logiweb.avaji.entities.models;
 
 
-import com.logiweb.avaji.entities.models.Driver;
-import com.logiweb.avaji.entities.models.Order;
-import com.logiweb.avaji.entities.models.utils.City;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,29 +13,39 @@ import java.util.List;
 @Entity
 @Table(name = "trucks")
 @NamedQuery(name = "Truck.findAllTrucks",
-        query = "select new com.logiweb.avaji.crud.truck.dto.TruckDTO(" +
+        query = "select new com.logiweb.avaji.dtos.TruckDTO(" +
                 "t.truckId, t.capacity, t.shiftSize, t.serviceable, " +
                 "c.cityCode, c.cityName) from Truck t " +
                 "join t.currentCity c", lockMode = LockModeType.READ)
 @NamedQuery(name = "Truck.findTruckById",
-        query = "select new com.logiweb.avaji.crud.truck.dto.TruckDTO(" +
+        query = "select new com.logiweb.avaji.dtos.TruckDTO(" +
                 "t.truckId, t.version, t.capacity, t.shiftSize, t.serviceable, " +
                 "t.currentCity.cityCode, t.currentCity.cityName) from Truck t " +
                 "where t.truckId = :id", lockMode = LockModeType.READ)
 @NamedQuery(name = "Truck.findTrucksForOrder",
-        query = "select new com.logiweb.avaji.crud.truck.dto.TruckDTO(" +
+        query = "select new com.logiweb.avaji.dtos.TruckDTO(" +
                 "t.truckId, t.version, t.capacity, t.shiftSize, t.serviceable, " +
                 "t.currentCity.cityCode, t.currentCity.cityName) from Truck t " +
                 "where t.serviceable = true " +
                 "and t.capacity >= :maxCapacity " +
                 "and t not in (select o.designatedTruck from Order o)", lockMode = LockModeType.READ)
+@NamedQuery(name = "Truck.findTruckByDriverId",
+        query = "select d.currentTruck from Driver d " +
+                "where d.id = :driverId")
+@NamedQuery(name = "Truck.findTruckByOrderId",
+        query = "select new com.logiweb.avaji.dtos.TruckDTO(" +
+                "t.truckId, t.version, t.capacity, t.shiftSize, t.serviceable, " +
+                "t.currentCity.cityCode, t.currentCity.cityName) from Truck t " +
+                "where t.truckId = (select o.designatedTruck.truckId " +
+                "from Order o where o.id = :id)", lockMode = LockModeType.READ)
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 public class Truck {
     @Id
-    @Column(name = "truck_id")
+    @Column(name = "id")
     private String truckId;
     @Version
     @Column(name = "version")
@@ -59,4 +66,16 @@ public class Truck {
             mappedBy = "currentTruck")
     private List<Driver> drivers = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "Truck{" +
+                "truckId='" + truckId + '\'' +
+                ", version=" + version +
+                ", shiftSize=" + shiftSize +
+                ", capacity=" + capacity +
+                ", serviceable=" + serviceable +
+                ", currentCity=" + currentCity +
+                ", currentOrder=" + currentOrder +
+                '}';
+    }
 }

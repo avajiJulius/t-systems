@@ -1,8 +1,6 @@
 package com.logiweb.avaji.entities.models;
 
 import com.logiweb.avaji.entities.enums.Role;
-import com.logiweb.avaji.entities.models.utils.WorkDetails;
-import com.logiweb.avaji.entities.models.utils.WorkShift;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +12,8 @@ import javax.persistence.*;
 @Inheritance(strategy = InheritanceType.JOINED)
 @NamedQueries(value = {
         @NamedQuery(name = "User.findUserByEmail",
-        query = "select u from User u where u.email = :email")
+        query = "select new com.logiweb.avaji.entities.models.User(" +
+                "u.id, u.email, u.password, u.enable, u.role) from User u where u.email = :email")
 })
 @Data
 @AllArgsConstructor
@@ -39,4 +38,11 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
+    public User(long id, String email, String password, boolean enable, Role role) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.enable = enable;
+        this.role = role;
+    }
 }

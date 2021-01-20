@@ -1,6 +1,5 @@
 package com.logiweb.avaji.entities.models;
 
-import com.logiweb.avaji.entities.models.utils.City;
 import com.logiweb.avaji.entities.enums.DriverStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,11 +10,11 @@ import javax.persistence.*;
 @Entity
 @Table(name = "drivers")
 @NamedQuery(name = "Driver.findAllDrivers",
-    query = "select new com.logiweb.avaji.crud.driver.dto.DriverDTO(d.id, d.firstName, d.lastName, " +
+    query = "select new com.logiweb.avaji.dtos.DriverDTO(d.id, d.firstName, d.lastName, " +
             "d.hoursWorked, d.driverStatus , d.currentTruck.truckId, d.currentCity.cityCode, d.currentCity.cityName) " +
             "from Driver d")
 @NamedQuery(name = "Driver.findDriversForOrder",
-        query = "select new com.logiweb.avaji.crud.driver.dto.DriverDTO(d.id, d.version,d.firstName, d.lastName, " +
+        query = "select new com.logiweb.avaji.dtos.DriverDTO(d.id, d.version,d.firstName, d.lastName, " +
                 "d.hoursWorked, d.driverStatus, d.currentCity.cityCode, d.currentCity.cityName) " +
                 "from Driver d " +
                 "where (176 - d.hoursWorked) > :shiftHours " +
@@ -23,11 +22,12 @@ import javax.persistence.*;
                 "and d.currentTruck is null")
 @NamedQuery(name = "Driver.refreshWorkedHours",
         query = "update Driver d set d.hoursWorked = 0")
-@NamedQuery(name = "Driver.findDriversByTruckId",
-        query = "select d from Driver d where d.currentTruck.truckId = :truckId")
-@NamedQuery(name = "Driver.findDriversByTruckIdAndCount",
+@NamedQuery(name = "Driver.findDriversByOrderId",
+        query = "select new com.logiweb.avaji.dtos.DriverDTO(d.id, d.firstName, d.lastName) from Driver d where d.currentTruck.truckId = " +
+                "(select o.designatedTruck.truckId from Order o where o.id = :id)")
+@NamedQuery(name = "Driver.countDriversOfTruck",
                 query = "select count(d) from Driver d " +
-                        "where d.currentTruck in (select t from Truck t where t.truckId = :truckId)")
+                        "where d.currentTruck in (select t from Truck t where t.truckId = :id)")
 @NamedQuery(name = "Driver.findDriversByIds",
         query = "select d from Driver d where d.id in :driversIds")
 @Data
@@ -51,4 +51,22 @@ public class Driver extends User{
     @JoinColumn(name = "truck_id")
     private Truck currentTruck;
 
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_details")
+    private OrderDetails orderDetails;
+
+    @OneToOne(mappedBy = "driver")
+    private WorkShift workShift;
+
+    @Override
+    public String toString() {
+        return "Driver{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", hoursWorked=" + hoursWorked +
+                ", driverStatus=" + driverStatus +
+                ", currentCity=" + currentCity +
+                ", currentTruck=" + currentTruck +
+                '}';
+    }
 }

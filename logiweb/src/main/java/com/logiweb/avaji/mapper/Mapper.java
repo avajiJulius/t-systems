@@ -1,19 +1,19 @@
 package com.logiweb.avaji.mapper;
 
-import com.logiweb.avaji.crud.countrymap.dao.CountryMapDAO;
-import com.logiweb.avaji.crud.driver.dto.DriverDTO;
-import com.logiweb.avaji.crud.order.dto.CreateWaypointsDTO;
-import com.logiweb.avaji.crud.truck.dto.TruckDTO;
+import com.logiweb.avaji.daos.CountryMapDAO;
+import com.logiweb.avaji.dtos.DriverDTO;
+import com.logiweb.avaji.dtos.CreateWaypointsDTO;
+import com.logiweb.avaji.dtos.TruckDTO;
 import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.enums.Role;
-import com.logiweb.avaji.crud.cargo.dao.CargoDAO;
-import com.logiweb.avaji.crud.driver.dao.DriverDAO;
-import com.logiweb.avaji.crud.order.dto.WaypointDTO;
+import com.logiweb.avaji.daos.CargoDAO;
+import com.logiweb.avaji.daos.DriverDAO;
+import com.logiweb.avaji.dtos.WaypointDTO;
 import com.logiweb.avaji.entities.enums.WaypointType;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.Truck;
-import com.logiweb.avaji.entities.models.utils.Waypoint;
+import com.logiweb.avaji.entities.models.Waypoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

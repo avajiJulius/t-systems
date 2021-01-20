@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Drivers For Order</title>
+</head>
+<body>
+<nav th:replace="fragments/navbar.html :: navigation"></nav>
+<div align="center">
+    <h1>Drivers List</h1>
+    <h4>Free Space For Drivers: <span th:text="${shiftSize}"></span></h4>
+    <form th:method="PATCH"
+          th:action="@{/orders/{orderId}/drivers(orderId=${orderId})}" th:object="${driversIds}">
+        <table class="table table-hover">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col"> Id</th>
+                <th scope="col"> First Name</th>
+                <th scope="col"> Last Name</th>
+                <th scope="col"> Hours Worked</th>
+                <th scope="col"> Status</th>
+                <th scope="col"> Current City</th>
+                <th scope="col"> Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="driver : ${drivers}">
+                <td scope="row" th:text="${driver.id}" />
+                <td th:text="${driver.firstName}" />
+                <td th:text="${driver.lastName}" />
+                <td th:text="${driver.hoursWorked}" />
+                <td th:text="${driver.driverStatus.name()}" />
+                <td th:text="${driver.cityName}" />
+                <td>
+                    <input type="checkbox" th:value="${driver.id}" th:field="*{ids}"/>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <input type="submit" value="ADD" />
+    </form>
+</div>
+<script th:replace="fragments/script.html :: jquery"></script>
+<script th:replace="fragments/script.html :: popper"></script>
+<script th:replace="fragments/script.html :: bootstrap"></script>
+</body>
+</html>

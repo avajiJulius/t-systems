@@ -1,7 +1,5 @@
 package com.logiweb.avaji.entities.models;
 
-import com.logiweb.avaji.crud.countrymap.dto.CityDTO;
-import com.logiweb.avaji.entities.models.utils.Waypoint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,27 +11,30 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 @NamedQuery(name = "Order.findAllOrders",
-query = "select new com.logiweb.avaji.crud.order.dto.OrderDTO(" +
-        "o.orderId, o.version, o.completed, o.designatedTruck.truckId, " +
+query = "select new com.logiweb.avaji.dtos.OrderDTO(" +
+        "o.id, o.version, o.completed, o.designatedTruck.truckId, " +
         "(select count(d) from Driver d where d.currentTruck.truckId = o.designatedTruck.truckId)) " +
         "from Order o")
 @NamedQuery(name = "Order.findWaypointsOfThisOrder",
-query = "select w from Waypoint w where w.waypointOrder.orderId = :orderId " )
+query = "select w from Waypoint w where w.waypointOrder.id = :orderId " )
 @NamedQuery(name = "Order.findOrderById",
         query = "select o from Order o " +
-                "where o.orderId = :orderId")
+                "where o.id = :orderId")
 @NamedQuery(name = "Order.findTruckByOrderId",
-query = "select o.designatedTruck from Order o where o.orderId = :orderId")
+query = "select o.designatedTruck from Order o where o.id = :orderId")
 @NamedQuery(name = "Order.findOrderByTruckId",
 query = "select o from Order o where o.designatedTruck.truckId like :truckId")
+@NamedQuery(name = "Order.findOrderIdOfDriverId",
+        query = "select o.id from Order o where o.designatedTruck.truckId = " +
+                "(select d.currentTruck.truckId from Driver d where d.id = :id)")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id")
-    private long orderId;
+    @Column(name = "id")
+    private long id;
     @Version
     @Column(name = "version")
     private int version;
@@ -41,11 +42,25 @@ public class Order {
     private boolean completed;
     @Column(name = "path")
     private String path;
-    @OneToMany(cascade = CascadeType.ALL ,fetch = FetchType.LAZY,
-            mappedBy = "waypointOrder")
-    private List<Waypoint> waypoints = new ArrayList<>();
     @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.PERSIST} ,fetch = FetchType.LAZY)
     @JoinColumn(name = "truck_id")
     private Truck designatedTruck;
+    @OneToMany(cascade = CascadeType.REFRESH ,fetch = FetchType.LAZY,
+            mappedBy = "waypointOrder")
+    private List<Waypoint> waypoints = new ArrayList<>();
 
+    @OneToOne(mappedBy = "order")
+    private OrderDetails orderDetails;
+
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", version=" + version +
+                ", completed=" + completed +
+                ", path='" + path + '\'' +
+                ", designatedTruck=" + designatedTruck +
+                '}';
+    }
 }
