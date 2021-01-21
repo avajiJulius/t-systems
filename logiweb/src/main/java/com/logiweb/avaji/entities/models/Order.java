@@ -13,8 +13,8 @@ import java.util.List;
 @NamedQuery(name = "Order.findAllOrders",
 query = "select new com.logiweb.avaji.dtos.OrderDTO(" +
         "o.id, o.version, o.completed, o.designatedTruck.truckId, " +
-        "(select count(d) from Driver d where d.currentTruck.truckId = o.designatedTruck.truckId)) " +
-        "from Order o")
+        "(select count(d) from Driver d where d.currentTruck.truckId = o.designatedTruck.truckId), " +
+        "o.path) from Order o")
 @NamedQuery(name = "Order.findWaypointsOfThisOrder",
 query = "select w from Waypoint w where w.waypointOrder.id = :orderId " )
 @NamedQuery(name = "Order.findOrderById",
@@ -27,6 +27,9 @@ query = "select o from Order o where o.designatedTruck.truckId like :truckId")
 @NamedQuery(name = "Order.findOrderIdOfDriverId",
         query = "select o.id from Order o where o.designatedTruck.truckId = " +
                 "(select d.currentTruck.truckId from Driver d where d.id = :id)")
+@NamedQuery(name = "Order.updateOnCompletedOrder",
+        query = "update Order o set o.completed = true, o.designatedTruck = null " +
+                "where o.id = :id")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -13,12 +13,11 @@ import java.util.List;
 public interface CountryMapService {
 
     List<CityDTO> readAllCities();
-    List<Road> readPathRoads(List<CityDTO> path);
-    List<Road> readAllRoads();
     List<Vertex> readAllVertex();
-    List<CityDTO> readCitiesByCodes(List<Long> codes);
 
     double readDistanceBetween(long cityCodeA, long cityCodeB);
 
     List<Long> findConnected(long cityCode);
+
+    boolean isConnected(long cityCodeA, long cityCodeB);
 }

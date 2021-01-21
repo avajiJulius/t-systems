@@ -41,7 +41,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public List<OrderDTO> readAllOrders() {
-        return orderDAO.findAllOrders();
+        List<OrderDTO> allOrders = orderDAO.findAllOrders();
+        for (OrderDTO orderDTO : allOrders) {
+            orderDTO.setPrettyPath(parser.toPrettyPath(orderDTO.getPrettyPath()));
+        }
+        return allOrders;
     }
 
 
@@ -73,12 +77,13 @@ public class OrderServiceImpl implements OrderService {
     public List<TruckDTO> readTrucksForOrder(long orderId) {
         Order order = orderDAO.findOrderById(orderId);
 
+        List<CityDTO> path = parser.pathStringToCityDTOList(order.getPath());
 
         Double maxCapacity = pathDetailsService.getMaxCapacity(
-                parser.pathStringToCityDTOList(order.getPath()),
+                path,
                 orderDAO.findWaypointsOfThisOrder(orderId));
 
-        return orderDAO.findTrucksForOrder(maxCapacity);
+        return orderDAO.findTrucksForOrder(maxCapacity, path.get(0).getCityCode());
     }
 
     @Override

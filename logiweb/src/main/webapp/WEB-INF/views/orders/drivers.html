@@ -14,7 +14,7 @@
     <h4>Free Space For Drivers: <span th:text="${shiftSize}"></span></h4>
     <form th:method="PATCH"
           th:action="@{/orders/{orderId}/drivers(orderId=${orderId})}" th:object="${driversIds}">
-        <table class="table table-hover">
+        <table class="table table-bordered border-4 border-dark">
             <thead class="thead-light">
             <tr>
                 <th scope="col"> Id</th>

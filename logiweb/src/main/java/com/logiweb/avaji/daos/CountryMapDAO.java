@@ -62,4 +62,10 @@ public class CountryMapDAO {
                 .setParameter("cityACode", cityCodeA).setParameter("cityBCode", cityCodeB);
         return query.getSingleResult();
     }
+
+    public boolean findIsConnected(long cityCodeA, long cityCodeB) {
+        long count = entityManager.createNamedQuery("Road.findIsConnected", Long.class)
+                .setParameter("cityACode", cityCodeA).setParameter("cityBCode", cityCodeB).getSingleResult();
+        return count != 0L;
+    }
 }

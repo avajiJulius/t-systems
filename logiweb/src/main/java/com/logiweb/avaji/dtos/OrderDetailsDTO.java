@@ -19,8 +19,10 @@ public class OrderDetailsDTO {
     private String truckId;
     private List<DriverDTO> coDrivers = new ArrayList<>();
     private String path;
+    private String prettyPath;
     private String remainingPathString;
     private Deque<CityDTO> remainingPath = new ArrayDeque<>();
+    private CityDTO nextCity;
     private List<WaypointDTO> waypoints = new ArrayList<>();
     private boolean completed;
 
@@ -31,5 +33,39 @@ public class OrderDetailsDTO {
         this.truckId = truckId;
         this.path = path;
         this.remainingPathString = remainingPathString;
+    }
+
+    public static class Builder {
+
+        private OrderDetailsDTO newOrderDetails;
+
+        public Builder (OrderDetailsDTO orderDetails) {
+            this.newOrderDetails = orderDetails;
+        }
+
+        public Builder withCoDrivers(List<DriverDTO> coDrivers) {
+            newOrderDetails.coDrivers = coDrivers;
+            return this;
+        }
+
+        public Builder withRemainingPath(Deque<CityDTO> remainingPath) {
+            newOrderDetails.remainingPath = remainingPath;
+            return this;
+        }
+
+        public Builder withPrettyPath(String prettyPath) {
+            newOrderDetails.prettyPath = prettyPath;
+            return this;
+        }
+
+        public Builder withWaypoints(List<WaypointDTO> waypoints) {
+            newOrderDetails.waypoints = waypoints;
+            return this;
+        }
+
+        public Builder withCompleted(boolean completed) {
+            newOrderDetails.completed = completed;
+            return this;
+        }
     }
 }

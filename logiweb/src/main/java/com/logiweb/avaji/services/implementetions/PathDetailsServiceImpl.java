@@ -1,14 +1,9 @@
 package com.logiweb.avaji.services.implementetions;
 
-import com.logiweb.avaji.daos.OrderDAO;
-import com.logiweb.avaji.daos.OrderDetailsDAO;
 import com.logiweb.avaji.daos.TruckDAO;
 import com.logiweb.avaji.dtos.*;
-import com.logiweb.avaji.daos.DriverDAO;
 import com.logiweb.avaji.entities.enums.WaypointType;
 
-import com.logiweb.avaji.entities.models.Waypoint;
-import com.logiweb.avaji.services.api.OrderDetailsService;
 import com.logiweb.avaji.services.api.PathDetailsService;
 import com.logiweb.avaji.services.api.CountryMapService;
 import com.logiweb.avaji.pathfinder.MapGraph;
@@ -63,12 +58,34 @@ public class PathDetailsServiceImpl implements PathDetailsService {
 
         for (int i = 0; i < route.size(); i++) {
             Path path = route.get(i);
+            int startIndex = 0;
             for(Vertex vertex: path.getPath()) {
-                int index = vertices.indexOf(vertex);
-                cityCodes[index] = vertex.getCityCode();
+                List<Vertex> subList = vertices.subList(startIndex, vertices.size());
+                int index = subList.indexOf(vertex);
+                cityCodes[startIndex + index] = vertex.getCityCode();
+                startIndex = index;
             }
         }
-        return Arrays.stream(cityCodes).filter(c -> c != 0L).collect(Collectors.toList());
+        List<Long> codes = Arrays.stream(cityCodes).filter(c -> c != 0L).collect(Collectors.toList());
+        for (int i = 0; i < codes.size() - 1; i++) {
+            int index = i;
+            if(!mapGraph.isConnected(codes.get(index), codes.get(index + 1))) {
+
+                Vertex start = mapGraph.getVertex(codes.get(i));
+                Vertex goal = mapGraph.getVertex(codes.get(index));
+
+                codes.remove(index);
+                codes.remove(i);
+
+                List<Long> path = searchPath(start, goal,
+                        new ArrayList<>(), new Path(new ArrayList<>(), 0)).getPath()
+                        .stream().map(v -> v.getCityCode()).collect(Collectors.toList());
+                codes.addAll(i, path);
+
+                mapGraph.refreshVertices();
+            }
+        }
+        return codes;
     }
 
     private Path searchPath(Vertex start, Vertex goal, List<Path> open, Path path) {
@@ -98,8 +115,8 @@ public class PathDetailsServiceImpl implements PathDetailsService {
         }
 
         Vertex newStart = open.get(index).getLast();
-        mapGraph.setVisited(newStart);
         Path newPath = open.remove(index);
+        newPath.removeLast();
 
         return searchPath(newStart, goal, open, newPath);
     }

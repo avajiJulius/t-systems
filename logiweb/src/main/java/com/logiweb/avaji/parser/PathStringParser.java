@@ -50,4 +50,15 @@ public class PathStringParser {
         }
         return sb.toString();
     }
+
+    public String toPrettyPath(String path) {
+        List<Long> codes = Arrays.stream(path.split("-"))
+                .map(Long::parseLong).collect(Collectors.toList());
+        StringBuffer sb = new StringBuffer();
+        for(long code: codes) {
+            City city = countryMapDAO.findCityByCode(code);
+            sb.append(city.getCityName()).append(" - ");
+        }
+        return sb.substring(0, sb.length() - 3);
+    }
 }

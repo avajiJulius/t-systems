@@ -5,31 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <title>Cargo</title>
+    <title>Logiweb</title>
 </head>
 <body>
 <nav th:replace="fragments/navbar.html :: navigation"></nav>
-<div>
-    <h1>Cargo List</h1>
-    <table class="table table-bordered border-4 border-dark">
-        <thead class="thead-light">
-        <tr>
-            <th scope="col"> Id</th>
-            <th scope="col"> Title</th>
-            <th scope="col"> Weight</th>
-            <th scope="col"> Status</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="cargo : ${cargoList}">
-            <td scope="row" th:text="${cargo.cargoId}"></td>
-            <td th:text="${cargo.cargoTitle}"></td>
-            <td th:text="${cargo.cargoWeight}"></td>
-            <td th:text="${cargo.cargoStatus}"></td>
-        </tr>
-        </tbody>
-    </table>
+<div class="container-fluid">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col">
+                <h3>Drivers</h3>
+                <p>Best drivers ever</p>
+            </div>
+            <div class="col">
+                <h3>Employees</h3>
+                <p>Best employees ever</p>
+            </div>
+            <div class="col">
+                <h3>Truck</h3>
+                <p>Best trucks ever</p>
+            </div>
+        </div>
+    </div>
 </div>
+
+<div th:replace="fragments/navbar.html :: login"></div>
 <script th:replace="fragments/script.html :: jquery"></script>
 <script th:replace="fragments/script.html :: popper"></script>
 <script th:replace="fragments/script.html :: bootstrap"></script>

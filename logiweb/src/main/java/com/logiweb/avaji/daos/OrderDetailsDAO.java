@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
@@ -39,9 +40,19 @@ public class OrderDetailsDAO {
         return query.getResultList();
     }
 
-    public void updateOrderDetails(OrderDetailsDTO updatedOrderDetails) {
-        OrderDetails orderDetails = entityManager.find(OrderDetails.class, updatedOrderDetails.getId());
-        orderDetails.setRemainingPath(updatedOrderDetails.getRemainingPathString());
-        entityManager.merge(orderDetails);
+    public void updateOrderDetails(OrderDetails updatedOrderDetails) {
+        entityManager.merge(updatedOrderDetails);
+    }
+
+    public OrderDetails findOrderDetailsEntity(long orderId) {
+        return entityManager.find(OrderDetails.class, orderId);
+    }
+
+    @Transactional
+    public void updateOnCompletedOrder(long orderId) {
+        entityManager.createNamedQuery("Order.updateOnCompletedOrder")
+                .setParameter("id", orderId).executeUpdate();
+        entityManager.createNamedQuery("Driver.updateOnCompletedOrder")
+                 .setParameter("id", orderId).executeUpdate();
     }
 }

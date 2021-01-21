@@ -29,29 +29,12 @@ public class CountryMapServiceImpl implements CountryMapService {
         return countryMapDAO.findAllCities();
     }
 
-    @Override
-    public List<Road> readPathRoads(List<CityDTO> path) {
-        List<Road> roads = new ArrayList<>();
-        for (int i = 0; i < path.size() - 2; i++) {
-            roads.add(countryMapDAO.findRoadByCities(path.get(i).getCityCode(), path.get(i+1).getCityCode()));
-        }
-        return roads;
-    }
-
-    @Override
-    public List<Road> readAllRoads() {
-        return countryMapDAO.findAllRoads();
-    }
 
     @Override
     public List<Vertex> readAllVertex() {
         return countryMapDAO.findAllCitiesForVertex();
     }
 
-    @Override
-    public List<CityDTO> readCitiesByCodes(List<Long> codes) {
-        return countryMapDAO.findCitiesByCodes(codes);
-    }
 
     @Override
     public double readDistanceBetween(long cityCodeA, long cityCodeB) {
@@ -61,6 +44,11 @@ public class CountryMapServiceImpl implements CountryMapService {
     @Override
     public List<Long> findConnected(long cityCode) {
         return countryMapDAO.findConnectedCities(cityCode);
+    }
+
+    @Override
+    public boolean isConnected(long cityCodeA, long cityCodeB) {
+        return countryMapDAO.findIsConnected(cityCodeA, cityCodeB);
     }
 
 }

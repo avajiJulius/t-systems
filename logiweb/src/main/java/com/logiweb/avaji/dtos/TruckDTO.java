@@ -23,8 +23,8 @@ public class TruckDTO {
     private String truckId;
     private int version;
     @NotNull(message = "Must be filed")
-    @Min(groups = {Update.class, Create.class}, value = 1000, message = "Capacity should not be less than 1000")
-    @Max(groups = {Update.class, Create.class}, value = 10000, message = "Capacity should not be greater than 10000")
+    @Min(groups = {Update.class, Create.class}, value = 10, message = "Capacity should not be less than 10")
+    @Max(groups = {Update.class, Create.class}, value = 50, message = "Capacity should not be greater than 50")
     private double capacity;
     @NotNull(message = "Must be filed")
     @Min(groups = {Update.class, Create.class}, value = 1, message = "Shift size should not be less than 1")

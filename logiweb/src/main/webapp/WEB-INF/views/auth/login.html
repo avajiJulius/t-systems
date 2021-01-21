@@ -4,27 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <title>Login</title>
 </head>
 <body>
-<form action="#" th:action="@{/login}" th:method="POST">
-    <div class="row mb-3">
-        <label for="email" class="col-sm-2 col-form-label">Email</label>
-        <div class="col-sm-10">
-            <input type="email" name="username" class="form-control" id="email">
-        </div>
+<div class="container">
+    <div class="d-flex p-3 justify-content-start align-items-start"
+         style="height: 500px;">
+        <form action="#" th:action="@{/login}" th:method="POST">
+            <div class="m-3 align-self-start">
+                <label for="email" class="col-sm-2 col-form-label">Email</label>
+                <input type="email" name="username" class="form-control" id="email">
+                <small class="form-text text-muted">message</small>
+            </div>
+            <div class="m-3 align-self-start">
+                <label for="password" class="col-sm-2 col-form-label">Password</label>
+                <input type="password" name="password" id="password" class="form-control" >
+            </div>
+            <div class="m-3 align-self-center">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
     </div>
-    <div class="row mb-3">
-        <label for="password" class="col-sm-2 col-form-label">Password</label>
-        <div>
-            <input type="password" name="password" id="password" class="form-control" >
-        </div>
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+</div>
 <script th:replace="fragments/script.html :: jquery"></script>
 <script th:replace="fragments/script.html :: popper"></script>
 <script th:replace="fragments/script.html :: bootstrap"></script>

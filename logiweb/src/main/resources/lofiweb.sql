@@ -155,8 +155,8 @@ values (1,1),(1,2),
        (12,21),(12,20);
 
 insert into trucks(id, version, shift_size, capacity, serviceable, city_code)
-values ('AB12345', 1,2, 10000, true, 1), ('BA12345',1, 2, 3000, false, 1),
-       ('CD12345', 1, 1, 20000, true, 3), ('DC12345', 1,1, 5000, true, 2);
+values ('AB12345', 1,2, 30, true, 1), ('BA12345',1, 2, 26, false, 1),
+       ('CD12345', 1, 1, 27, true, 3), ('DC12345', 1,1, 21, true, 2);
 
 insert into users(version, email, password, enable, role)
 values (1,'avaji@gmail.com', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true, 'DRIVER'),

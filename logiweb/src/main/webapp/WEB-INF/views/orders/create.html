@@ -10,50 +10,54 @@
 <body>
 <nav th:replace="fragments/navbar.html :: navigation"></nav>
 <h2>Create Order</h2>
-<div th:if="${message}" th:text="${message}"></div>
-<form action="#" th:action="@{/orders/}" th:object="${form}" method="POST">
-    <fieldset>
-        <a th:href="@{/orders/new/add}">Add Waypoint</a>
-        <a th:href="@{/orders/new/remove}">Remove Waypoint</a>
-        <table>
-            <thead>
-            <tr>
-                <th> City</th>
-                <th> Cargo</th>
-                <th> Type</th>
-            </tr>
-            </thead>
-            <tbody th:each="waypoint, i : *{waypointsDto}">
-            <t>
-                <td>
-                    <select th:field="*{waypointsDto[__${i.index}__].loadCityCode}">
-                        <option th:each="city : ${cities}" th:value="${city.cityCode}" th:text="${city.cityName}" />
-                    </select>
-                </td>
-                <td rowspan="2">
-                    <select th:field="*{waypointsDto[__${i.index}__].cargoId}" >
-                        <option th:each="c : ${cargo}" th:value="${c.cargoId}" th:text="${c.cargoTitle}" />
-                    </select>
-                </td>
-                <td>
-                    Loading
-                </td>
-            </t>
-            <tr>
-                <td>
-                    <select th:field="*{waypointsDto[__${i.index}__].unloadCityCode}">
-                        <option th:each="city : ${cities}" th:value="${city.cityCode}" th:text="${city.cityName}" />
-                    </select>
-                </td>
-                <td>
-                    Unloading
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <button type="submit" class="btn btn-primary">Create Order</button>
-    </fieldset>
-</form>
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div th:if="${message}" th:text="${message}"></div>
+        <form action="#" th:action="@{/orders/}" th:object="${form}" method="POST">
+            <fieldset>
+                <a class="btn btn-primary" th:href="@{/orders/new/add}" role="button">Add Waypoint</a>
+                <a class="btn btn-primary"  th:href="@{/orders/new/remove}" role="button">Remove Waypoint</a>
+                <table class="table table-bordered border-4 border-dark">
+                    <thead>
+                    <tr>
+                        <th> City</th>
+                        <th> Cargo</th>
+                        <th> Type</th>
+                    </tr>
+                    </thead>
+                    <tbody th:each="waypoint, i : *{waypointsDto}">
+                    <t>
+                        <td>
+                            <select th:field="*{waypointsDto[__${i.index}__].loadCityCode}">
+                                <option th:each="city : ${cities}" th:value="${city.cityCode}" th:text="${city.cityName}" />
+                            </select>
+                        </td>
+                        <td rowspan="2">
+                            <select th:field="*{waypointsDto[__${i.index}__].cargoId}" >
+                                <option th:each="c : ${cargo}" th:value="${c.cargoId}" th:text="${c.cargoTitle}" />
+                            </select>
+                        </td>
+                        <td>
+                            Loading
+                        </td>
+                    </t>
+                    <tr>
+                        <td>
+                            <select th:field="*{waypointsDto[__${i.index}__].unloadCityCode}">
+                                <option th:each="city : ${cities}" th:value="${city.cityCode}" th:text="${city.cityName}" />
+                            </select>
+                        </td>
+                        <td>
+                            Unloading
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-primary">Create Order</button>
+            </fieldset>
+        </form>
+    </div>
+</div>
 <a th:href="@{/orders/}">Back to Orders List</a>
 <script th:replace="fragments/script.html :: jquery"></script>
 <script th:replace="fragments/script.html :: popper"></script>

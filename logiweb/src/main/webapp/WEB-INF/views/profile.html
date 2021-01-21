@@ -40,38 +40,42 @@
         <div class="col">
             <table>
                 <tr>
-                    <th th:colspan="${#lists.size(orderDetails.coDrivers)}" >Co-Drivers IDs</th>
+                    <th th:colspan="${#lists.size(orderDetails.coDrivers)}" >Co-Drivers</th>
                 </tr>
-                <tr th:each="ids : ${orderDetails?.coDrivers}">
-                    <td th:text="${ids}"></td>
+                <tr th:each="coDriver : ${orderDetails?.coDrivers}">
+                    <td>
+                        <p><span th:text="${'#' + coDriver.id + ': ' + coDriver.lastName + ' ' + coDriver.firstName}"></span></p>
+                    </td>
                 </tr>
             </table>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <table>
+            <table class="table table-bordered border-4 border-dark">
                 <tr>
-                    <th>Truck ID</th>
                     <th>Order ID</th>
+                    <th>Path</th>
+                    <th>Truck ID</th>
                 </tr>
                 <tr>
-                    <td th:text="${orderDetails.truckId}"></td>
                     <td th:text="${orderDetails.id}"></td>
+                    <td th:text="${orderDetails.prettyPath}"></td>
+                    <td th:text="${orderDetails.truckId}"></td>
                 </tr>
             </table>
         </div>
     </div>
-    <p>Change city to:
-        <a th:href="@{/profile/changeCity}"
-           th:text="${orderDetails.remainingPath.peekFirst()}"/>
-    </p>
+
+    <p>Change city to:<a th:href="@{/profile/{id}/changeCity(id=${orderDetails.id})}"
+                             th:text="${orderDetails.nextCity.cityName}"></a></p>
+
     <div th:if="${orderDetails.completed == false}" class="row">
         <div class="col">
             <form th:method="PATCH"
                   th:action="@{/profile/cargo}" th:object="${cargoIds}">
-            <label for="path">Path</label>
-            <table id="path">
+            <label for="path">Order Waypoints</label>
+            <table id="path" class="table table-bordered border-4 border-dark">
                 <thead>
                 <tr>
                     <th>City</th>

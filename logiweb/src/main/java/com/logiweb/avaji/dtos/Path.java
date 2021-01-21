@@ -31,4 +31,7 @@ public class Path {
         this.path.add(vertex);
     }
 
+    public void removeLast() {
+        path.remove(path.size() - 1);
+    }
 }

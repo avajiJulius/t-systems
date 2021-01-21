@@ -3,6 +3,7 @@ package com.logiweb.avaji.daos;
 import com.logiweb.avaji.dtos.DriverDTO;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Truck;
+import com.logiweb.avaji.entities.models.WorkShift;
 import com.logiweb.avaji.exceptions.DriverNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -81,5 +82,13 @@ public class DriverDAO {
         TypedQuery<Truck> query = entityManager.createNamedQuery("Truck.findTruckByDriverId", Truck.class)
                 .setParameter("driverId", userId);
         return query.getSingleResult();
+    }
+
+    public void saveWorkShift(long id) {
+        Driver driver = entityManager.find(Driver.class, id);
+        WorkShift workShift = new WorkShift();
+        workShift.setDriver(driver);
+        entityManager.persist(workShift);
+        entityManager.flush();
     }
 }

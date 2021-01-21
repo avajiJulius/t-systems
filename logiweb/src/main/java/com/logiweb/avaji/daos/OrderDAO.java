@@ -1,9 +1,6 @@
 package com.logiweb.avaji.daos;
 
-import com.logiweb.avaji.dtos.DriverDTO;
-import com.logiweb.avaji.dtos.OrderDTO;
-import com.logiweb.avaji.dtos.TruckDTO;
-import com.logiweb.avaji.dtos.WaypointDTO;
+import com.logiweb.avaji.dtos.*;
 import com.logiweb.avaji.entities.models.*;
 import org.springframework.stereotype.Repository;
 
@@ -62,9 +59,9 @@ public class OrderDAO {
         return query.getSingleResult();
     }
 
-    public List<TruckDTO> findTrucksForOrder(Double maxCapacity) {
+    public List<TruckDTO> findTrucksForOrder(Double maxCapacity, long startCityCode) {
         TypedQuery<TruckDTO> query = entityManager.createNamedQuery("Truck.findTrucksForOrder", TruckDTO.class)
-                .setParameter("maxCapacity", maxCapacity);
+                .setParameter("maxCapacity", maxCapacity).setParameter("startCode", startCityCode);
         return query.getResultList();
     }
 

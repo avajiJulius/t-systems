@@ -28,6 +28,7 @@ import java.util.List;
                 "t.currentCity.cityCode, t.currentCity.cityName) from Truck t " +
                 "where t.serviceable = true " +
                 "and t.capacity >= :maxCapacity " +
+                "and t.currentCity.cityCode = :startCode " +
                 "and t not in (select o.designatedTruck from Order o)", lockMode = LockModeType.READ)
 @NamedQuery(name = "Truck.findTruckByDriverId",
         query = "select d.currentTruck from Driver d " +

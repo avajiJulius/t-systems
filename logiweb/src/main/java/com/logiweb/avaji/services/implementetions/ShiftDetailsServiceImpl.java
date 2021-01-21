@@ -75,29 +75,6 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
     }
 
 
-    public DriverStatus convertToDriverStatus(String driverStatus) throws DriverStatusNotFoundException {
-        DriverStatus status;
-        switch (driverStatus) {
-            case ("REST"):
-                status = DriverStatus.REST;
-                break;
-            case ("DRIVING"):
-                status = DriverStatus.DRIVING;
-                break;
-            case ("SECOND_DRIVER"):
-                status = DriverStatus.SECOND_DRIVER;
-                break;
-            case ("LOAD_UNLOAD_WORK"):
-                status = DriverStatus.LOAD_UNLOAD_WORK;
-                break;
-            default:
-                logger.error("Driver status '{}' not found", driverStatus);
-                throw new DriverStatusNotFoundException("Driver status not found");
-        }
-
-        return status;
-    }
-
 }
 
 

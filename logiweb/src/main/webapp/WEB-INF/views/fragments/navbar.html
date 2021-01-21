@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
-<nav th:fragment="navigation" class="navbar navbar-expand-md navbar-light bg-light">
+<nav th:fragment="navigation"
+     class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
     <a class="navbar-brand" th:href="@{/}">LogiWeb</a>
-
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-targer="#navbarSupportedContent">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav mr-auto">
             <li class="nav-item active" sec:authorize="hasAuthority('driver:read')" >
                 <a class="nav-link" th:href="@{/profile}">Work Details</a>
             </li>
@@ -22,16 +22,55 @@
                 <a class="nav-link" th:href="@{/drivers}">Drivers</a>
             </li>
         </ul>
-        <div class="d-flex">
-            <form th:if="${#authorization.expression('isAnonymous()')}"
-                  th:action="@{/login}" th:method="GET">
-                <button class="btn btn-outline-success ml-3">Sign in</button>
-            </form>
-            <form th:if="${#authorization.expression('isAuthenticated()')}"
-                  th:action="@{/logout}" th:method="POST">
-                <button class="btn btn-outline-danger ml-3">Sign Out</button>
-            </form>
+<!--        <form class="form-inline my-2 my-lg-0" th:if="${#authorization.expression('isAnonymous()')}"-->
+<!--              th:action="@{/login}" th:method="GET">-->
+<!--            <button class="btn btn-outline-success my-2 my-sm-0">Sign in</button>-->
+<!--        </form>-->
+        <button type="button" th:if="${#authorization.expression('isAnonymous()')}"
+                class="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#exampleModal">
+            Sign in
+        </button>
+        <form class="form-inline my-2 my-lg-0" th:if="${#authorization.expression('isAuthenticated()')}"
+              th:action="@{/logout}" th:method="POST">
+            <button class="btn btn-outline-danger my-2 my-sm-0">Sign Out</button>
+        </form>
+    </div>
+
+</nav>
+<div th:fragment="login">
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="d-flex p-3 justify-content-start align-items-start"
+                             style="height: 500px;">
+                            <form action="#" th:action="@{/login}" th:method="POST">
+                                <div class="m-3 align-self-start">
+                                    <label for="email" class="col-sm-2 col-form-label">Email</label>
+                                    <input type="email" name="username" class="form-control" id="email">
+                                    <small class="form-text text-muted">message</small>
+                                </div>
+                                <div class="m-3 align-self-start">
+                                    <label for="password" class="col-sm-2 col-form-label">Password</label>
+                                    <input type="password" name="password" id="password" class="form-control" >
+                                </div>
+                                <div class="m-3 align-self-center">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</nav>
+</div>
+
 </html>

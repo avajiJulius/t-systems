@@ -2,6 +2,7 @@ package com.logiweb.avaji.controllers;
 
 import com.logiweb.avaji.daos.UserDAO;
 import com.logiweb.avaji.dtos.CargoChangeDTO;
+import com.logiweb.avaji.dtos.OrderDetailsDTO;
 import com.logiweb.avaji.dtos.ShiftDetailsDTO;
 import com.logiweb.avaji.services.api.OrderDetailsService;
 import com.logiweb.avaji.services.api.ShiftDetailsService;
@@ -61,6 +62,13 @@ public class ProfileController {
     public String updateCargoStatus(@ModelAttribute("cargoIds") CargoChangeDTO cargoIds){
 
         orderDetailsService.updateOrderByCargoStatus(cargoIds.getOrderId(), cargoIds.getIds());
+        return "redirect:/profile";
+    }
+
+    @GetMapping("/{id}/changeCity")
+    @PreAuthorize("hasAuthority('driver:write')")
+    public String updateRemainingPath(@PathVariable("id") long orderId) {
+        orderDetailsService.changeCity(orderId);
         return "redirect:/profile";
     }
 }

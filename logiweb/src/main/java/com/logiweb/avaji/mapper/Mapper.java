@@ -88,30 +88,27 @@ public class Mapper {
 
 
     public Driver createDriverFromDto(DriverDTO driverDTO) {
-        Driver driver = new Driver();
-        driver.setVersion(1);
-        driver.setEmail(driverDTO.getEmail());
-        driver.setPassword(encoder.encode(driverDTO.getPassword()));
-        driver.setEnable(true);
-        driver.setRole(Role.DRIVER);
-        driver.setFirstName(driverDTO.getFirstName());
-        driver.setLastName(driverDTO.getLastName());
-        driver.setHoursWorked(0.0);
-        driver.setDriverStatus(DriverStatus.REST);
-        driver.setCurrentCity(mapDAO.findCityByCode(driverDTO.getCityCode()));
-        return driver;
+        return new Driver.Builder()
+                .withVersion(0).withEmail(driverDTO.getEmail())
+                .withPassword(encoder.encode(driverDTO.getPassword()))
+                .withEnable(true).withRole(Role.DRIVER)
+                .withFirstName(driverDTO.getFirstName())
+                .withLastName(driverDTO.getLastName())
+                .withHoursWorked(0.0).withDriverStatus(DriverStatus.REST)
+                .withCurrentCity(mapDAO.findCityByCode(driverDTO.getCityCode()))
+                .build();
     }
 
     public Driver updateDriverFromDto(DriverDTO driverDTO) {
-        Driver driver = driverDAO.findDriverById(driverDTO.getId());
-        driver.setVersion(driverDTO.getVersion());
-        driver.setEnable(driverDTO.isEnable());
-        driver.setFirstName(driverDTO.getFirstName());
-        driver.setLastName(driverDTO.getLastName());
-        driver.setHoursWorked(driverDTO.getHoursWorked());
-        driver.setDriverStatus(driverDTO.getDriverStatus());
-        driver.setCurrentCity(mapDAO.findCityByCode(driverDTO.getCityCode()));
-        return driver;
+        return new Driver.Builder().withId(driverDTO.getId())
+                .withVersion(driverDTO.getVersion())
+                .withEnable(driverDTO.isEnable())
+                .withFirstName(driverDTO.getFirstName())
+                .withLastName(driverDTO.getLastName())
+                .withHoursWorked(driverDTO.getHoursWorked())
+                .withDriverStatus(driverDTO.getDriverStatus())
+                .withCurrentCity(mapDAO.findCityByCode(driverDTO.getCityCode()))
+                .build();
     }
 
 }

@@ -21,6 +21,10 @@ query = "select r from Road r " +
 query = "select r.distanceInHours from Road r " +
         "where r.cityA.cityCode = :cityACode " +
         "and r.cityB.cityCode = :cityBCode")
+@NamedQuery(name = "Road.findIsConnected",
+query = "select count(r) from Road r " +
+        "where r.cityA.cityCode = :cityACode " +
+        "and r.cityB.cityCode = :cityBCode")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor

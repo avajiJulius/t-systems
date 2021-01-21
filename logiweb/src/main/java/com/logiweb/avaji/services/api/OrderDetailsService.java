@@ -10,5 +10,5 @@ import java.util.List;
 public interface OrderDetailsService {
     OrderDetailsDTO readOrderDetails(long driverId);
     void updateOrderByCargoStatus(long orderId, List<Long> cargoIds);
-    void changeCity(long orderId, Deque<CityDTO> remainingPath);
+    void changeCity(long orderId);
 }

@@ -1,6 +1,7 @@
 package com.logiweb.avaji.entities.models;
 
 import com.logiweb.avaji.entities.enums.DriverStatus;
+import com.logiweb.avaji.entities.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,6 +31,9 @@ import javax.persistence.*;
                         "where d.currentTruck in (select t from Truck t where t.truckId = :id)")
 @NamedQuery(name = "Driver.findDriversByIds",
         query = "select d from Driver d where d.id in :driversIds")
+@NamedQuery(name = "Driver.updateOnCompletedOrder",
+        query = "update Driver d set d.currentTruck = null, d.orderDetails = null " +
+                "where d.orderDetails.id = :id")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -57,6 +61,80 @@ public class Driver extends User{
 
     @OneToOne(mappedBy = "driver")
     private WorkShift workShift;
+
+    public static class Builder {
+        private Driver newDriver;
+
+        public Builder() {
+            newDriver = new Driver();
+        }
+
+        public Builder withVersion(int version) {
+            newDriver.setVersion(version);
+            return this;
+        }
+
+        public Builder withId(long id) {
+            newDriver.setId(id);
+            return this;
+        }
+
+        public Builder withEmail(String email) {
+            newDriver.setEmail(email);
+            return this;
+        }
+
+
+        public Builder withPassword(String password) {
+            newDriver.setPassword(password);
+            return this;
+        }
+
+
+        public Builder withFirstName(String firstName) {
+            newDriver.firstName = firstName;
+            return this;
+        }
+
+
+        public Builder withLastName(String lastName) {
+            newDriver.lastName = lastName;
+            return this;
+        }
+
+
+        public Builder withEnable(boolean enable) {
+            newDriver.setEnable(enable);
+            return this;
+        }
+
+        public Builder withRole(Role role) {
+            newDriver.setRole(role);
+            return this;
+        }
+
+
+        public Builder withHoursWorked(double hoursWorked) {
+            newDriver.hoursWorked = hoursWorked;
+            return this;
+        }
+
+
+        public Builder withDriverStatus(DriverStatus status) {
+            newDriver.driverStatus = status;
+            return this;
+        }
+
+
+        public Builder withCurrentCity(City city) {
+            newDriver.currentCity = city;
+            return this;
+        }
+
+        public Driver build() {
+            return newDriver;
+        }
+    }
 
     @Override
     public String toString() {

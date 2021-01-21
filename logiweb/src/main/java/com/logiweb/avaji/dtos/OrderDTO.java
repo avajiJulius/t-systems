@@ -14,4 +14,5 @@ public class OrderDTO {
     private boolean completed;
     private String truckId;
     private long currentShiftSize;
+    private String prettyPath;
 }

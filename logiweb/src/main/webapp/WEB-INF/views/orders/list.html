@@ -14,11 +14,12 @@
     <form action="#" th:action="@{/orders/new}" method="GET">
         <button type="submit" class="btn btn-primary">Create Order</button>
     </form>
-    <table class="table table-hover">
+    <table class="table table-bordered border-4 border-dark">
         <thead class="thead-light">
         <tr>
             <th scope="col"> ID</th>
             <th scope="col"> Status</th>
+            <th scope="col"> Path</th>
             <th scope="col"> Truck</th>
             <th scope="col"> Drivers in Shift</th>
             <th scope="col"> Cargo</th>
@@ -27,7 +28,11 @@
         <tbody>
         <tr th:each="order : ${orders}">
             <td scope="row" th:text="${order.orderId}" />
-            <td th:text="${order.completed}" />
+            <td>
+                <span th:if="${order.completed == true}">Completed</span>
+                <span th:unless="${order.completed == true}">Uncompleted</span>
+            </td>
+            <td th:text="${order.prettyPath}"/>
             <td>
                 <span th:text="${order?.truckId}" />
                 <a th:href="@{/orders/{id}/trucks(id=${order.orderId})}"

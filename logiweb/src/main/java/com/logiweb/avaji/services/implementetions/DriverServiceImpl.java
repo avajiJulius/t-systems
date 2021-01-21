@@ -3,8 +3,10 @@ package com.logiweb.avaji.services.implementetions;
 import com.logiweb.avaji.daos.DriverDAO;
 import com.logiweb.avaji.dtos.DriverDTO;
 import com.logiweb.avaji.entities.models.Driver;
+import com.logiweb.avaji.entities.models.WorkShift;
 import com.logiweb.avaji.services.api.DriverService;
 import com.logiweb.avaji.mapper.Mapper;
+import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +36,11 @@ public class DriverServiceImpl implements DriverService {
     public void createDriver(DriverDTO driverDTO) {
         Driver driver = mapper.createDriverFromDto(driverDTO);
         driverDAO.saveDriver(driver);
+        createWorkShift(driver.getId());
+    }
+
+    private void createWorkShift(long id) {
+        driverDAO.saveWorkShift(id);
     }
 
     @Override
