@@ -43,8 +43,16 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDTO> readAllOrders() {
         List<OrderDTO> allOrders = orderDAO.findAllOrders();
         for (OrderDTO orderDTO : allOrders) {
+            orderDTO.setDrivers(orderDAO.findDriversByOrderId(orderDTO.getOrderId()));
+
+            if(orderDTO.getTruckId() != null) {
+                orderDTO.setShiftSize(
+                        orderDAO.findTruckByOrderId(orderDTO.getOrderId()).getShiftSize());
+            }
+
             orderDTO.setPrettyPath(parser.toPrettyPath(orderDTO.getPrettyPath()));
         }
+
         return allOrders;
     }
 
@@ -79,9 +87,7 @@ public class OrderServiceImpl implements OrderService {
 
         List<CityDTO> path = parser.pathStringToCityDTOList(order.getPath());
 
-        Double maxCapacity = pathDetailsService.getMaxCapacity(
-                path,
-                orderDAO.findWaypointsOfThisOrder(orderId));
+        Double maxCapacity = pathDetailsService.getMaxCapacityInTons(path, orderDAO.findWaypointsOfThisOrder(orderId));
 
         return orderDAO.findTrucksForOrder(maxCapacity, path.get(0).getCityCode());
     }

@@ -15,9 +15,10 @@
         <button type="submit" class="btn btn-primary">Create Order</button>
     </form>
     <table class="table table-bordered border-4 border-dark">
+
         <thead class="thead-light">
         <tr>
-            <th scope="col"> ID</th>
+            <th scope="col"> #</th>
             <th scope="col"> Status</th>
             <th scope="col"> Path</th>
             <th scope="col"> Truck</th>
@@ -25,6 +26,7 @@
             <th scope="col"> Cargo</th>
         </tr>
         </thead>
+
         <tbody>
         <tr th:each="order : ${orders}">
             <td scope="row" th:text="${order.orderId}" />
@@ -34,16 +36,33 @@
             </td>
             <td th:text="${order.prettyPath}"/>
             <td>
-                <span th:text="${order?.truckId}" />
-                <a th:href="@{/orders/{id}/trucks(id=${order.orderId})}"
-                   th:if="${order.truckId == null}">Choose Truck</a>
+                <div th:if="${order.completed == false}">
+                    <span th:text="${order?.truckId}" />
+                    <a th:href="@{/orders/{id}/trucks(id=${order.orderId})}"
+                       th:if="${order.truckId == null}">Choose Truck</a>
+                </div>
+                <div th:unless="${order.completed == false}" >
+                    -
+                </div>
             </td>
             <td>
-                <div th:if="${order.truckId == null}">
-                    <a th:href="@{/orders/{id}/trucks(id=${order.orderId})}">Choose Truck</a>
+                <div th:if="${order.completed == false}">
+                    <div th:if="${order.truckId == null}">
+                        <a th:href="@{/orders/{id}/trucks(id=${order.orderId})}">Choose Truck</a>
+                    </div>
+                    <div th:unless="${order.truckId == null}">
+                        <div th:if="${order?.drivers.size() == order.shiftSize}" >
+                            <ol th:each="driver : ${order?.drivers}">
+                                <li th:text="${'#' + driver.id + ':' + driver.lastName + ' ' + driver.firstName}"></li>
+                            </ol>
+                        </div>
+                        <div th:unless="${order?.drivers.size() == order.shiftSize}">
+                            <a th:href="@{/orders/{id}/drivers(id=${order.orderId})}" th:text="${order.shiftSize}"></a>
+                        </div>
+                    </div>
                 </div>
-                <div th:unless="${order.truckId == null}">
-                    <a th:href="@{/orders/{id}/drivers(id=${order.orderId})}" th:text="${order.currentShiftSize}"></a>
+                <div th:unless="${order.completed == false}">
+                    -
                 </div>
             </td>
             <td><a th:href="@{/orders/{id}/cargo(id=${order.orderId})}">Go to Cargo</a></td>

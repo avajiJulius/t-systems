@@ -47,11 +47,6 @@ public class OrderDAO {
         return query.getResultList();
     }
 
-    public List<Waypoint> findWaypointsOfThisCargo(long cargoId){
-        TypedQuery<Waypoint> query = entityManager.createNamedQuery("Waypoint.findWaypointsOfThisCargo", Waypoint.class)
-                .setParameter("cargoId", cargoId);
-        return query.getResultList();
-    }
 
     public Truck findTruckByOrderId(long orderId) {
         TypedQuery<Truck> query = entityManager.createNamedQuery("Order.findTruckByOrderId", Truck.class)
@@ -72,12 +67,10 @@ public class OrderDAO {
         return query.getResultList();
     }
 
-
-
-    public Order findOrderByTruckId(String truckId) {
-        TypedQuery<Order> query = entityManager.createNamedQuery("Order.findOrderByTruckId", Order.class)
-                .setParameter("truckId", truckId);
-        return query.getSingleResult();
+    public List<DriverDTO> findDriversByOrderId(long orderId) {
+        TypedQuery<DriverDTO> query = entityManager.createNamedQuery("Driver.findDriversByOrderId", DriverDTO.class)
+                .setParameter("id", orderId);
+        return query.getResultList();
     }
 
     public Truck findTruckEntityById(String truckId) {

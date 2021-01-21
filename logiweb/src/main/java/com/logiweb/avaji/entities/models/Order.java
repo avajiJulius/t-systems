@@ -12,14 +12,11 @@ import java.util.List;
 @Table(name = "orders")
 @NamedQuery(name = "Order.findAllOrders",
 query = "select new com.logiweb.avaji.dtos.OrderDTO(" +
-        "o.id, o.version, o.completed, o.designatedTruck.truckId, " +
-        "(select count(d) from Driver d where d.currentTruck.truckId = o.designatedTruck.truckId), " +
-        "o.path) from Order o")
+        "o.id, o.version, o.completed, o.designatedTruck.truckId, o.path) from Order o")
 @NamedQuery(name = "Order.findWaypointsOfThisOrder",
 query = "select w from Waypoint w where w.waypointOrder.id = :orderId " )
 @NamedQuery(name = "Order.findOrderById",
-        query = "select o from Order o " +
-                "where o.id = :orderId")
+        query = "select o from Order o where o.id = :orderId")
 @NamedQuery(name = "Order.findTruckByOrderId",
 query = "select o.designatedTruck from Order o where o.id = :orderId")
 @NamedQuery(name = "Order.findOrderByTruckId",

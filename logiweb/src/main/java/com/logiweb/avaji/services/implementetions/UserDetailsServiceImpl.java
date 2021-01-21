@@ -31,7 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) {
         User user = Optional.ofNullable(userDAO.findUserByEmail(email)).<UsernameNotFoundException>orElseThrow(() -> {
             logger.error("User doesn't exists");
             throw new UsernameNotFoundException("User doesn't exists");

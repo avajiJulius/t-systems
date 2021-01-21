@@ -20,4 +20,23 @@ public class ShiftDetailsDTO {
     private LocalDateTime start;
     private LocalDateTime end;
     private double hoursWorked;
+
+    public static class Builder {
+        private ShiftDetailsDTO newDetails;
+
+        public Builder() {
+            newDetails = new ShiftDetailsDTO();
+        }
+
+        public Builder defaultBuildForLoadUnloadWork(long id) {
+            newDetails.id = id;
+            newDetails.shiftActive = true;
+            newDetails.driverStatus = DriverStatus.LOAD_UNLOAD_WORK;
+            return this;
+        }
+
+        public ShiftDetailsDTO build() {
+            return newDetails;
+        }
+    }
 }

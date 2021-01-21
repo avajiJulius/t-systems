@@ -11,6 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CargoChangeDTO {
-    private long orderId;
     private List<Long> ids = new ArrayList<>();
 }

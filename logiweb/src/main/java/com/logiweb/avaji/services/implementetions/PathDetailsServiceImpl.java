@@ -143,7 +143,7 @@ public class PathDetailsServiceImpl implements PathDetailsService {
 
 
     @Override
-    public Double getMaxCapacity(List<CityDTO> cities, List<WaypointDTO> waypoints) {
+    public double getMaxCapacityInTons(List<CityDTO> cities, List<WaypointDTO> waypoints) {
         double maxCapacity = 0;
         for (CityDTO city: cities) {
             double loadCapacity = 0.0;
@@ -167,11 +167,15 @@ public class PathDetailsServiceImpl implements PathDetailsService {
             }
         }
 
-        return maxCapacity;
+        return convertKilogramsToTons(maxCapacity);
+    }
+
+    private double convertKilogramsToTons(double maxCapacity) {
+        return (maxCapacity / 1000);
     }
 
     @Override
-    public Double getShiftHours(List<CityDTO> path) {
+    public double getShiftHours(List<CityDTO> path) {
         double shiftHours = 0.0;
         for (int i = 0; i < path.size() - 1; i++) {
             int index = i;

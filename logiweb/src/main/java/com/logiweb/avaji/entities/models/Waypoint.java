@@ -12,17 +12,13 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "waypoints")
-@NamedQueries(value = {
-        @NamedQuery(name = "Waypoint.findWaypointsOfThisOrder",
+@NamedQuery(name = "Waypoint.findWaypointsOfThisOrder",
         query = "select new com.logiweb.avaji.dtos.WaypointDTO(" +
                 "w.waypointCity.cityCode, w.waypointCity.cityName, " +
                 "w.waypointType, w.waypointCargo.cargoTitle, w.waypointCargo.cargoId, " +
                 "w.waypointCargo.cargoStatus, w.waypointCargo.cargoWeight) " +
                 "from Waypoint w " +
-                "where w.waypointOrder.id = :orderId"),
-        @NamedQuery(name = "Waypoint.findWaypointsOfThisCargo",
-                query = "select w from Waypoint w where w.waypointCargo.cargoId = :cargoId")
-})
+                "where w.waypointOrder.id = :orderId")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

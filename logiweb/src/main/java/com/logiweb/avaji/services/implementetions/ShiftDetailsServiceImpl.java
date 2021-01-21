@@ -3,7 +3,6 @@ package com.logiweb.avaji.services.implementetions;
 import com.logiweb.avaji.daos.ShiftDetailsDAO;
 import com.logiweb.avaji.dtos.ShiftDetailsDTO;
 import com.logiweb.avaji.entities.enums.DriverStatus;
-import com.logiweb.avaji.exceptions.DriverStatusNotFoundException;
 import com.logiweb.avaji.exceptions.ShiftValidationException;
 import com.logiweb.avaji.services.api.ShiftDetailsService;
 import org.apache.logging.log4j.LogManager;
@@ -35,7 +34,7 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
     @Override
     @Transactional
     public void updateShiftDetails(ShiftDetailsDTO updateDetails)
-            throws ShiftValidationException, DriverStatusNotFoundException {
+            throws ShiftValidationException {
         ShiftDetailsDTO shiftDetails = shiftDetailsDAO.findShiftDetails(updateDetails.getId());
 
         if(!validateShiftAndDriverStatus(updateDetails.isShiftActive(), updateDetails.getDriverStatus())) {

@@ -59,9 +59,10 @@ public class ProfileController {
 
     @PatchMapping("/cargo")
     @PreAuthorize("hasAuthority('driver:write')")
-    public String updateCargoStatus(@ModelAttribute("cargoIds") CargoChangeDTO cargoIds){
-
-        orderDetailsService.updateOrderByCargoStatus(cargoIds.getOrderId(), cargoIds.getIds());
+    public String updateCargoStatus(@ModelAttribute("cargoIds") CargoChangeDTO cargoIds,
+                                    Principal principal) throws ShiftValidationException {
+        User user = userDAO.findUserByEmail(principal.getName());
+        orderDetailsService.updateOrderByCargoStatus(user.getId(), cargoIds.getIds());
         return "redirect:/profile";
     }
 

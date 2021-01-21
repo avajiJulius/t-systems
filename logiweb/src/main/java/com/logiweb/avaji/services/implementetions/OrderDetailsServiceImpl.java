@@ -4,15 +4,16 @@ package com.logiweb.avaji.services.implementetions;
 import com.logiweb.avaji.daos.CargoDAO;
 import com.logiweb.avaji.daos.OrderDAO;
 import com.logiweb.avaji.daos.OrderDetailsDAO;
-import com.logiweb.avaji.dtos.CityDTO;
-import com.logiweb.avaji.dtos.DriverDTO;
-import com.logiweb.avaji.dtos.OrderDetailsDTO;
+import com.logiweb.avaji.dtos.*;
 import com.logiweb.avaji.entities.enums.CargoStatus;
+import com.logiweb.avaji.entities.enums.WaypointType;
 import com.logiweb.avaji.entities.models.Cargo;
-import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.entities.models.OrderDetails;
+import com.logiweb.avaji.exceptions.DriverStatusNotFoundException;
+import com.logiweb.avaji.exceptions.ShiftValidationException;
 import com.logiweb.avaji.parser.PathStringParser;
 import com.logiweb.avaji.services.api.OrderDetailsService;
+import com.logiweb.avaji.services.api.ShiftDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,21 +29,23 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
     private final OrderDAO orderDAO;
     private final PathStringParser parser;
     private final CargoDAO cargoDAO;
+    private final ShiftDetailsService shiftDetailsService;
 
-    @Autowired
-    public OrderDetailsServiceImpl(OrderDetailsDAO orderDetailsDAO, OrderDAO orderDAO,
-                                   PathStringParser parser, CargoDAO cargoDAO) {
+
+    public OrderDetailsServiceImpl(OrderDetailsDAO orderDetailsDAO, OrderDAO orderDAO, PathStringParser parser,
+                                   CargoDAO cargoDAO, ShiftDetailsService shiftDetailsService) {
         this.orderDetailsDAO = orderDetailsDAO;
         this.orderDAO = orderDAO;
         this.parser = parser;
         this.cargoDAO = cargoDAO;
+        this.shiftDetailsService = shiftDetailsService;
     }
 
     @Override
     public OrderDetailsDTO readOrderDetails(long driverId) {
         OrderDetailsDTO orderDetails = orderDetailsDAO.findOrderDetails(driverId);
 
-        List<DriverDTO> coDrivers = orderDetailsDAO.findDriversByOrderId(orderDetails.getId())
+        List<DriverDTO> coDrivers = orderDAO.findDriversByOrderId(orderDetails.getId())
                 .stream().filter(d -> d.getId() != driverId).collect(Collectors.toList());
         orderDetails.setCoDrivers(coDrivers);
 
@@ -69,7 +72,8 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
     }
 
     @Override
-    public void updateOrderByCargoStatus(long orderId, List<Long> cargoIds) {
+    public void updateOrderByCargoStatus(long driverId, List<Long> cargoIds) throws ShiftValidationException {
+        shiftDetailsService.updateShiftDetails(new ShiftDetailsDTO.Builder().defaultBuildForLoadUnloadWork(driverId).build());
 
         for(long id : cargoIds) {
             Cargo cargo = cargoDAO.findCargoById(id);
@@ -78,6 +82,7 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
             cargoDAO.updateCargo(cargo);
         }
 
+        long orderId = orderDetailsDAO.findOrderIdOfDriverId(driverId);
         boolean orderCompleted = cargoDAO.findCargoByOrderId(orderId)
                 .stream().allMatch(cargo -> cargo.getCargoStatus() == CargoStatus.DELIVERED);
 

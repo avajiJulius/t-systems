@@ -11,10 +11,9 @@ import java.util.List;
 
 @Service
 public interface PathDetailsService {
-    Double getMaxCapacity(List<CityDTO> cities, List<WaypointDTO> waypoints);
-    Double getShiftHours(List<CityDTO> path);
+    double getMaxCapacityInTons(List<CityDTO> cities, List<WaypointDTO> waypoints);
+    double getShiftHours(List<CityDTO> path);
     long calculateTimeUntilEndOfMonth();
     int calculateFreeSpaceInShift(long orderId);
-    CityDTO getNextCity(List<CityDTO> path, long cityCode);
     List<Long> getPath(List<WaypointDTO> waypoints);
 }
