@@ -16,7 +16,8 @@ query = "select r from Road r " +
         "where r.cityA.cityCode = :cityACode " +
         "and r.cityB.cityCode = :cityBCode")
 @NamedQuery(name = "Road.findAllRoads",
-        query = "select r from Road r")
+        query = "select new com.logiweb.avaji.dtos.RoadDTO(" +
+                "r.cityA.cityCode, r.cityB.cityCode, r.distanceInHours) from Road r")
 @NamedQuery(name = "Road.findDistance",
 query = "select r.distanceInHours from Road r " +
         "where r.cityA.cityCode = :cityACode " +

@@ -6,10 +6,8 @@ import com.logiweb.avaji.daos.OrderDAO;
 import com.logiweb.avaji.daos.OrderDetailsDAO;
 import com.logiweb.avaji.dtos.*;
 import com.logiweb.avaji.entities.enums.CargoStatus;
-import com.logiweb.avaji.entities.enums.WaypointType;
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.OrderDetails;
-import com.logiweb.avaji.exceptions.DriverStatusNotFoundException;
 import com.logiweb.avaji.exceptions.ShiftValidationException;
 import com.logiweb.avaji.parser.PathStringParser;
 import com.logiweb.avaji.services.api.OrderDetailsService;
@@ -18,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,11 +26,11 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 
     private final OrderDetailsDAO orderDetailsDAO;
     private final OrderDAO orderDAO;
-    private final PathStringParser parser;
     private final CargoDAO cargoDAO;
+    private final PathStringParser parser;
     private final ShiftDetailsService shiftDetailsService;
 
-
+    @Autowired
     public OrderDetailsServiceImpl(OrderDetailsDAO orderDetailsDAO, OrderDAO orderDAO, PathStringParser parser,
                                    CargoDAO cargoDAO, ShiftDetailsService shiftDetailsService) {
         this.orderDetailsDAO = orderDetailsDAO;
@@ -92,9 +91,11 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
     }
 
     @Override
-    public void changeCity(long orderId) {
+    public void changeCity(long orderId, long driverId) {
         OrderDetails orderDetails = orderDetailsDAO.findOrderDetailsEntity(orderId);
-        orderDetails.setRemainingPath(orderDetails.getRemainingPath().substring(2));
-        orderDetailsDAO.updateOrderDetails(orderDetails);
+        List<Long> citiesCodes = parser.pathStringToCityCodes(orderDetails.getRemainingPath());
+        long nextCityCode = citiesCodes.remove(0);
+        orderDetails.setRemainingPath(parser.parsePathListToString(citiesCodes));
+        orderDetailsDAO.updateOrderDetails(orderDetails, driverId, nextCityCode);
     }
 }

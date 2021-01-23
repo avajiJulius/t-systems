@@ -49,7 +49,7 @@ public class ProfileController {
     @PatchMapping("/shift")
     @PreAuthorize("hasAuthority('driver:write')")
     public String updateShiftDetails(@ModelAttribute("shiftDetails") ShiftDetailsDTO shiftDetails,
-                                     Principal principal) throws ShiftValidationException, DriverStatusNotFoundException {
+                                     Principal principal) throws ShiftValidationException {
         User user = userDAO.findUserByEmail(principal.getName());
         shiftDetails.setId(user.getId());
         shiftDetailsService.updateShiftDetails(shiftDetails);
@@ -68,8 +68,10 @@ public class ProfileController {
 
     @GetMapping("/{id}/changeCity")
     @PreAuthorize("hasAuthority('driver:write')")
-    public String updateRemainingPath(@PathVariable("id") long orderId) {
-        orderDetailsService.changeCity(orderId);
+    public String updateRemainingPath(@PathVariable("id") long orderId,
+                                      Principal principal) {
+        User user = userDAO.findUserByEmail(principal.getName());
+        orderDetailsService.changeCity(orderId, user.getId());
         return "redirect:/profile";
     }
 }

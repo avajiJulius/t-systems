@@ -1,5 +1,6 @@
 package com.logiweb.avaji.entities.models;
 
+import com.logiweb.avaji.dtos.DriverDTO;
 import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.enums.Role;
 import lombok.AllArgsConstructor;
@@ -29,11 +30,19 @@ import javax.persistence.*;
 @NamedQuery(name = "Driver.countDriversOfTruck",
                 query = "select count(d) from Driver d " +
                         "where d.currentTruck in (select t from Truck t where t.truckId = :id)")
+@NamedQuery(name = "Driver.findDriverById",
+        query = "select new com.logiweb.avaji.dtos.DriverDTO(d.id, d.version,d.firstName, d.lastName, " +
+                "d.hoursWorked, d.driverStatus, d.currentCity.cityCode, d.currentCity.cityName) " +
+                "from Driver d where d.id in :id")
 @NamedQuery(name = "Driver.findDriversByIds",
         query = "select d from Driver d where d.id in :driversIds")
 @NamedQuery(name = "Driver.updateOnCompletedOrder",
-        query = "update Driver d set d.currentTruck = null, d.orderDetails = null " +
+        query = "update Driver d set d.currentTruck = null, d.orderDetails = null, d.driverStatus = 'REST' " +
                 "where d.orderDetails.id = :id")
+@NamedQuery(name = "Driver.updateDriverOnCityChange",
+        query = "update Driver d set d.driverStatus = 'DRIVING', d.currentCity = " +
+                "(select c from City c where c.cityCode = :cityCode) " +
+                "where d.id = :id")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -67,6 +76,10 @@ public class Driver extends User{
 
         public Builder() {
             newDriver = new Driver();
+        }
+
+        public Builder(Driver driver) {
+            newDriver = driver;
         }
 
         public Builder withVersion(int version) {

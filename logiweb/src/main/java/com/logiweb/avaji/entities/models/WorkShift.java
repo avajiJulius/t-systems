@@ -16,6 +16,10 @@ query = "select new com.logiweb.avaji.dtos.ShiftDetailsDTO(" +
         "ws.start, ws.end, d.hoursWorked) from Driver d " +
         "join d.workShift ws " +
         "where d.id = :id")
+@NamedQuery(name = "WorkShift.updateOnCompletedOrder",
+query = "update WorkShift ws " +
+        "set ws.active = false, ws.end = :end " +
+        "where ws.id = :id")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

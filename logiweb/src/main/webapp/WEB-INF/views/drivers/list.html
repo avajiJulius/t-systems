@@ -22,6 +22,7 @@
             <th scope="col"> Status</th>
             <th scope="col"> Current City</th>
             <th scope="col"> Current Truck</th>
+            <th scope="col"> Action</th>
         </tr>
         </thead>
         <tbody>
@@ -35,6 +36,12 @@
             <td>
                 <span th:text="${driver?.truckId}" />
                 <span th:if="${driver.truckId == null}">-</span>
+            </td>
+            <td>
+                <a th:href="@{/drivers/{id}/edit(id=${driver.id})}">Edit</a>
+                <form action="#" th:action="@{/drivers/{id}(id=${driver.id})}" th:method="DELETE">
+                    <input type="submit" value="Delete" />
+                </form>
             </td>
         </tr>
         </tbody>

@@ -58,7 +58,7 @@ create table orders (
 create table order_details (
     id bigint,
     version int,
-    remaining_path varchar(30),
+    remaining_path varchar(100),
     primary key (id),
     foreign key (id) references orders(id)
 );

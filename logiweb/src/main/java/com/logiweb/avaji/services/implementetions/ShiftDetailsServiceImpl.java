@@ -69,8 +69,9 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
     }
 
     private void updateHoursWorked(ShiftDetailsDTO shiftDetails) {
-        long shiftHours = ChronoUnit.HOURS.between(shiftDetails.getStart(), shiftDetails.getEnd());
-        shiftDetails.setHoursWorked((double)shiftHours);
+        double shiftHours = (double) ChronoUnit.HOURS.between(shiftDetails.getStart(), shiftDetails.getEnd()) +
+                shiftDetails.getHoursWorked();
+        shiftDetails.setHoursWorked(shiftHours);
     }
 
 

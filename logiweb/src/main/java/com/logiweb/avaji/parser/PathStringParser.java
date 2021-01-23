@@ -61,4 +61,9 @@ public class PathStringParser {
         }
         return sb.substring(0, sb.length() - 3);
     }
+
+    public List<Long> pathStringToCityCodes(String path) {
+        return Arrays.stream(path.split("-"))
+                .map(Long::parseLong).collect(Collectors.toList());
+    }
 }

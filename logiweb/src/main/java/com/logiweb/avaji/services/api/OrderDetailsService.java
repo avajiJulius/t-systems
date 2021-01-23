@@ -9,5 +9,5 @@ import java.util.List;
 public interface OrderDetailsService {
     OrderDetailsDTO readOrderDetails(long driverId);
     void updateOrderByCargoStatus(long driverId, List<Long> cargoIds) throws ShiftValidationException;
-    void changeCity(long orderId);
+    void changeCity(long orderId, long driverId);
 }

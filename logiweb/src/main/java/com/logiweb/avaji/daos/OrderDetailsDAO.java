@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -34,7 +35,9 @@ public class OrderDetailsDAO {
 
 
 
-    public void updateOrderDetails(OrderDetails updatedOrderDetails) {
+    public void updateOrderDetails(OrderDetails updatedOrderDetails,long driverId, long cityCode) {
+        entityManager.createNamedQuery("Driver.updateDriverOnCityChange")
+                .setParameter("cityCode", cityCode).setParameter("id", driverId).executeUpdate();
         entityManager.merge(updatedOrderDetails);
     }
 
@@ -47,7 +50,10 @@ public class OrderDetailsDAO {
         entityManager.createNamedQuery("Order.updateOnCompletedOrder")
                 .setParameter("id", orderId).executeUpdate();
         entityManager.createNamedQuery("Driver.updateOnCompletedOrder")
-                 .setParameter("id", orderId).executeUpdate();
+                .setParameter("id", orderId).executeUpdate();
+        entityManager.createNamedQuery("WorkShift.updateOnCompletedOrder")
+                .setParameter("id", orderId).setParameter("end", LocalDateTime.now())
+                .executeUpdate();
     }
 
 }

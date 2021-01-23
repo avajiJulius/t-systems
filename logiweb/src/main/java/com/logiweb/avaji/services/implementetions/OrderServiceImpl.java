@@ -62,7 +62,7 @@ public class OrderServiceImpl implements OrderService {
         List<Waypoint> waypoints = converter.dtoToWaypoints(dto, order);
         orderDAO.saveWaypoints(waypoints);
 
-        List<Long> path = pathDetailsService.getPath(dto.getWaypointsDto());
+        List<Long> path = pathDetailsService.getPath(dto.getWaypointsDto()).getPath();
         String stringPath = parser.parsePathListToString(path);
         order.setPath(stringPath);
 
@@ -104,7 +104,7 @@ public class OrderServiceImpl implements OrderService {
     public List<DriverDTO> readDriversForOrder(long orderId) {
         long cityCode = orderDAO.findTruckByOrderId(orderId).getCurrentCity().getCityCode();
         String path = orderDAO.findOrderById(orderId).getPath();
-        Double shiftHours = pathDetailsService.getShiftHours(parser.pathStringToCityDTOList(path));
+        double shiftHours = pathDetailsService.getShiftHours(parser.pathStringToCityDTOList(path));
 
         long untilEndOfMonth = pathDetailsService.calculateTimeUntilEndOfMonth();
         if(shiftHours > untilEndOfMonth) {
@@ -120,7 +120,7 @@ public class OrderServiceImpl implements OrderService {
         String truckId = orderDAO.findOrderById(orderId).getDesignatedTruck().getTruckId();
         OrderDetails orderDetails = orderDAO.findOrderDetails(orderId);
         Truck truck = orderDAO.findTruckEntityById(truckId);
-        List<Driver> drivers = orderDAO.findDriversByIds(driversIds);
+        List<Driver> drivers = driverDAO.findDriversByIds(driversIds);
         for(Driver driver: drivers) {
             driver.setCurrentTruck(truck);
             driver.setOrderDetails(orderDetails);

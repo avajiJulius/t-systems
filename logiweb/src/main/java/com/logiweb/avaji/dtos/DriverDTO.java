@@ -12,28 +12,31 @@ import javax.validation.constraints.Null;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DriverDTO {
-    interface Create{}
-    interface Read{}
-    interface Update{}
+    public interface Create{}
+    public interface Read{}
+    public interface Update{}
 
-    @Null(groups = {Update.class, Create.class})
+    @Null(groups = {Create.class})
     @NotNull(groups = {Read.class})
     private long id;
     private int version;
-    @NotNull
+    @NotNull(groups = {Create.class, Update.class})
     private String firstName;
-    @NotNull
+    @NotNull(groups = {Create.class, Update.class})
     private String lastName;
-    @NotNull
+    @Null(groups = {Update.class})
+    @NotNull(groups = {Create.class})
     private String email;
-    @NotNull
+    @Null(groups = {Update.class})
+    @NotNull(groups = {Create.class})
     private String password;
+    @Null(groups = {Create.class})
     private boolean enable;
     @Null(groups = {Create.class})
     @NotNull(groups = {Read.class, Update.class})
     private double hoursWorked;
     @Null(groups = {Create.class})
-    @NotNull(groups = {Read.class, Update.class})
+    @NotNull(groups = {Read.class})
     private DriverStatus driverStatus;
     private String truckId;
     private long cityCode;
@@ -42,7 +45,7 @@ public class DriverDTO {
     public DriverDTO(@Null(groups = {Update.class, Create.class}) @NotNull(groups = {Read.class}) long id,
                      @NotNull String firstName, @NotNull String lastName,
                      @Null(groups = {Create.class}) @NotNull(groups = {Read.class, Update.class}) double hoursWorked,
-                     @Null(groups = {Create.class}) @NotNull(groups = {Read.class, Update.class}) DriverStatus driverStatus,
+                     @Null(groups = {Create.class}) @NotNull(groups = {Read.class}) DriverStatus driverStatus,
                      String truckId, long cityCode, String cityName) {
         this.id = id;
         this.firstName = firstName;
@@ -55,12 +58,10 @@ public class DriverDTO {
     }
 
 
-
-    public DriverDTO(@Null(groups = {Update.class, Create.class}) @NotNull(groups = {Read.class}) long id,
-                     int version, @NotNull String firstName, @NotNull String lastName,
+    public DriverDTO(@Null(groups = {Update.class, Create.class}) @NotNull(groups = {Read.class}) long id, int version,
+                     @NotNull(groups = {Create.class, Update.class}) String firstName, @NotNull(groups = {Create.class, Update.class}) String lastName,
                      @Null(groups = {Create.class}) @NotNull(groups = {Read.class, Update.class}) double hoursWorked,
-                     @Null(groups = {Create.class}) @NotNull(groups = {Read.class, Update.class}) DriverStatus driverStatus,
-                     long cityCode, String cityName) {
+                     @Null(groups = {Create.class}) @NotNull(groups = {Read.class}) DriverStatus driverStatus, long cityCode, String cityName) {
         this.id = id;
         this.version = version;
         this.firstName = firstName;

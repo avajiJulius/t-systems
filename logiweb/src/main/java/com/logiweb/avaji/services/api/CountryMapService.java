@@ -1,8 +1,7 @@
 package com.logiweb.avaji.services.api;
 
 import com.logiweb.avaji.dtos.CityDTO;
-import com.logiweb.avaji.entities.models.Road;
-import com.logiweb.avaji.dtos.Vertex;
+import com.logiweb.avaji.dtos.RoadDTO;
 
 import java.util.List;
 
@@ -13,11 +12,12 @@ import java.util.List;
 public interface CountryMapService {
 
     List<CityDTO> readAllCities();
-    List<Vertex> readAllVertex();
 
     double readDistanceBetween(long cityCodeA, long cityCodeB);
 
     List<Long> findConnected(long cityCode);
 
     boolean isConnected(long cityCodeA, long cityCodeB);
+
+    List<RoadDTO> readAllRoads();
 }

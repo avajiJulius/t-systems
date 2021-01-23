@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -42,9 +44,37 @@ public class DriverController {
 
     @PostMapping()
     @PreAuthorize("hasAuthority('employee:write')")
-    public String createDriver(@ModelAttribute("driver")DriverDTO driver) {
+    public String createDriver(@ModelAttribute("driver") @Validated(DriverDTO.Create.class) DriverDTO driver) {
         driverService.createDriver(driver);
         return "redirect:/drivers";
     }
 
+    @GetMapping("/{id}/edit")
+    @PreAuthorize("hasAuthority('employee:write')")
+    public String getDriverEditForm(Model model, @PathVariable("id") long id) {
+        model.addAttribute("cities", mapService.readAllCities());
+        model.addAttribute("driver", driverService.readDriverById(id));
+        return "drivers/edit";
+    }
+
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasAuthority('employee:write')")
+    public String editDriver(@PathVariable("id") long id,
+                            @ModelAttribute("driver") @Validated(DriverDTO.Update.class) DriverDTO editDriver,
+                            BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("driver", driverService.readDriverById(id));
+            model.addAttribute("cities", mapService.readAllCities());
+            return "drivers/edit";
+        }
+        driverService.updateDriver(id, editDriver);
+        return "redirect:/drivers";
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('employee:write')")
+    public String deleteDriver(@PathVariable("id") long id) {
+        driverService.deleteDriver(id);
+        return "redirect:/drivers";
+    }
 }

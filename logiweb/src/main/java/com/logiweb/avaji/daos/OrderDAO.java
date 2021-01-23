@@ -78,11 +78,6 @@ public class OrderDAO {
     }
 
 
-    public List<Driver> findDriversByIds(List<Long> driversIds) {
-        TypedQuery<Driver> query = entityManager.createNamedQuery("Driver.findDriversByIds", Driver.class)
-                .setParameter("driversIds", driversIds);
-        return query.getResultList();
-    }
 
     public void saveOrderDetails(long id) {
         Order order = entityManager.find(Order.class, id);

@@ -12,9 +12,6 @@ import java.util.Collection;
 @NamedQuery(name = "City.findAllCities",
     query = "select distinct new com.logiweb.avaji.dtos.CityDTO(" +
         "c.cityCode, c.cityName) from City c")
-@NamedQuery(name = "City.findAllCitiesForVertex",
-        query = "select new com.logiweb.avaji.dtos.Vertex(c.cityCode) " +
-                "from City c")
 @NamedQuery(name = "City.findConnectedCities",
         query = "select case when r.cityA.cityCode = :cityCode then r.cityB.cityCode " +
                 "when r.cityB.cityCode = :cityCode then r.cityA.cityCode " +

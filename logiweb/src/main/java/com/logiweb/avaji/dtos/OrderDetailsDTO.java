@@ -35,6 +35,10 @@ public class OrderDetailsDTO {
         this.remainingPathString = remainingPathString;
     }
 
+    public OrderDetailsDTO(String remainingPathString) {
+        this.remainingPathString = remainingPathString;
+    }
+
     public static class Builder {
 
         private OrderDetailsDTO newOrderDetails;

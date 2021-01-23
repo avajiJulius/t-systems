@@ -39,8 +39,7 @@ public class OrderDetails {
         return "OrderDetails{" +
                 "id=" + id +
                 ", version=" + version +
-                ", remainingPath='" + remainingPath + '\'' +
-                ", drivers=" + drivers +
+                ", remainingPath='" + remainingPath +
                 '}';
     }
 }

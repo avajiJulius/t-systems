@@ -44,14 +44,21 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public void updateDriver(DriverDTO updatedDriver) {
-        Driver driver = mapper.updateDriverFromDto(updatedDriver);
-        driverDAO.updateDriver(driver);
+    public void updateDriver(long driverId,DriverDTO updatedDriver) {
+        Driver driver = driverDAO.findDriverEntity(driverId);
+
+
+        driverDAO.updateDriver(mapper.updateDriverFromDto(driver,updatedDriver));
     }
 
     @Override
     public void deleteDriver(long driverID) {
         driverDAO.deleteDriver(driverID);
+    }
+
+    @Override
+    public DriverDTO readDriverById(long id) {
+        return driverDAO.findDriverById(id);
     }
 
 

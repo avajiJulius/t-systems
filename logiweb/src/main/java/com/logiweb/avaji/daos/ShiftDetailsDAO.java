@@ -29,7 +29,7 @@ public class ShiftDetailsDAO {
         workShift.setEnd(shiftDetails.getEnd());
 
         Driver driver = entityManager.find(Driver.class, shiftDetails.getId());
-        driver.setHoursWorked(driver.getHoursWorked() + shiftDetails.getHoursWorked());
+        driver.setHoursWorked(shiftDetails.getHoursWorked());
         driver.setDriverStatus(shiftDetails.getDriverStatus());
 
         workShift.setDriver(driver);

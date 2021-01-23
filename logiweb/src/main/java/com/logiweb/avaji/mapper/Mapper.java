@@ -99,14 +99,11 @@ public class Mapper {
                 .build();
     }
 
-    public Driver updateDriverFromDto(DriverDTO driverDTO) {
-        return new Driver.Builder().withId(driverDTO.getId())
-                .withVersion(driverDTO.getVersion())
-                .withEnable(driverDTO.isEnable())
+    public Driver updateDriverFromDto(Driver driver, DriverDTO driverDTO) {
+        return new Driver.Builder(driver)
                 .withFirstName(driverDTO.getFirstName())
                 .withLastName(driverDTO.getLastName())
                 .withHoursWorked(driverDTO.getHoursWorked())
-                .withDriverStatus(driverDTO.getDriverStatus())
                 .withCurrentCity(mapDAO.findCityByCode(driverDTO.getCityCode()))
                 .build();
     }

@@ -32,7 +32,7 @@ public interface DriverService {
      *
      * @param updatedDriver entity.
      */
-    void updateDriver(DriverDTO updatedDriver);
+    void updateDriver(long id,DriverDTO updatedDriver);
 
     /**
      * The <code>deleteDriver</code> delete driver entity from the database by driver id.
@@ -42,4 +42,5 @@ public interface DriverService {
     void deleteDriver(long driverId);
 
 
+    DriverDTO readDriverById(long id);
 }

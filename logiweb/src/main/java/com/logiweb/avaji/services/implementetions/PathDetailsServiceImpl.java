@@ -31,117 +31,6 @@ public class PathDetailsServiceImpl implements PathDetailsService {
         this.truckDAO = truckDAO;
     }
 
-    public List<Long> getPath(List<WaypointDTO> waypoints) {
-        List<Path> path = new ArrayList<>();
-
-        for(WaypointDTO waypoint: waypoints) {
-            Vertex start = mapGraph.getVertex(waypoint.getLoadCityCode());
-            Vertex goal = mapGraph.getVertex(waypoint.getUnloadCityCode());
-
-            path.add(searchPath(start, goal,
-                    new ArrayList<>(), new Path(new ArrayList<>(), 0)));
-
-            mapGraph.refreshVertices();
-        }
-
-        return createShortPath(path);
-    }
-
-    private List<Long> createShortPath(List<Path> route) {
-        List<Vertex> vertices = new ArrayList<>();
-        for(Path path : route) {
-            vertices.addAll(path.getPath());
-        }
-
-        Long[] cityCodes = new Long[vertices.size()];
-        Arrays.fill(cityCodes, 0L);
-
-        for (int i = 0; i < route.size(); i++) {
-            Path path = route.get(i);
-            int startIndex = 0;
-            for(Vertex vertex: path.getPath()) {
-                List<Vertex> subList = vertices.subList(startIndex, vertices.size());
-                int index = subList.indexOf(vertex);
-                cityCodes[startIndex + index] = vertex.getCityCode();
-                startIndex = index;
-            }
-        }
-        List<Long> codes = Arrays.stream(cityCodes).filter(c -> c != 0L).collect(Collectors.toList());
-        for (int i = 0; i < codes.size() - 1; i++) {
-            int index = i;
-            if(!mapGraph.isConnected(codes.get(index), codes.get(index + 1))) {
-
-                Vertex start = mapGraph.getVertex(codes.get(i));
-                Vertex goal = mapGraph.getVertex(codes.get(index));
-
-                codes.remove(index);
-                codes.remove(i);
-
-                List<Long> path = searchPath(start, goal,
-                        new ArrayList<>(), new Path(new ArrayList<>(), 0)).getPath()
-                        .stream().map(v -> v.getCityCode()).collect(Collectors.toList());
-                codes.addAll(i, path);
-
-                mapGraph.refreshVertices();
-            }
-        }
-        return codes;
-    }
-
-    private Path searchPath(Vertex start, Vertex goal, List<Path> open, Path path) {
-        mapGraph.setVisited(start);
-        path.addVertex(start);
-
-        if(start.getCityCode() == goal.getCityCode()) {
-            return path;
-        }
-
-        double minDist = Double.MAX_VALUE;
-        int index = 0;
-        Set<Vertex> vertices = mapGraph.findConnected(start);
-        if (vertices.stream().anyMatch(v -> v.getCityCode() == goal.getCityCode())) {
-            return createNewPath(path ,start, goal);
-        }
-
-        for (Vertex vertex: vertices) {
-            open.add(createNewPath(path, path.getLast(), vertex));
-        }
-        for (int i = 0; i < open.size(); i++) {
-            double dist = open.get(i).getDistance();
-            if(minDist > dist) {
-                minDist = dist;
-                index = i;
-            }
-        }
-
-        Vertex newStart = open.get(index).getLast();
-        Path newPath = open.remove(index);
-        newPath.removeLast();
-
-        return searchPath(newStart, goal, open, newPath);
-    }
-
-    private Path createNewPath(Path path, Vertex start, Vertex goal) {
-        List<Vertex> vertices = new ArrayList<>();
-        vertices.addAll(path.getPath());
-        vertices.add(goal);
-        double distance = path.getDistance() +
-                mapService.readDistanceBetween(start.getCityCode(), goal.getCityCode());
-        return new Path(vertices, distance);
-    }
-
-
-    public CityDTO getNextCity(List<CityDTO> path, long cityCode) {
-        Iterator<CityDTO> iterator = path.iterator();
-        while (iterator.hasNext()) {
-            if(iterator.next().getCityCode() == cityCode) {
-                return iterator.next();
-            }
-        }
-        throw new UnsupportedOperationException();
-    }
-
-
     @Override
     public double getMaxCapacityInTons(List<CityDTO> cities, List<WaypointDTO> waypoints) {
         double maxCapacity = 0;
@@ -199,4 +88,104 @@ public class PathDetailsServiceImpl implements PathDetailsService {
         return (size - currentSize);
     }
 
+
+    @Override
+    public Path getPath(List<WaypointDTO> waypoints) {
+        List<Path> available = new ArrayList<>();
+        for(WaypointDTO waypoint : waypoints) {
+            if (waypoint.getLoadCityCode() == waypoint.getUnloadCityCode()) {
+                available.add(new Path(new ArrayList<>(),
+                        waypoint.getLoadCityCode(), Double.MAX_VALUE));
+            } else {
+                available.add(new Path(new ArrayList<>(),
+                        waypoint.getLoadCityCode(), waypoint.getUnloadCityCode(), Double.MAX_VALUE));
+            }
+        }
+        long maxCounter = 0L;
+        int index = 0;
+
+        for (int i = 0; i < available.size(); i++) {
+            long loadCode = available.get(i).getFirst();
+            long count = available.stream().filter(p -> p.getFirst() == loadCode).count();
+            if(count > maxCounter) {
+                maxCounter = count;
+                index = i;
+            }
+        }
+
+
+        long newStart = available.get(index).getFirst();
+        available.stream().filter(a -> a.getFirst() == newStart).forEach(Path::removeFirst);
+
+        return getNewPath(new Path(new ArrayList<>(), newStart, 0), available, new ArrayList<>());
+
+    }
+
+    private Path getNewPath(Path path, List<Path> available, List<Path> open) {
+        if (isEmpty(available)) {
+            return path;
+        }
+
+        long maxCounter = 0L;
+        int index = 0;
+
+        List<Long> connected = mapGraph.findConnected(path.getLast());
+        for (int i = 0; i < connected.size(); i++) {
+            long loadCode = connected.get(i);
+            long count = available.stream().filter(a -> a.getFirst() == loadCode).count();
+            if(count > maxCounter) {
+                maxCounter = count;
+                index = i;
+            }
+        }
+
+        if(maxCounter == 0L) {
+            double minDist = Double.MAX_VALUE;
+            index = 0;
+
+            for (long codes: connected) {
+                open.add(createNewPath(path, path.getLast(), codes));
+            }
+            for (int i = 0; i < open.size(); i++) {
+                double dist = open.get(i).getDistance();
+                if(minDist > dist) {
+                    minDist = dist;
+                    index = i;
+                }
+            }
+
+            Path newPath = open.remove(index);
+
+            return getNewPath(newPath, available, open);
+        }
+
+        long newStart = connected.get(index);
+        available.stream().filter(a -> a.getFirst() == newStart).forEach(Path::removeFirst);
+        double distance = mapGraph.getDistanceBetween(path.getLast(), newStart);
+        path.add(newStart, distance);
+
+        return getNewPath(path, available, new ArrayList<>());
+
+    }
+
+    private boolean isEmpty(List<Path> available) {
+        for(Path path : available) {
+            if(!path.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private Path createNewPath(Path path, long start, long goal) {
+        List<Long> newPath = new ArrayList<>();
+        newPath.addAll(path.getPath());
+        double distance = path.getDistance() +
+                mapGraph.getDistanceBetween(start, goal);
+        return new Path.Builder()
+                .withPath(newPath)
+                .add(goal)
+                .withDistance(distance)
+                .build();
+    }
 }

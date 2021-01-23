@@ -53,6 +53,8 @@ public class DriverDAO {
                     logger.error("Driver with ID {} not found", driverId);
                     throw new DriverNotFoundException("Driver by ID not found");
                 });
+        WorkShift workShift = entityManager.find(WorkShift.class, driverId);
+        entityManager.remove(workShift);
         entityManager.remove(driver);
     }
 
@@ -65,30 +67,27 @@ public class DriverDAO {
     }
 
 
-
-
-
-
-    public Driver findDriverById(long driverId) {
-        return Optional.ofNullable(entityManager.find(Driver.class, driverId))
-                .<DriverNotFoundException>orElseThrow(()  -> {
-                    logger.error("Driver with ID {} not found", driverId);
-                    throw new DriverNotFoundException("Driver by ID not found");
-                });
-    }
-
-
-    public Truck findTruckByDriverId(long userId) {
-        TypedQuery<Truck> query = entityManager.createNamedQuery("Truck.findTruckByDriverId", Truck.class)
-                .setParameter("driverId", userId);
-        return query.getSingleResult();
-    }
-
     public void saveWorkShift(long id) {
         Driver driver = entityManager.find(Driver.class, id);
         WorkShift workShift = new WorkShift();
         workShift.setDriver(driver);
         entityManager.persist(workShift);
         entityManager.flush();
+    }
+
+    public DriverDTO findDriverById(long id) {
+        TypedQuery<DriverDTO> query = entityManager.createNamedQuery("Driver.findDriverById", DriverDTO.class)
+                .setParameter("id", id);
+        return query.getSingleResult();
+    }
+
+    public List<Driver> findDriversByIds(List<Long> driversIds) {
+        TypedQuery<Driver> query = entityManager.createNamedQuery("Driver.findDriversByIds", Driver.class)
+                .setParameter("driversIds", driversIds);
+        return query.getResultList();
+    }
+
+    public Driver findDriverEntity(long driverId) {
+        return entityManager.find(Driver.class, driverId);
     }
 }
