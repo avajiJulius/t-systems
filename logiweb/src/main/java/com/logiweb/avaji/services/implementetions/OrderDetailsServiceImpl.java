@@ -9,14 +9,13 @@ import com.logiweb.avaji.entities.enums.CargoStatus;
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.OrderDetails;
 import com.logiweb.avaji.exceptions.ShiftValidationException;
-import com.logiweb.avaji.parser.PathStringParser;
+import com.logiweb.avaji.services.implementetions.parser.PathStringParser;
 import com.logiweb.avaji.services.api.OrderDetailsService;
 import com.logiweb.avaji.services.api.ShiftDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -93,9 +92,9 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
     @Override
     public void changeCity(long orderId, long driverId) {
         OrderDetails orderDetails = orderDetailsDAO.findOrderDetailsEntity(orderId);
-        List<Long> citiesCodes = parser.pathStringToCityCodes(orderDetails.getRemainingPath());
+        List<Long> citiesCodes = parser.parseStringToLongList(orderDetails.getRemainingPath());
         long nextCityCode = citiesCodes.remove(0);
-        orderDetails.setRemainingPath(parser.parsePathListToString(citiesCodes));
+        orderDetails.setRemainingPath(parser.parseLongListToString(citiesCodes));
         orderDetailsDAO.updateOrderDetails(orderDetails, driverId, nextCityCode);
     }
 }

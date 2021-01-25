@@ -17,7 +17,6 @@
     <Loggers>
         <Logger name="com.logiweb.avaji" level="debug" additivity="false">
             <AppenderRef ref="File"/>
-            <AppenderRef ref="Console"/>
         </Logger>
         <Root level="error">
             <AppenderRef ref="Console"/>

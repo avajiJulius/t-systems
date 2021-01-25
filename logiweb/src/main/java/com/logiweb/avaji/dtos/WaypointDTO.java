@@ -40,4 +40,13 @@ public class WaypointDTO {
         this.cargoStatus = cargoStatus;
         this.cargoWeight = cargoWeight;
     }
+
+    public WaypointDTO(long loadCityCode, long unloadCityCode,
+                       long cargoId, double cargoWeight) {
+        this.loadCityCode = loadCityCode;
+        this.unloadCityCode = unloadCityCode;
+        this.cargoId = cargoId;
+        this.cargoWeight = cargoWeight;
+    }
+
 }

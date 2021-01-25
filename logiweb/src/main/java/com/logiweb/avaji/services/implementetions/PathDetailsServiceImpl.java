@@ -2,10 +2,9 @@ package com.logiweb.avaji.services.implementetions;
 
 import com.logiweb.avaji.daos.TruckDAO;
 import com.logiweb.avaji.dtos.*;
-import com.logiweb.avaji.entities.enums.WaypointType;
 
-import com.logiweb.avaji.services.api.PathDetailsService;
 import com.logiweb.avaji.services.api.CountryMapService;
+import com.logiweb.avaji.services.api.PathDetailsService;
 import com.logiweb.avaji.pathfinder.MapGraph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,56 +18,67 @@ import java.util.stream.Collectors;
 @Service
 public class PathDetailsServiceImpl implements PathDetailsService {
 
-    private final CountryMapService mapService;
-    private final MapGraph mapGraph;
     private final TruckDAO truckDAO;
+    private final MapGraph mapGraph;
 
     @Autowired
-    public PathDetailsServiceImpl(CountryMapService mapService, MapGraph mapGraph,
+    public PathDetailsServiceImpl(CountryMapService countryMapService,
                                   TruckDAO truckDAO) {
-        this.mapService = mapService;
-        this.mapGraph = mapGraph;
+        this.mapGraph = new MapGraph(countryMapService);
         this.truckDAO = truckDAO;
     }
 
     @Override
-    public double getMaxCapacityInTons(List<CityDTO> cities, List<WaypointDTO> waypoints) {
+    public double getMaxCapacityInTons(List<Long> citiesCodes, List<WaypointDTO> waypoints) {
+        List<WaypointDTO> loadAvailable = new ArrayList<>();
+        loadAvailable.addAll(waypoints);
+        List<WaypointDTO> unloadAvailable = new ArrayList<>();
         double maxCapacity = 0;
-        for (CityDTO city: cities) {
+        double capacity = 0;
+        for (long code: citiesCodes) {
             double loadCapacity = 0.0;
             double unloadCapacity = 0.0;
-            List<WaypointDTO> waypointList = waypoints.stream()
-                    .filter(waypoint -> waypoint.getCityCode() == city.getCityCode()).collect(Collectors.toList());
-            List<WaypointDTO> load = waypointList.stream()
-                    .filter(waypoint -> waypoint.getType() == WaypointType.LOADING).collect(Collectors.toList());
+
+            List<WaypointDTO> load = loadAvailable.stream()
+                    .filter(waypoint -> waypoint.getLoadCityCode() == code).collect(Collectors.toList());
             if(load.size() > 0) {
-                loadCapacity = load.stream().map(waypoint -> waypoint.getCargoWeight()).reduce((o1, o2) -> o1 + o2).get();
+                loadCapacity += load.stream()
+                        .map(waypoint -> waypoint.getCargoWeight()).reduce((o1, o2) -> o1 + o2).get();
+                loadAvailable.removeAll(load);
+                unloadAvailable.addAll(load);
             }
-            List<WaypointDTO> unload = waypointList.stream()
-                    .filter(waypoint -> waypoint.getType() == WaypointType.UNLOADING).collect(Collectors.toList());
-            if(unload.size() > 0) {
-                    unloadCapacity = unload.stream()
-                            .map(waypoint -> waypoint.getCargoWeight()).reduce((o1, o2) -> o1 + o2).get();
-            }
-            double capacity = (loadCapacity - unloadCapacity);
+
+            capacity += loadCapacity;
+
             if(capacity > maxCapacity) {
                 maxCapacity = capacity;
             }
+
+            List<WaypointDTO> unload = unloadAvailable.stream()
+                    .filter(waypoint -> waypoint.getUnloadCityCode() == code).collect(Collectors.toList());
+            if(unload.size() > 0) {
+                    unloadCapacity += unload.stream()
+                            .map(waypoint -> waypoint.getCargoWeight()).reduce((o1, o2) -> o1 + o2).get();
+                    unloadAvailable.removeAll(unload);
+            }
+
+            capacity -= unloadCapacity;
         }
 
         return convertKilogramsToTons(maxCapacity);
     }
+
 
     private double convertKilogramsToTons(double maxCapacity) {
         return (maxCapacity / 1000);
     }
 
     @Override
-    public double getShiftHours(List<CityDTO> path) {
+    public double getShiftHours(List<Long> path) {
         double shiftHours = 0.0;
         for (int i = 0; i < path.size() - 1; i++) {
             int index = i;
-            shiftHours += mapService.readDistanceBetween(path.get(index).getCityCode(), path.get(index+1).getCityCode());
+            shiftHours += mapGraph.getDistanceBetween(path.get(index), path.get(index+1));
         }
         return shiftHours;
     }

@@ -3,10 +3,10 @@ package com.logiweb.avaji.services.implementetions;
 import com.logiweb.avaji.daos.DriverDAO;
 import com.logiweb.avaji.dtos.DriverDTO;
 import com.logiweb.avaji.entities.models.Driver;
-import com.logiweb.avaji.entities.models.WorkShift;
 import com.logiweb.avaji.services.api.DriverService;
-import com.logiweb.avaji.mapper.Mapper;
-import org.hibernate.jdbc.Work;
+import com.logiweb.avaji.services.implementetions.mapper.Mapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +15,8 @@ import java.util.List;
 
 @Service
 public class DriverServiceImpl implements DriverService {
+
+    private static final Logger logger = LogManager.getLogger(DriverServiceImpl.class);
 
     private final DriverDAO driverDAO;
     private final Mapper mapper;
@@ -46,7 +48,6 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public void updateDriver(long driverId,DriverDTO updatedDriver) {
         Driver driver = driverDAO.findDriverEntity(driverId);
-
 
         driverDAO.updateDriver(mapper.updateDriverFromDto(driver,updatedDriver));
     }

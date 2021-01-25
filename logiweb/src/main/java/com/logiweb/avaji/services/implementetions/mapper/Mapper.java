@@ -1,14 +1,10 @@
-package com.logiweb.avaji.mapper;
+package com.logiweb.avaji.services.implementetions.mapper;
 
 import com.logiweb.avaji.daos.CountryMapDAO;
-import com.logiweb.avaji.dtos.DriverDTO;
-import com.logiweb.avaji.dtos.CreateWaypointsDTO;
-import com.logiweb.avaji.dtos.TruckDTO;
+import com.logiweb.avaji.dtos.*;
 import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.enums.Role;
 import com.logiweb.avaji.daos.CargoDAO;
-import com.logiweb.avaji.daos.DriverDAO;
-import com.logiweb.avaji.dtos.WaypointDTO;
 import com.logiweb.avaji.entities.enums.WaypointType;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.Order;
@@ -20,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This service convert DTO to Entities and vice versa.
@@ -29,19 +26,16 @@ import java.util.List;
 @Service
 public class Mapper {
 
-    @Autowired
-    private PasswordEncoder encoder;
-
     private final CountryMapDAO mapDAO;
     private final CargoDAO cargoDAO;
-    private final DriverDAO driverDAO;
+    private final PasswordEncoder encoder;
 
     @Autowired
-    public Mapper(CountryMapDAO mapDAO,
-                  CargoDAO cargoDAO, DriverDAO driverDAO) {
+    public Mapper(CountryMapDAO mapDAO, CargoDAO cargoDAO,
+                  PasswordEncoder encoder) {
         this.mapDAO = mapDAO;
         this.cargoDAO = cargoDAO;
-        this.driverDAO = driverDAO;
+        this.encoder = encoder;
     }
 
     /**
@@ -108,4 +102,19 @@ public class Mapper {
                 .build();
     }
 
+    public List<WaypointDTO> toFullWaypointDTO(List<WaypointDTO> waypoints) {
+        List<WaypointDTO> result = new ArrayList<>();
+        List<CargoDTO> cargos = waypoints.stream().map(waypoint ->
+                new CargoDTO(waypoint.getCargoId(), waypoint.getCargoWeight())).distinct().collect(Collectors.toList());
+        for(CargoDTO cargo: cargos) {
+            WaypointDTO load = waypoints.stream().filter(waypoint -> waypoint.getCargoId() == cargo.getCargoId())
+                    .filter(waypoint -> waypoint.getType() == WaypointType.LOADING).findFirst().get();
+            WaypointDTO unload = waypoints.stream().filter(waypoint -> waypoint.getCargoId() == cargo.getCargoId())
+                    .filter(waypoint -> waypoint.getType() == WaypointType.LOADING).findFirst().get();
+            result.add(new WaypointDTO(
+                    load.getCityCode(), unload.getCityCode(),
+                    cargo.getCargoId(), cargo.getCargoWeight()));
+        }
+        return result;
+    }
 }

@@ -4,9 +4,9 @@ import com.logiweb.avaji.daos.DriverDAO;
 import com.logiweb.avaji.dtos.*;
 import com.logiweb.avaji.daos.OrderDAO;
 import com.logiweb.avaji.entities.models.*;
-import com.logiweb.avaji.parser.PathStringParser;
+import com.logiweb.avaji.services.implementetions.parser.PathStringParser;
 import com.logiweb.avaji.services.api.OrderService;
-import com.logiweb.avaji.mapper.Mapper;
+import com.logiweb.avaji.services.implementetions.mapper.Mapper;
 import com.logiweb.avaji.services.api.PathDetailsService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
         orderDAO.saveWaypoints(waypoints);
 
         List<Long> path = pathDetailsService.getPath(dto.getWaypointsDto()).getPath();
-        String stringPath = parser.parsePathListToString(path);
+        String stringPath = parser.parseLongListToString(path);
         order.setPath(stringPath);
 
         long id = orderDAO.saveOrder(order);
@@ -85,11 +85,13 @@ public class OrderServiceImpl implements OrderService {
     public List<TruckDTO> readTrucksForOrder(long orderId) {
         Order order = orderDAO.findOrderById(orderId);
 
-        List<CityDTO> path = parser.pathStringToCityDTOList(order.getPath());
+        List<Long> path = parser.parseStringToLongList(order.getPath());
+        List<WaypointDTO> waypoints = orderDAO.findWaypointsOfThisOrder(orderId);
+        List<WaypointDTO> fullWaypoints = converter.toFullWaypointDTO(waypoints);
 
-        Double maxCapacity = pathDetailsService.getMaxCapacityInTons(path, orderDAO.findWaypointsOfThisOrder(orderId));
+        double maxCapacity = pathDetailsService.getMaxCapacityInTons(path, fullWaypoints);
 
-        return orderDAO.findTrucksForOrder(maxCapacity, path.get(0).getCityCode());
+        return orderDAO.findTrucksForOrder(maxCapacity, path.get(0));
     }
 
     @Override
@@ -104,7 +106,7 @@ public class OrderServiceImpl implements OrderService {
     public List<DriverDTO> readDriversForOrder(long orderId) {
         long cityCode = orderDAO.findTruckByOrderId(orderId).getCurrentCity().getCityCode();
         String path = orderDAO.findOrderById(orderId).getPath();
-        double shiftHours = pathDetailsService.getShiftHours(parser.pathStringToCityDTOList(path));
+        double shiftHours = pathDetailsService.getShiftHours(parser.parseStringToLongList(path));
 
         long untilEndOfMonth = pathDetailsService.calculateTimeUntilEndOfMonth();
         if(shiftHours > untilEndOfMonth) {

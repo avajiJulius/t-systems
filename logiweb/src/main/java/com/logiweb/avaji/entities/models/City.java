@@ -37,6 +37,11 @@ public class City{
             inverseJoinColumns = @JoinColumn(name = "road_id"))
     private Collection<Road> roads;
 
+    public City(long cityCode, String cityName) {
+        this.cityCode = cityCode;
+        this.cityName = cityName;
+    }
+
     @Override
     public String toString() {
         return "City{" +
@@ -44,4 +49,6 @@ public class City{
                 ", cityName='" + cityName + '\'' +
                 '}';
     }
+
+
 }

@@ -13,11 +13,5 @@ public interface CountryMapService {
 
     List<CityDTO> readAllCities();
 
-    double readDistanceBetween(long cityCodeA, long cityCodeB);
-
-    List<Long> findConnected(long cityCode);
-
-    boolean isConnected(long cityCodeA, long cityCodeB);
-
     List<RoadDTO> readAllRoads();
 }

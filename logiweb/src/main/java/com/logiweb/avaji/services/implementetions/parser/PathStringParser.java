@@ -1,14 +1,14 @@
-package com.logiweb.avaji.parser;
+package com.logiweb.avaji.services.implementetions.parser;
 
 import com.logiweb.avaji.daos.CountryMapDAO;
 import com.logiweb.avaji.dtos.CityDTO;
 import com.logiweb.avaji.entities.models.City;
+import com.logiweb.avaji.exceptions.PathParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,8 +24,7 @@ public class PathStringParser {
 
     public List<CityDTO> pathStringToCityDTOList(String path) {
         List<CityDTO> cities = new ArrayList<>();
-        List<Long> codes = Arrays.stream(path.split("-"))
-                .map(Long::parseLong).collect(Collectors.toList());
+        List<Long> codes = parseStringToLongList(path);
         for(long code: codes) {
             City city = countryMapDAO.findCityByCode(code);
             cities.add(new CityDTO(city.getCityCode(), city.getCityName()));
@@ -33,37 +32,33 @@ public class PathStringParser {
         return cities;
     }
 
-    public String parsePathDequeToString(Deque<CityDTO> path) {
-        StringBuffer sb = new StringBuffer();
-        for (CityDTO city: path) {
-            sb.append(city.getCityCode());
-            sb.append("-");
-        }
-        return sb.toString();
-    }
-
-    public String parsePathListToString(List<Long> path) {
-        StringBuffer sb = new StringBuffer();
+    public String parseLongListToString(List<Long> path) {
+        StringBuilder result = new StringBuilder();
         for (long code: path) {
-            sb.append(code);
-            sb.append("-");
+            result.append(code);
+            result.append("-");
         }
-        return sb.toString();
+        return result.toString();
     }
 
     public String toPrettyPath(String path) {
-        List<Long> codes = Arrays.stream(path.split("-"))
-                .map(Long::parseLong).collect(Collectors.toList());
-        StringBuffer sb = new StringBuffer();
+        List<Long> codes = parseStringToLongList(path);
+        StringBuilder result = new StringBuilder();
         for(long code: codes) {
             City city = countryMapDAO.findCityByCode(code);
-            sb.append(city.getCityName()).append(" - ");
+            result.append(city.getCityName()).append(" - ");
         }
-        return sb.substring(0, sb.length() - 3);
+        return result.substring(0, result.length() - 3);
     }
 
-    public List<Long> pathStringToCityCodes(String path) {
-        return Arrays.stream(path.split("-"))
-                .map(Long::parseLong).collect(Collectors.toList());
+    public List<Long> parseStringToLongList(String path)  {
+        List<Long> result;
+        try {
+             result = Arrays.stream(path.split("-"))
+                     .map(Long::parseLong).collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new PathParseException("Cannot parse path");
+        }
+        return result;
     }
 }

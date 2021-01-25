@@ -33,8 +33,6 @@ public class OrderDetailsDAO {
         return query.getSingleResult();
     }
 
-
-
     public void updateOrderDetails(OrderDetails updatedOrderDetails,long driverId, long cityCode) {
         entityManager.createNamedQuery("Driver.updateDriverOnCityChange")
                 .setParameter("cityCode", cityCode).setParameter("id", driverId).executeUpdate();

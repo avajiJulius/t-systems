@@ -27,23 +27,6 @@ public class CountryMapServiceImpl implements CountryMapService {
         return countryMapDAO.findAllCities();
     }
 
-
-
-    @Override
-    public double readDistanceBetween(long cityCodeA, long cityCodeB) {
-        return countryMapDAO.findDistance(cityCodeA, cityCodeB);
-    }
-
-    @Override
-    public List<Long> findConnected(long cityCode) {
-        return countryMapDAO.findConnectedCities(cityCode);
-    }
-
-    @Override
-    public boolean isConnected(long cityCodeA, long cityCodeB) {
-        return countryMapDAO.findIsConnected(cityCodeA, cityCodeB);
-    }
-
     @Override
     public List<RoadDTO> readAllRoads() {
         return countryMapDAO.findAllRoads();

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 
@@ -16,36 +17,29 @@ public class DriverDTO {
     public interface Read{}
     public interface Update{}
 
-    @Null(groups = {Create.class})
-    @NotNull(groups = {Read.class})
     private long id;
     private int version;
-    @NotNull(groups = {Create.class, Update.class})
+    @NotBlank(groups = {Create.class, Update.class}, message = "firstName")
     private String firstName;
-    @NotNull(groups = {Create.class, Update.class})
+    @NotBlank(groups = {Create.class, Update.class}, message = "last Name")
     private String lastName;
-    @Null(groups = {Update.class})
-    @NotNull(groups = {Create.class})
+    @Null(groups = {Update.class}, message = "Cannot update email")
+    @NotBlank(groups = {Create.class}, message = "Email must be not null")
     private String email;
-    @Null(groups = {Update.class})
-    @NotNull(groups = {Create.class})
+    @Null(groups = {Update.class}, message = "Cannot update password")
+    @NotBlank(groups = {Create.class}, message = "Password must be not null")
     private String password;
-    @Null(groups = {Create.class})
     private boolean enable;
-    @Null(groups = {Create.class})
-    @NotNull(groups = {Read.class, Update.class})
+    @NotNull(groups = {Read.class, Update.class}, message = "Hours worked must be")
     private double hoursWorked;
-    @Null(groups = {Create.class})
-    @NotNull(groups = {Read.class})
     private DriverStatus driverStatus;
     private String truckId;
+    @NotNull(groups = {Create.class},message = "cityCode")
     private long cityCode;
     private String cityName;
 
-    public DriverDTO(@Null(groups = {Update.class, Create.class}) @NotNull(groups = {Read.class}) long id,
-                     @NotNull String firstName, @NotNull String lastName,
-                     @Null(groups = {Create.class}) @NotNull(groups = {Read.class, Update.class}) double hoursWorked,
-                     @Null(groups = {Create.class}) @NotNull(groups = {Read.class}) DriverStatus driverStatus,
+    public DriverDTO(long id, String firstName, String lastName,
+                     double hoursWorked, DriverStatus driverStatus,
                      String truckId, long cityCode, String cityName) {
         this.id = id;
         this.firstName = firstName;
@@ -57,11 +51,9 @@ public class DriverDTO {
         this.cityName = cityName;
     }
 
-
-    public DriverDTO(@Null(groups = {Update.class, Create.class}) @NotNull(groups = {Read.class}) long id, int version,
-                     @NotNull(groups = {Create.class, Update.class}) String firstName, @NotNull(groups = {Create.class, Update.class}) String lastName,
-                     @Null(groups = {Create.class}) @NotNull(groups = {Read.class, Update.class}) double hoursWorked,
-                     @Null(groups = {Create.class}) @NotNull(groups = {Read.class}) DriverStatus driverStatus, long cityCode, String cityName) {
+    public DriverDTO(long id, int version, String firstName,
+                     String lastName, double hoursWorked,
+                     DriverStatus driverStatus, long cityCode, String cityName) {
         this.id = id;
         this.version = version;
         this.firstName = firstName;
@@ -72,8 +64,7 @@ public class DriverDTO {
         this.cityName = cityName;
     }
 
-    public DriverDTO(@Null(groups = {Update.class, Create.class}) @NotNull(groups = {Read.class}) long id,
-                     @NotNull String firstName, @NotNull String lastName) {
+    public DriverDTO(long id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

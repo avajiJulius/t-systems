@@ -3,6 +3,9 @@ package com.logiweb.avaji.controllers;
 import com.logiweb.avaji.services.api.CountryMapService;
 import com.logiweb.avaji.dtos.DriverDTO;
 import com.logiweb.avaji.services.api.DriverService;
+import com.logiweb.avaji.services.implementetions.DriverServiceImpl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -14,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/drivers")
 public class DriverController {
+
+    private static final Logger logger = LogManager.getLogger(DriverController.class);
 
     private final DriverService driverService;
     private final CountryMapService mapService;
@@ -44,7 +49,13 @@ public class DriverController {
 
     @PostMapping()
     @PreAuthorize("hasAuthority('employee:write')")
-    public String createDriver(@ModelAttribute("driver") @Validated(DriverDTO.Create.class) DriverDTO driver) {
+    public String createDriver(@ModelAttribute("driver") @Validated(DriverDTO.Create.class) DriverDTO driver,
+                               BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("driver", new DriverDTO());
+            model.addAttribute("cities", mapService.readAllCities());
+            return "drivers/create";
+        }
         driverService.createDriver(driver);
         return "redirect:/drivers";
     }

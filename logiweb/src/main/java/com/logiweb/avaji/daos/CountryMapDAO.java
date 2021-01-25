@@ -26,23 +26,6 @@ public class CountryMapDAO {
         return entityManager.find(City.class, cityCode);
     }
 
-    public List<Long> findConnectedCities(long cityCode) {
-        Query query = entityManager.createNamedQuery("City.findConnectedCities")
-                .setParameter("cityCode", cityCode);
-        return query.getResultList();
-    }
-
-    public double findDistance(long cityCodeA, long cityCodeB) {
-        TypedQuery<Double> query = entityManager.createNamedQuery("Road.findDistance", Double.class)
-                .setParameter("cityACode", cityCodeA).setParameter("cityBCode", cityCodeB);
-        return query.getSingleResult();
-    }
-
-    public boolean findIsConnected(long cityCodeA, long cityCodeB) {
-        long count = entityManager.createNamedQuery("Road.findIsConnected", Long.class)
-                .setParameter("cityACode", cityCodeA).setParameter("cityBCode", cityCodeB).getSingleResult();
-        return count != 0L;
-    }
 
     public List<RoadDTO> findAllRoads() {
         TypedQuery<RoadDTO> query = entityManager.createNamedQuery("Road.findAllRoads", RoadDTO.class);

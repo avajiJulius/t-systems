@@ -33,7 +33,7 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
 
     @Override
     @Transactional
-    public void updateShiftDetails(ShiftDetailsDTO updateDetails)
+    public ShiftDetailsDTO updateShiftDetails(ShiftDetailsDTO updateDetails)
             throws ShiftValidationException {
         ShiftDetailsDTO shiftDetails = shiftDetailsDAO.findShiftDetails(updateDetails.getId());
 
@@ -43,12 +43,14 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
         }
 
         if(updateDetails.isShiftActive() != shiftDetails.isShiftActive()) {
-            updateWorkShift(shiftDetails, updateDetails);
+            updateWorkShift(shiftDetails, updateDetails.isShiftActive());
         }
 
         shiftDetails.setDriverStatus(updateDetails.getDriverStatus());
 
         shiftDetailsDAO.updateShiftDetails(shiftDetails);
+
+        return shiftDetailsDAO.findShiftDetails(updateDetails.getId());
     }
 
 
@@ -56,8 +58,8 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
         return !active ? status.ordinal() == 0 : status.ordinal() > 0;
     }
 
-    public void updateWorkShift(ShiftDetailsDTO shiftDetails, ShiftDetailsDTO updateDetails) {
-        if(updateDetails.isShiftActive() == true) {
+    public void updateWorkShift(ShiftDetailsDTO shiftDetails, boolean updateStatus) {
+        if(updateStatus == true) {
             shiftDetails.setShiftActive(true);
             shiftDetails.setStart(LocalDateTime.now());
             shiftDetails.setEnd(null);

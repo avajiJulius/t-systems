@@ -6,6 +6,6 @@ import com.logiweb.avaji.exceptions.DriverStatusNotFoundException;
 import com.logiweb.avaji.exceptions.ShiftValidationException;
 
 public interface ShiftDetailsService {
-    void updateShiftDetails(ShiftDetailsDTO shiftDetails) throws ShiftValidationException;
+    ShiftDetailsDTO updateShiftDetails(ShiftDetailsDTO shiftDetails) throws ShiftValidationException;
     ShiftDetailsDTO readShiftDetails(long driverId);
 }

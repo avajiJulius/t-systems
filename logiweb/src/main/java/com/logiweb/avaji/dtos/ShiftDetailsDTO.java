@@ -39,4 +39,14 @@ public class ShiftDetailsDTO {
             return newDetails;
         }
     }
+
+    public ShiftDetailsDTO(long id, DriverStatus driverStatus, boolean shiftActive,
+                           LocalDateTime start, LocalDateTime end, double hoursWorked) {
+        this.id = id;
+        this.driverStatus = driverStatus;
+        this.shiftActive = shiftActive;
+        this.start = start;
+        this.end = end;
+        this.hoursWorked = hoursWorked;
+    }
 }

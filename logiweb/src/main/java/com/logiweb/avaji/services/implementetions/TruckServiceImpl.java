@@ -4,7 +4,7 @@ import com.logiweb.avaji.dtos.TruckDTO;
 import com.logiweb.avaji.entities.models.Truck;
 import com.logiweb.avaji.daos.TruckDAO;
 import com.logiweb.avaji.services.api.TruckService;
-import com.logiweb.avaji.mapper.Mapper;
+import com.logiweb.avaji.services.implementetions.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
