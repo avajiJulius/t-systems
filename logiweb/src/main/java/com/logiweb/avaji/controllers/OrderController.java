@@ -6,12 +6,11 @@ import com.logiweb.avaji.dtos.CreateWaypointsDTO;
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.exceptions.ShiftSizeExceedException;
-import com.logiweb.avaji.services.api.CargoService;
-import com.logiweb.avaji.services.api.CountryMapService;
-import com.logiweb.avaji.services.api.OrderService;
-import com.logiweb.avaji.exceptions.CityValidateException;
+import com.logiweb.avaji.services.api.management.CargoService;
+import com.logiweb.avaji.services.api.map.CountryMapService;
+import com.logiweb.avaji.services.api.management.OrderService;
 import com.logiweb.avaji.exceptions.LoadAndUnloadValidateException;
-import com.logiweb.avaji.services.api.PathDetailsService;
+import com.logiweb.avaji.services.api.path.PathDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -88,7 +87,7 @@ public class OrderController {
     @PostMapping()
     @PreAuthorize("hasAuthority('employee:write')")
     public String createOrder(@ModelAttribute(name = "form") CreateWaypointsDTO waypoints,
-                              Model model) throws CityValidateException, LoadAndUnloadValidateException {
+                              Model model) throws LoadAndUnloadValidateException {
 
         orderService.createOrderByWaypoints(new Order(), waypoints);
 

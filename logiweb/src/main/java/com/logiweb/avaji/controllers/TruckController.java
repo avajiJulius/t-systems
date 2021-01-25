@@ -1,8 +1,8 @@
 package com.logiweb.avaji.controllers;
 
 import com.logiweb.avaji.dtos.TruckDTO;
-import com.logiweb.avaji.services.api.CountryMapService;
-import com.logiweb.avaji.services.api.TruckService;
+import com.logiweb.avaji.services.api.map.CountryMapService;
+import com.logiweb.avaji.services.api.management.TruckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;

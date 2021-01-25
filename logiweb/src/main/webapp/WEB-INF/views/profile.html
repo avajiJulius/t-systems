@@ -98,7 +98,7 @@
                                     <input  type="checkbox" th:value="${waypoint.cargoId}" th:field="*{ids}"/>
                                 </div>
                                 <div th:unless="${waypoint.cargoStatus.ordinal() == 0}">
-                                    Done
+                                    -
                                 </div>
                             </div>
                             <div th:unless="${waypoint.type.ordinal() == 0}">
@@ -106,7 +106,7 @@
                                     <input  type="checkbox" th:value="${waypoint.cargoId}" th:field="*{ids}"/>
                                 </div>
                                 <div th:unless="${waypoint.cargoStatus.ordinal() == 1}">
-                                    Done
+                                    -
                                 </div>
                             </div>
                         </div>

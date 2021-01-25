@@ -1,9 +1,8 @@
 package com.logiweb.avaji.controllers;
 
-import com.logiweb.avaji.services.api.CountryMapService;
+import com.logiweb.avaji.services.api.map.CountryMapService;
 import com.logiweb.avaji.dtos.DriverDTO;
-import com.logiweb.avaji.services.api.DriverService;
-import com.logiweb.avaji.services.implementetions.DriverServiceImpl;
+import com.logiweb.avaji.services.api.management.DriverService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/drivers")
 public class DriverController {
-
-    private static final Logger logger = LogManager.getLogger(DriverController.class);
 
     private final DriverService driverService;
     private final CountryMapService mapService;

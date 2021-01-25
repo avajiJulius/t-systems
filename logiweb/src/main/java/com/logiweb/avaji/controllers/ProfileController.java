@@ -2,13 +2,11 @@ package com.logiweb.avaji.controllers;
 
 import com.logiweb.avaji.daos.UserDAO;
 import com.logiweb.avaji.dtos.CargoChangeDTO;
-import com.logiweb.avaji.dtos.OrderDetailsDTO;
 import com.logiweb.avaji.dtos.ShiftDetailsDTO;
-import com.logiweb.avaji.services.api.OrderDetailsService;
-import com.logiweb.avaji.services.api.ShiftDetailsService;
+import com.logiweb.avaji.services.api.profile.OrderDetailsService;
+import com.logiweb.avaji.services.api.profile.ShiftDetailsService;
 import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.models.User;
-import com.logiweb.avaji.exceptions.DriverStatusNotFoundException;
 import com.logiweb.avaji.exceptions.ShiftValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

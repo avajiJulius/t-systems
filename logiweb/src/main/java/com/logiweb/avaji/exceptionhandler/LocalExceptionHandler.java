@@ -17,7 +17,7 @@ public class LocalExceptionHandler {
         return "exceptions/details";
     }
 
-    @ExceptionHandler({CityValidateException.class, LoadAndUnloadValidateException.class})
+    @ExceptionHandler({LoadAndUnloadValidateException.class})
     public String orderExceptionHandler(Exception exception,
                                                Model model) {
         model.addAttribute("message", exception.getMessage());
@@ -31,7 +31,7 @@ public class LocalExceptionHandler {
         return "exceptions/appointing";
     }
 
-    @ExceptionHandler({ShiftValidationException.class, DriverStatusNotFoundException.class})
+    @ExceptionHandler({ShiftValidationException.class})
     public String workDetailsExceptionHandler(ShiftValidationException exception,
                                              Model model) {
         model.addAttribute("message", exception.getMessage());
