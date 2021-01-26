@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
     public String pagePermissionDeniedException(){
         return "exceptions/403";
     }
-//TODO: return after testing
+
 //    @ExceptionHandler(Exception.class)
 //    public String serverException() {
 //        return "exceptions/500";

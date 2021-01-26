@@ -79,11 +79,13 @@ public class OrderDAO {
 
 
 
-    public void saveOrderDetails(long id) {
+    public void saveOrderDetails(long id, double approximateLeadTime) {
         Order order = entityManager.find(Order.class, id);
-        OrderDetails orderDetails = new OrderDetails();
-        orderDetails.setOrder(order);
-        orderDetails.setRemainingPath(order.getPath());
+        OrderDetails orderDetails = new OrderDetails.Builder()
+                .withOrder(order)
+                .withRemainingPath(order.getPath())
+                .withRemainingWorkingTime(approximateLeadTime).build();
+
         entityManager.persist(orderDetails);
         entityManager.flush();
     }

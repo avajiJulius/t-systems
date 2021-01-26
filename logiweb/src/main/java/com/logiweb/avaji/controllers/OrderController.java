@@ -130,7 +130,7 @@ public class OrderController {
     public String addDriversToOrder(@PathVariable("orderId") long orderId,
                                     @ModelAttribute("driversIds") AddedDriversDto driversIds) throws ShiftSizeExceedException {
         if(driversIds.getIds().size() > pathDetailsService.calculateFreeSpaceInShift(orderId)) {
-            throw new ShiftSizeExceedException();
+            throw new ShiftSizeExceedException("Shift size exceed");
         }
         orderService.addDriversToOrder(driversIds.getIds(), orderId);
         return "redirect:/orders";

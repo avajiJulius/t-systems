@@ -6,10 +6,10 @@ import com.logiweb.avaji.daos.OrderDAO;
 import com.logiweb.avaji.daos.OrderDetailsDAO;
 import com.logiweb.avaji.dtos.*;
 import com.logiweb.avaji.entities.enums.CargoStatus;
+import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.OrderDetails;
 import com.logiweb.avaji.exceptions.ShiftValidationException;
-import com.logiweb.avaji.services.implementetions.management.OrderServiceImpl;
 import com.logiweb.avaji.services.implementetions.utils.PathParser;
 import com.logiweb.avaji.services.api.profile.OrderDetailsService;
 import com.logiweb.avaji.services.api.profile.ShiftDetailsService;
@@ -48,23 +48,24 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
     public OrderDetailsDTO readOrderDetails(long driverId) {
         OrderDetailsDTO orderDetails = orderDetailsDAO.findOrderDetails(driverId);
 
-        List<DriverDTO> coDrivers = orderDAO.findDriversByOrderId(orderDetails.getId())
-                .stream().filter(d -> d.getId() != driverId).collect(Collectors.toList());
-        orderDetails.setCoDrivers(coDrivers);
+        if(orderDetails == null) {
+            return null;
+        }
 
+        setCoDrivers(orderDetails, driverId);
         setRemainingPath(orderDetails);
 
         orderDetails.setCompleted(orderIsComplete(orderDetails.getId()));
-
         orderDetails.setPrettyPath(parser.toPrettyPath(orderDetails.getPath()));
         orderDetails.setWaypoints(orderDAO.findWaypointsOfThisOrder(orderDetails.getId()));
 
         return orderDetails;
     }
 
+
     @Override
     public void updateOrderByCargoStatus(long driverId, List<Long> cargoIds) throws ShiftValidationException {
-        shiftDetailsService.updateShiftDetails(new ShiftDetailsDTO.Builder().defaultBuildForLoadUnloadWork(driverId).build());
+        shiftDetailsService.changeShiftDetails(driverId, DriverStatus.LOAD_UNLOAD_WORK);
 
         updateCargo(cargoIds);
 
@@ -81,10 +82,20 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
         OrderDetails orderDetails = orderDetailsDAO.findOrderDetailsEntity(orderId);
 
         List<Long> citiesCodes = parser.parseStringToLongList(orderDetails.getRemainingPath());
-        long nextCityCode = citiesCodes.remove(0);
+
+        Long cityCode = citiesCodes.get(1);
+        citiesCodes.remove(0);
+
         orderDetails.setRemainingPath(parser.parseLongListToString(citiesCodes));
 
-        orderDetailsDAO.updateOrderDetails(orderDetails, driverId, nextCityCode);
+        orderDetailsDAO.updateOrderDetails(orderDetails, cityCode);
+    }
+
+
+    private void setCoDrivers(OrderDetailsDTO orderDetails, long driverId) {
+        List<DriverDTO> coDrivers = orderDAO.findDriversByOrderId(orderDetails.getId())
+                .stream().filter(d -> d.getId() != driverId).collect(Collectors.toList());
+        orderDetails.setCoDrivers(coDrivers);
     }
 
     private void setRemainingPath(OrderDetailsDTO orderDetails) {

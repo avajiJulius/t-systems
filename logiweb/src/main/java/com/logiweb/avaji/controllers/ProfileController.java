@@ -49,11 +49,10 @@ public class ProfileController {
     public String updateShiftDetails(@ModelAttribute("shiftDetails") ShiftDetailsDTO shiftDetails,
                                      Principal principal) throws ShiftValidationException {
         User user = userDAO.findUserByEmail(principal.getName());
-        shiftDetails.setId(user.getId());
-        shiftDetailsService.updateShiftDetails(shiftDetails);
+
+        shiftDetailsService.changeShiftDetails(user.getId(), shiftDetails.getDriverStatus());
         return "redirect:/profile";
     }
-
 
     @PatchMapping("/cargo")
     @PreAuthorize("hasAuthority('driver:write')")
@@ -72,4 +71,16 @@ public class ProfileController {
         orderDetailsService.changeCity(orderId, user.getId());
         return "redirect:/profile";
     }
+
+
+    @PatchMapping("/finish")
+    @PreAuthorize("hasAuthority('driver:write')")
+    public String finishShiftOfCompletedOrder(Principal principal) throws ShiftValidationException {
+        User user = userDAO.findUserByEmail(principal.getName());
+
+        shiftDetailsService.finishShiftOfCompletedOrder(user.getId());
+        return "redirect:/profile";
+    }
+
+
 }

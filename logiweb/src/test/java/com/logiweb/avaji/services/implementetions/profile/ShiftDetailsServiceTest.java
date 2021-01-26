@@ -28,11 +28,6 @@ class ShiftDetailsServiceTest {
                     LocalDateTime.of(2021,1, 12, 7,0), null, 20)
     ).collect(Collectors.toList());
 
-    private ShiftDetailsDTO noConflict1 = new ShiftDetailsDTO(1, DriverStatus.SECOND_DRIVER, true ,null, null, 0);
-    private ShiftDetailsDTO noConflict2 = new ShiftDetailsDTO(2, DriverStatus.REST, false ,null, null, 0);
-    private ShiftDetailsDTO conflict1 = new ShiftDetailsDTO(1, DriverStatus.REST, true ,null, null, 0);
-    private ShiftDetailsDTO conflict2 = new ShiftDetailsDTO(1, DriverStatus.SECOND_DRIVER, false ,null, null, 0);
-
 
 
     @Configuration
@@ -64,7 +59,7 @@ class ShiftDetailsServiceTest {
 
     @Test
     void givenRestDriverStatus_WhenShiftActiveTrue_ThenItShouldReturnFalse() {
-        boolean result = shiftDetailsService.validateShiftAndDriverStatus(true, DriverStatus.REST);
+        boolean result = shiftDetailsService.shiftAndDriverStatusValid(true, DriverStatus.REST);
 
         assertFalse(result);
     }
@@ -72,21 +67,21 @@ class ShiftDetailsServiceTest {
 
     @Test
     void givenRestDriverStatus_WhenShiftActiveFalse_ThenItShouldReturnTrue() {
-        boolean result = shiftDetailsService.validateShiftAndDriverStatus(false, DriverStatus.REST);
+        boolean result = shiftDetailsService.shiftAndDriverStatusValid(false, DriverStatus.REST);
 
         assertTrue(result);
     }
 
     @Test
     void givenDrivingDriverStatus_WhenShiftActiveTrue_ThenItShouldReturnTrue() {
-        boolean result = shiftDetailsService.validateShiftAndDriverStatus(true, DriverStatus.SECOND_DRIVER);
+        boolean result = shiftDetailsService.shiftAndDriverStatusValid(true, DriverStatus.SECOND_DRIVER);
 
         assertTrue(result);
     }
 
     @Test
     void givenDrivingDriverStatus_WhenShiftActiveFalse_ThenItShouldReturnFalse() {
-        boolean result = shiftDetailsService.validateShiftAndDriverStatus(false, DriverStatus.LOAD_UNLOAD_WORK);
+        boolean result = shiftDetailsService.shiftAndDriverStatusValid(false, DriverStatus.LOAD_UNLOAD_WORK);
 
         assertFalse(result);
     }
@@ -96,9 +91,9 @@ class ShiftDetailsServiceTest {
         Mockito.when(shiftDetailsDAO.findShiftDetails(1))
                 .thenReturn(shiftDetailsList.get(0));
 
-        ShiftDetailsDTO shiftDetails = shiftDetailsService.updateShiftDetails(noConflict1);
-        assertEquals(noConflict1.isShiftActive(), shiftDetails.isShiftActive(), "Shift active change check");
-        assertEquals(noConflict1.getDriverStatus(), shiftDetails.getDriverStatus(), "Driver status change check");
+        ShiftDetailsDTO shiftDetails = shiftDetailsService.changeShiftDetails(1 , DriverStatus.DRIVING);
+        assertEquals(true, shiftDetails.isShiftActive(), "Shift active change check");
+        assertEquals(DriverStatus.DRIVING, shiftDetails.getDriverStatus(), "Driver status change check");
     }
 
     @Test
@@ -106,26 +101,10 @@ class ShiftDetailsServiceTest {
         Mockito.when(shiftDetailsDAO.findShiftDetails(2))
                 .thenReturn(shiftDetailsList.get(1));
 
-        ShiftDetailsDTO shiftDetails = shiftDetailsService.updateShiftDetails(noConflict2);
+        ShiftDetailsDTO shiftDetails = shiftDetailsService.changeShiftDetails(2, DriverStatus.REST);
 
-        assertEquals(noConflict2.isShiftActive(), shiftDetails.isShiftActive(), "Shift active change check");
-        assertEquals(noConflict2.getDriverStatus(), shiftDetails.getDriverStatus(), "Driver status change check");
-    }
-
-    @Test
-    void thenUpdateShiftDetailsToConflictDTOThenThrowShiftValidationException1() {
-        Mockito.when(shiftDetailsDAO.findShiftDetails(1))
-                .thenReturn(shiftDetailsList.get(0));
-
-        assertThrows(ShiftValidationException.class, () -> shiftDetailsService.updateShiftDetails(conflict1));
-    }
-
-    @Test
-    void thenUpdateShiftDetailsToConflictDTOThenThrowShiftValidationException2() {
-        Mockito.when(shiftDetailsDAO.findShiftDetails(2))
-                .thenReturn(shiftDetailsList.get(1));
-
-        assertThrows(ShiftValidationException.class, () -> shiftDetailsService.updateShiftDetails(conflict2));
+        assertEquals(false, shiftDetails.isShiftActive(), "Shift active change check");
+        assertEquals(DriverStatus.REST, shiftDetails.getDriverStatus(), "Driver status change check");
     }
 
 }

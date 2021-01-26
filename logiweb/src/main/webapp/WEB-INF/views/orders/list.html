@@ -9,7 +9,7 @@
 </head>
 <body>
 <nav th:replace="fragments/navbar.html :: navigation"></nav>
-<div>
+<div align="center">
     <h1>Order List</h1>
     <form action="#" th:action="@{/orders/new}" method="GET">
         <button type="submit" class="btn btn-primary">Create Order</button>
@@ -21,6 +21,7 @@
             <th scope="col"> #</th>
             <th scope="col"> Status</th>
             <th scope="col"> Path</th>
+            <th scope="col"> Maximum Capacity</th>
             <th scope="col"> Truck</th>
             <th scope="col"> Drivers in Shift</th>
             <th scope="col"> Cargo</th>
@@ -35,6 +36,7 @@
                 <span th:unless="${order.completed == true}">Uncompleted</span>
             </td>
             <td th:text="${order.prettyPath}"/>
+            <td th:text="${order.maxCapacity}"></td>
             <td>
                 <div th:if="${order.completed == false}">
                     <span th:text="${order?.truckId}" />
@@ -52,9 +54,9 @@
                     </div>
                     <div th:unless="${order.truckId == null}">
                         <div th:if="${order?.drivers.size() == order.shiftSize}" >
-                            <ol th:each="driver : ${order?.drivers}">
+                            <ul th:each="driver : ${order?.drivers}">
                                 <li th:text="${'#' + driver.id + ':' + driver.lastName + ' ' + driver.firstName}"></li>
-                            </ol>
+                            </ul>
                         </div>
                         <div th:unless="${order?.drivers.size() == order.shiftSize}">
                             <a th:href="@{/orders/{id}/drivers(id=${order.orderId})}" th:text="${order.shiftSize}"></a>

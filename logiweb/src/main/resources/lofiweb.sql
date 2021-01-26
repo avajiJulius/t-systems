@@ -51,6 +51,7 @@ create table orders (
     completed boolean default false,
     path varchar,
     truck_id varchar(7) default null,
+    max_capacity double precision,
     primary key (id),
     foreign key (truck_id) references trucks(id)
 );
@@ -58,7 +59,8 @@ create table orders (
 create table order_details (
     id bigint,
     version int,
-    remaining_path varchar(100),
+    remaining_path varchar(200),
+    remaining_working_time double precision,
     primary key (id),
     foreign key (id) references orders(id)
 );
@@ -141,20 +143,6 @@ values (1,2,5),(1,3,7),(1,9,12),
        (12,10,7),(12,11,6),(12,13,5),
         (13,10,11),(13,12,5);
 
-insert into country_map(city_code, road_id)
-values (1,1),(1,2),
-       (2,1),(2,3),(2,4),(2,5),
-       (3,2),(3,3),(3,6),(3,8),(3,10),(3,11),
-       (4,10),(4,12),(4,13),
-       (5,4),(5,6),(5,7),
-       (6,9),(6,11),(6,12),(6,14),
-       (7,2),(7,5),(7,7),(7,8),(7,9),
-       (8,14),(8,15),(8,18),
-       (9,13),(9,15),(9,16),(9,19),
-       (10,16),(10,17),(10,21),
-       (11,17),(11,18),(11,19),(11,20),
-       (12,21),(12,20);
-
 insert into trucks(id, shift_size, capacity, serviceable, city_code, version)
 values ('AB12345', 2, 30, true, 1, 0), ('BA12345', 2, 26, false, 11, 0),
        ('GH12345', 3, 46, true, 4, 0), ('MK12345', 2, 25, false, 7, 0),
@@ -189,7 +177,9 @@ values (1, 'Alex', 'Matushkin', '160', 'REST', 1, null ),
 
 insert into work_shifts(id, active)
 values (1, false),(2, false),(3, false),
-       (4, false),(5, false),(6, false);
+       (4, false),(5, false),(6, false),
+       (7, false),(8, false),(9, false),
+       (10, false);
 
 insert into cargo(title, weight, cargo_status, version)
 values ('Titanium', 12000, 'PREPARED', 0), ('Wood', 6300, 'PREPARED', 0), ('Clay', 8700, 'PREPARED', 0),

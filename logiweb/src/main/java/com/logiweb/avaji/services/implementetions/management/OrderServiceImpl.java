@@ -1,5 +1,6 @@
 package com.logiweb.avaji.services.implementetions.management;
 
+import com.logiweb.avaji.daos.CargoDAO;
 import com.logiweb.avaji.daos.DriverDAO;
 import com.logiweb.avaji.dtos.*;
 import com.logiweb.avaji.daos.OrderDAO;
@@ -27,15 +28,17 @@ public class OrderServiceImpl implements OrderService {
     private final PathDetailsService pathDetailsService;
     private final PathParser parser;
     private final DriverDAO driverDAO;
+    private final CargoDAO cargoDAO;
 
     @Autowired
     public OrderServiceImpl(OrderDAO orderDAO, Mapper converter, PathDetailsService pathDetailsService,
-                            PathParser parser, DriverDAO driverDAO) {
+                            PathParser parser, DriverDAO driverDAO, CargoDAO cargoDAO) {
         this.orderDAO = orderDAO;
         this.converter = converter;
         this.pathDetailsService = pathDetailsService;
         this.parser = parser;
         this.driverDAO = driverDAO;
+        this.cargoDAO = cargoDAO;
     }
 
     @Override
@@ -62,19 +65,34 @@ public class OrderServiceImpl implements OrderService {
         List<Waypoint> waypoints = converter.dtoToWaypoints(dto, order);
         orderDAO.saveWaypoints(waypoints);
 
-        List<Long> path = pathDetailsService.getPath(dto.getWaypointsDto()).getPath();
+        List<WaypointDTO> waypointsDTO = dto.getWaypointsDto();
+        setCargoWeight(waypointsDTO);
+
+        List<Long> path = pathDetailsService.getPath(waypointsDTO).getPath();
+
         String stringPath = parser.parseLongListToString(path);
         order.setPath(stringPath);
 
+        double maxCapacityInTons = pathDetailsService.getMaxCapacityInTons(path, waypointsDTO);
+        order.setMaxCapacity(maxCapacityInTons);
+
         long id = orderDAO.saveOrder(order);
-        logger.info("Create order by id: {}", id);
-        //TODO Listner
-        createOrderDetails(id);
+        logger.info("Create order by id: {} with max capacity {}", id, order.getMaxCapacity());
+
+        double approximateLeadTime = pathDetailsService.getShiftHours(path);
+        createOrderDetails(id, approximateLeadTime);
     }
 
-    private void createOrderDetails(long id) {
-        orderDAO.saveOrderDetails(id);
-        logger.info("Create order detail for order id: {}", id);
+    private void setCargoWeight(List<WaypointDTO> waypointsDTO) {
+        for (WaypointDTO dto : waypointsDTO) {
+             double weight = cargoDAO.findCargoWeightById(dto.getCargoId());
+            dto.setCargoWeight(weight);
+        }
+    }
+
+    private void createOrderDetails(long id, double approximateLeadTime) {
+        orderDAO.saveOrderDetails(id, approximateLeadTime);
+        logger.info("Create order detail for order id: {} , with approximate lead time: {}", id, approximateLeadTime);
     }
 
     @Override
@@ -89,11 +107,8 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderDAO.findOrderById(orderId);
 
         List<Long> path = parser.parseStringToLongList(order.getPath());
-        List<WaypointDTO> waypoints = orderDAO.findWaypointsOfThisOrder(orderId);
-        List<WaypointDTO> fullWaypoints = converter.toFullWaypointDTO(waypoints);
 
-        double maxCapacity = pathDetailsService.getMaxCapacityInTons(path, fullWaypoints);
-
+        double maxCapacity = order.getMaxCapacity();
 
         return orderDAO.findTrucksForOrder(maxCapacity, path.get(0));
     }

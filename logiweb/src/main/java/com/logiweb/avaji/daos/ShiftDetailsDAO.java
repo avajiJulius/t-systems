@@ -35,4 +35,9 @@ public class ShiftDetailsDAO {
         workShift.setDriver(driver);
         entityManager.merge(workShift);
     }
+
+    public void updateShiftDetailsOnCompletedOrder(long id) {
+        entityManager.createNamedQuery("Driver.updateOnCompletedOrder")
+                .setParameter("id", id).executeUpdate();
+    }
 }
