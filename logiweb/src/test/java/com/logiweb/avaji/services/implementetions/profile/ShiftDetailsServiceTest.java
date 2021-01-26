@@ -87,7 +87,7 @@ class ShiftDetailsServiceTest {
     }
 
     @Test
-    void thenUpdateShiftDetailsToNoConflictDTOThenReturnUpdatedDetailsValues1() throws ShiftValidationException {
+    void thenUpdateShiftDetailsThenReturnUpdatedDetailsValues1() throws ShiftValidationException {
         Mockito.when(shiftDetailsDAO.findShiftDetails(1))
                 .thenReturn(shiftDetailsList.get(0));
 
@@ -97,7 +97,7 @@ class ShiftDetailsServiceTest {
     }
 
     @Test
-    void thenUpdateShiftDetailsToNoConflictDTOThenReturnUpdatedDetailsValues2() throws ShiftValidationException {
+    void thenUpdateShiftDetailsThenReturnUpdatedDetailsValues2() throws ShiftValidationException {
         Mockito.when(shiftDetailsDAO.findShiftDetails(2))
                 .thenReturn(shiftDetailsList.get(1));
 

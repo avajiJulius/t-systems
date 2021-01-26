@@ -18,19 +18,18 @@ import java.util.List;
 public interface OrderService {
 
     /**
-     * The <code>readAllOrders</code> read all orders from database.
+     * The <code>readAllOrders</code> read all orders from database and return order dto.
      *
-     * @return list of order entities
+     * @return list of order dtos
      */
     List<OrderDTO> readAllOrders();
 
 
     /**
-     * The <code>createOrderByWaypoints</code> create order entity by converting waypointsDto
-     * into list of waypoint entities. Validate this waypoint by this rules: every cargo need to be
-     * loaded and unloaded. After success validation save order into database.
+     * The <code>createOrderByWaypoints</code> create order entity by converting CreateWaypointsDTO
+     * into list of WaypointDTO. Search path, max capacity for set order and creating OrderDetails entity.
      *
-     * @param order in which waypoint list insert.
+     * @param order for set path and waypoints into it.
      * @param dto CreateWaypointDTO
      */
     void createOrderByWaypoints(Order order, CreateWaypointsDTO dto) throws LoadAndUnloadValidateException;
@@ -43,17 +42,15 @@ public interface OrderService {
     void deleteOrder(long orderId);
 
     /**
-     * The <code>readTrucksForOrder</code> read waypoints for order by orderId.
-     * Count <code>maxCapacity</code> value and read all free and serviceable trucks
-     * with capacity greater than <code>maxCapacity</code>.
+     * The <code>readTrucksForOrder</code> read TruckDTO by capacity, city and serviceable status.
      *
      * @param orderId
-     * @return all free, serviceable and suitable for capacity.
+     * @return suitable TruckDTO for order
      */
     List<TruckDTO> readTrucksForOrder(long orderId);
 
     /**
-     * The <code>addTruckToOrder</code> find truck by truckId and add it to order with orderId.
+     * The <code>addTruckToOrder</code> add Truck of truckId to Order.
      *
      * @param truckId
      * @param orderId
@@ -62,17 +59,17 @@ public interface OrderService {
 
     /**
      * The <code>readDriverForOrder</code> take driver if workedHour limit
-     * will not be exceeded, driver status is <code>REST</code>, and the truck current city
+     * will not be exceeded, driver don't have uncompleted order, and the truck current city
      * is the same as driver current city.
      *
      * @param orderId
-     * @return
+     * @return suitable DriverDTO
      */
     List<DriverDTO> readDriversForOrder(long orderId);
 
 
     /**
-     * The <code>addDriversToOrder</code> find drivers and add them to truck of current order;
+     * The <code>addDriversToOrder</code> add Drivers of driversIds to Order.
      *
      * @param driversIds
      * @param orderId

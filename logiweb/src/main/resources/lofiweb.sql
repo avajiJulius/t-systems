@@ -26,13 +26,6 @@ create table roads (
     foreign key (city_b_code) references cities(city_code)
 );
 
-create table country_map (
-    city_code bigint,
-    road_id bigint,
-    primary key (city_code, road_id),
-    foreign key (city_code) references cities(city_code),
-    foreign key (road_id) references roads(road_id)
-);
 
 create table trucks (
     id varchar(7),

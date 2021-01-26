@@ -73,7 +73,7 @@ class PathDetailsServiceTest {
 
         @Bean
         public PathDetailsService pathDetailsService() {
-            return new PathDetailsServiceImpl(countryMapService(), truckDAO());
+            return new PathDetailsServiceImpl(countryMapService());
         }
     }
 

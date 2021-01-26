@@ -47,6 +47,13 @@ public class TruckServiceImpl implements TruckService {
         return truckDAO.findTruckById(truckID);
     }
 
+    @Override
+    public int calculateFreeSpaceInShift(long orderId) {
+        TruckDTO truck = truckDAO.findTruckByOrderId(orderId);
+        int currentSize = (int) truckDAO.countDriversOfTruck(truck.getTruckId());
+        int size = truck.getShiftSize();
+        return (size - currentSize);
+    }
 
     @Override
     public void updateTruck(String truckId, TruckDTO updatedTruck) {

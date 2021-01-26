@@ -11,7 +11,17 @@ import java.util.List;
  */
 public interface CountryMapService {
 
+    /**
+     * Read all cities dtos from database
+     *
+     * @return all cities
+     */
     List<CityDTO> readAllCities();
 
+    /**
+     * Read all roads dtos from database
+     *
+     * @return all roads
+     */
     List<RoadDTO> readAllRoads();
 }

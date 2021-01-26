@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface TruckService {
     /**
-     * The <code>createTruck</code> convert truckDto into Truck entity
+     * The <code>createTruck</code> convert truckDTO into Truck entity
      * and insert into database.
      *
      * @param truckDto
@@ -21,19 +21,28 @@ public interface TruckService {
     /**
      * The <code>readTrucks</code> read all trucks from database.
      *
-     * @return list of trucks entities.
+     * @return list of TruckDTOs
      */
     List<TruckDTO> readTrucks();
 
     /**
      * The <code>readTruckById</code> read truck from database by id and convert
-     * it into truckDto.
+     * it into truckDTO.
      *
      * @param truckID unique identifier for truck.
      * @return truckDto
      */
     TruckDTO readTruckById(String truckID);
 
+
+    /**
+     * Calculate free space in truck shift by finding all drivers who have this truck entity and
+     * subtract form truck shift size.
+     *
+     * @param orderId
+     * @return free shift size.
+     */
+    int calculateFreeSpaceInShift(long orderId);
 
     /**
      * The <code>updateTruck</code> create updated truck entity

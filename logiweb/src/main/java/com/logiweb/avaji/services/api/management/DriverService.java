@@ -12,25 +12,27 @@ import java.util.List;
 public interface DriverService {
 
     /**
-     * The <code>readDrivers</code> read all drivers from database and convert driver entities
+     * The <code>readDrivers</code> read all drivers from database and convert them to dto;
      *
      * @return list of DriverDTO.
      */
     List<DriverDTO> readAllDrivers();
 
     /**
-     * The <code>createDriver</code> create and insert driver entity into database.
+     * The <code>createDriver</code> create and insert driver entity into database
+     * by converting driver dto.
      *
-     * @param driver entity.
+     * @param driver dto.
      */
     void createDriver(DriverDTO driver);
 
 
     /**
-     * The <code>updateDriver</code> create updated driver entity
+     * The <code>updateDriver</code> create updated driver entity by converting dto
      * and replace existing entity with this updated entity.
      *
-     * @param updatedDriver entity.
+     * @param id for search existing driver entity.
+     * @param updatedDriver dto.
      */
     void updateDriver(long id,DriverDTO updatedDriver);
 
@@ -42,5 +44,11 @@ public interface DriverService {
     void deleteDriver(long driverId);
 
 
+    /**
+     * The <code>readDriverById</code> read driver dto by id
+     *
+     * @param id
+     * @return driver dto
+     */
     DriverDTO readDriverById(long id);
 }
