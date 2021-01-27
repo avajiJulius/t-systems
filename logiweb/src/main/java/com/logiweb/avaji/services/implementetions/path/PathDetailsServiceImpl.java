@@ -2,6 +2,7 @@ package com.logiweb.avaji.services.implementetions.path;
 
 import com.logiweb.avaji.dtos.*;
 
+import com.logiweb.avaji.exceptions.SuboptimalPathException;
 import com.logiweb.avaji.services.api.map.CountryMapService;
 import com.logiweb.avaji.services.api.path.PathDetailsService;
 import com.logiweb.avaji.entities.models.CountryMap;
@@ -35,13 +36,14 @@ public class PathDetailsServiceImpl implements PathDetailsService {
         List<WaypointDTO> unloadAvailable = new ArrayList<>();
         double maxCapacity = 0;
         double capacity = 0;
+
         for (long code: citiesCodes) {
             double loadCapacity = 0.0;
             double unloadCapacity = 0.0;
 
             List<WaypointDTO> load = loadAvailable.stream()
                     .filter(waypoint -> waypoint.getLoadCityCode() == code).collect(Collectors.toList());
-            if(load.size() > 0) {
+            if(!load.isEmpty()) {
                 loadCapacity += load.stream()
                         .map(waypoint -> waypoint.getCargoWeight()).reduce((o1, o2) -> o1 + o2).get();
                 loadAvailable.removeAll(load);
@@ -56,13 +58,18 @@ public class PathDetailsServiceImpl implements PathDetailsService {
 
             List<WaypointDTO> unload = unloadAvailable.stream()
                     .filter(waypoint -> waypoint.getUnloadCityCode() == code).collect(Collectors.toList());
-            if(unload.size() > 0) {
+            if(!unload.isEmpty()) {
                     unloadCapacity += unload.stream()
                             .map(waypoint -> waypoint.getCargoWeight()).reduce((o1, o2) -> o1 + o2).get();
                     unloadAvailable.removeAll(unload);
             }
 
             capacity -= unloadCapacity;
+
+            if(capacity == 0 && !loadAvailable.isEmpty()) {
+                logger.error("Path is suboptimal");
+                throw new SuboptimalPathException("Path is suboptimal");
+            }
         }
 
         return convertKilogramsToTons(maxCapacity);

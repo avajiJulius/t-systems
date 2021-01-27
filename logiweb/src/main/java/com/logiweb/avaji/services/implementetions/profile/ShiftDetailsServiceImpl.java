@@ -54,6 +54,11 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
         logger.info("Driver by id {} finish shift of completed order", id);
     }
 
+    @Override
+    public void updateWorkedHours(long id, double hoursWorked) {
+        shiftDetailsDAO.updateWorkedHours(id, hoursWorked);
+    }
+
     private void updateShiftDetails(ShiftDetailsDTO shiftDetails, DriverStatus status) throws ShiftValidationException {
         setParametersToShiftDetails(shiftDetails, status);
 
@@ -76,22 +81,15 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
         shiftDetails.setDriverStatus(status);
     }
 
-    private void updateWorkShift(ShiftDetailsDTO shiftDetails, boolean activeDriverStatus) {
-        if(activeDriverStatus == true) {
+    private void updateWorkShift(ShiftDetailsDTO shiftDetails, boolean isStatusActive) {
+        if(isStatusActive) {
             shiftDetails.setShiftActive(true);
             shiftDetails.setStart(LocalDateTime.now());
             shiftDetails.setEnd(null);
         } else {
             shiftDetails.setEnd(LocalDateTime.now());
             shiftDetails.setShiftActive(false);
-            updateHoursWorked(shiftDetails);
         }
-    }
-
-    private void updateHoursWorked(ShiftDetailsDTO shiftDetails) {
-        double shiftHours = (double) ChronoUnit.HOURS.between(shiftDetails.getStart(), shiftDetails.getEnd()) +
-                shiftDetails.getHoursWorked();
-        shiftDetails.setHoursWorked(shiftHours);
     }
 
     private boolean driverStatusIsActive(DriverStatus status) {

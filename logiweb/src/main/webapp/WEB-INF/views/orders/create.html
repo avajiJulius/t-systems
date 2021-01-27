@@ -14,11 +14,11 @@
     <div class="container">
         <div class="row justify-content-md-center">
             <div class="col-8">
-            <div th:if="${message}" th:text="${message}"></div>
             <form action="#" th:action="@{/orders/}" th:object="${form}" method="POST">
                 <fieldset>
                     <a class="btn btn-primary" th:href="@{/orders/new/add}" role="button">Add Waypoint</a>
                     <a class="btn btn-primary"  th:href="@{/orders/new/remove}" role="button">Remove Waypoint</a>
+                    <div style="color:red" th:if="${#fields.hasErrors('path')}" th:errors="*{path}">path error</div>
                     <table class="table table-bordered border-4 border-dark">
                         <thead>
                         <tr>

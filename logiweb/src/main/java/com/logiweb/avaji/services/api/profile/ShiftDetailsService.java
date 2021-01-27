@@ -39,4 +39,13 @@ public interface ShiftDetailsService {
      * @throws ShiftValidationException if DriverStatus and shift activity have conflict.
      */
     void finishShiftOfCompletedOrder(long id) throws ShiftValidationException;
+
+    /**
+     * Update hours worked for driver
+     *
+     * @param id
+     * @param hoursWorked
+     */
+    void updateWorkedHours(long id, double hoursWorked);
+
 }

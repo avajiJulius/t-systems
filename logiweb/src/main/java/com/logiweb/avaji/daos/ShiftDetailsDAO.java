@@ -29,7 +29,6 @@ public class ShiftDetailsDAO {
         workShift.setEnd(shiftDetails.getEnd());
 
         Driver driver = entityManager.find(Driver.class, shiftDetails.getId());
-        driver.setHoursWorked(shiftDetails.getHoursWorked());
         driver.setDriverStatus(shiftDetails.getDriverStatus());
 
         workShift.setDriver(driver);
@@ -39,5 +38,12 @@ public class ShiftDetailsDAO {
     public void updateShiftDetailsOnCompletedOrder(long id) {
         entityManager.createNamedQuery("Driver.updateOnCompletedOrder")
                 .setParameter("id", id).executeUpdate();
+    }
+
+    public void updateWorkedHours(long id, double hoursWorked) {
+        Driver driver = entityManager.find(Driver.class, id);
+        double updatedHours = driver.getHoursWorked() + hoursWorked;
+        driver.setHoursWorked(updatedHours);
+        entityManager.merge(driver);
     }
 }

@@ -18,6 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -82,6 +83,7 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
     }
 
     @Override
+    @Transactional
     public void changeCity(long orderId, long driverId) {
         OrderDetails orderDetails = orderDetailsDAO.findOrderDetailsEntity(orderId);
 
@@ -90,8 +92,12 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
         Long cityCode = path.get(1);
         path.remove(0);
 
+        double newRemainingHours = pathDetailsService.getShiftHours(path);
+        double workedHours = orderDetails.getRemainingWorkingTime() - newRemainingHours;
+        shiftDetailsService.updateWorkedHours(driverId, workedHours);
+
         orderDetails.setRemainingPath(parser.parseLongListToString(path));
-        orderDetails.setRemainingWorkingTime(pathDetailsService.getShiftHours(path));
+        orderDetails.setRemainingWorkingTime(newRemainingHours);
 
         orderDetailsDAO.updateOrderDetails(orderDetails, cityCode);
     }

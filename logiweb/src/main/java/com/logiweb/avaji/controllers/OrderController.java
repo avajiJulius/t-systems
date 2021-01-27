@@ -6,6 +6,7 @@ import com.logiweb.avaji.dtos.CreateWaypointsDTO;
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.exceptions.ShiftSizeExceedException;
+import com.logiweb.avaji.exceptions.SuboptimalPathException;
 import com.logiweb.avaji.services.api.management.CargoService;
 import com.logiweb.avaji.services.api.management.TruckService;
 import com.logiweb.avaji.services.api.map.CountryMapService;
@@ -14,6 +15,8 @@ import com.logiweb.avaji.exceptions.LoadAndUnloadValidateException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -63,6 +66,7 @@ public class OrderController {
         model.addAttribute("cities", countryMapService.readAllCities());
         model.addAttribute("cargo", cargoService.readAllFreeCargo());
         model.addAttribute("form", waypointForm);
+        model.addAttribute("path", "path");
         return "orders/create";
     }
 
@@ -85,11 +89,16 @@ public class OrderController {
     @PostMapping()
     @PreAuthorize("hasAuthority('employee:write')")
     public String createOrder(@ModelAttribute(name = "form") CreateWaypointsDTO waypoints,
-                              Model model) throws LoadAndUnloadValidateException {
+                              Model model, BindingResult validationResult) throws LoadAndUnloadValidateException {
 
-        orderService.createOrderByWaypoints(new Order(), waypoints);
+        try {
+            orderService.createOrderByWaypoints(new Order(), waypoints);
+        }  catch (SuboptimalPathException e) {
+            ObjectError error = new ObjectError("path", e.getMessage());
+            validationResult.addError(error);
+            return "redirect:/orders/new";
+        }
 
-        model.addAttribute("orders", orderService.readAllOrders());
         return "redirect:/orders";
     }
 
