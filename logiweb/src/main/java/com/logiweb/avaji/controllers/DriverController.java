@@ -3,8 +3,6 @@ package com.logiweb.avaji.controllers;
 import com.logiweb.avaji.services.api.map.CountryMapService;
 import com.logiweb.avaji.dtos.DriverDTO;
 import com.logiweb.avaji.services.api.management.DriverService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -12,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/drivers")
@@ -47,13 +46,19 @@ public class DriverController {
     @PostMapping()
     @PreAuthorize("hasAuthority('employee:write')")
     public String createDriver(@ModelAttribute("driver") @Validated(DriverDTO.Create.class) DriverDTO driver,
-                               BindingResult result, Model model) {
+                               BindingResult result, Model model, RedirectAttributes attributes) {
         if (result.hasErrors()) {
             model.addAttribute("driver", new DriverDTO());
             model.addAttribute("cities", mapService.readAllCities());
             return "drivers/create";
         }
-        driverService.createDriver(driver);
+
+        boolean isCreated = driverService.createDriver(driver);
+        if(isCreated) {
+            attributes.addFlashAttribute("message", "Driver was successfully created");
+        } else {
+            attributes.addFlashAttribute("error", "Driver not created");
+        }
         return "redirect:/drivers";
     }
 
@@ -81,8 +86,13 @@ public class DriverController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('employee:write')")
-    public String deleteDriver(@PathVariable("id") long id) {
-        driverService.deleteDriver(id);
+    public String deleteDriver(@PathVariable("id") long id,  RedirectAttributes attributes) {
+        boolean isDeleted = driverService.deleteDriver(id);
+        if(isDeleted) {
+            attributes.addFlashAttribute("message", "Success delete truck with ID: " + id);
+        } else {
+            attributes.addFlashAttribute("error", "Truck not deleted");
+        }
         return "redirect:/drivers";
     }
 }

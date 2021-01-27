@@ -24,7 +24,7 @@ public interface DriverService {
      *
      * @param driver dto.
      */
-    void createDriver(DriverDTO driver);
+    boolean createDriver(DriverDTO driver);
 
 
     /**
@@ -41,7 +41,7 @@ public interface DriverService {
      *
      * @param driverId unique identifier for drivers.
      */
-    void deleteDriver(long driverId);
+    boolean deleteDriver(long driverId);
 
 
     /**

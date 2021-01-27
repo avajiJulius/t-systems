@@ -15,34 +15,37 @@ import java.util.List;
 @NamedQuery(name = "Truck.findAllTrucks",
         query = "select new com.logiweb.avaji.dtos.TruckDTO(" +
                 "t.truckId, t.capacity, t.shiftSize, t.serviceable, " +
-                "c.cityCode, c.cityName) from Truck t " +
+                "c.cityCode, c.cityName, t.inUse) from Truck t " +
                 "join t.currentCity c", lockMode = LockModeType.READ)
 @NamedQuery(name = "Truck.findTruckById",
         query = "select new com.logiweb.avaji.dtos.TruckDTO(" +
                 "t.truckId, t.version, t.capacity, t.shiftSize, t.serviceable, " +
-                "t.currentCity.cityCode, t.currentCity.cityName) from Truck t " +
+                "t.currentCity.cityCode, t.currentCity.cityName, t.inUse) from Truck t " +
                 "where t.truckId = :id", lockMode = LockModeType.READ)
 @NamedQuery(name = "Truck.findTrucksForOrder",
         query = "select new com.logiweb.avaji.dtos.TruckDTO(" +
                 "t.truckId, t.version, t.capacity, t.shiftSize, t.serviceable, " +
-                "t.currentCity.cityCode, t.currentCity.cityName) from Truck t " +
+                "t.currentCity.cityCode, t.currentCity.cityName, t.inUse) from Truck t " +
                 "where t.serviceable = true " +
                 "and t.capacity >= :maxCapacity " +
                 "and t.currentCity.cityCode = :startCode " +
-                "and t not in (select o.designatedTruck from Order o)", lockMode = LockModeType.READ)
+                "and t.inUse = false ", lockMode = LockModeType.READ)
 @NamedQuery(name = "Truck.findTruckByDriverId",
         query = "select d.currentTruck from Driver d " +
                 "where d.id = :driverId")
 @NamedQuery(name = "Truck.findTruckByOrderId",
         query = "select new com.logiweb.avaji.dtos.TruckDTO(" +
                 "t.truckId, t.version, t.capacity, t.shiftSize, t.serviceable, " +
-                "t.currentCity.cityCode, t.currentCity.cityName) from Truck t " +
+                "t.currentCity.cityCode, t.currentCity.cityName, t.inUse) from Truck t " +
                 "where t.truckId = (select o.designatedTruck.truckId " +
                 "from Order o where o.id = :id)", lockMode = LockModeType.READ)
 @NamedQuery(name = "Truck.updateTruckOnCityChange",
         query = "update Truck t set t.currentCity = " +
                 "(select c from City c where c.cityCode = :cityCode) " +
                 "where t.truckId = (select o.designatedTruck.truckId from Order o where o.id = :id)")
+@NamedQuery(name = "Truck.updateOnCompletedOrder",
+        query = "update Truck t set t.inUse = false " +
+                "where t.truckId = :id")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -59,6 +62,8 @@ public class Truck {
     private double capacity;
     @Column(name = "serviceable")
     private boolean serviceable;
+    @Column(name = "in_use")
+    private boolean inUse;
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn(name = "city_code")
     private City currentCity;

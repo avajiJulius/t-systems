@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -46,12 +47,18 @@ public class TruckController {
     @PostMapping()
     @PreAuthorize("hasAuthority('employee:write')")
     public String createTruck(@ModelAttribute("truck") @Validated(TruckDTO.Create.class) TruckDTO truckDto,
-                              BindingResult result, Model model) {
+                              BindingResult result, Model model, RedirectAttributes attributes) {
         if (result.hasErrors()) {
             model.addAttribute("cities", mapService.readAllCities());
             return "trucks/create";
         }
-        truckService.createTruck(truckDto);
+
+        boolean isCreated = truckService.createTruck(truckDto);
+        if(isCreated) {
+            attributes.addFlashAttribute("message", "Truck was successfully created");
+        } else {
+            attributes.addFlashAttribute("error", "Truck not created");
+        }
         return "redirect:/trucks";
     }
 
@@ -79,9 +86,15 @@ public class TruckController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('employee:write')")
-    public String deleteTruck(@PathVariable("id") String id) {
-        truckService.deleteTruck(id);
+    public String deleteTruck(@PathVariable("id") String id, RedirectAttributes attributes) {
+        boolean isDeleted = truckService.deleteTruck(id);
+        if(isDeleted) {
+            attributes.addFlashAttribute("message", "Success delete truck with ID: " + id);
+        } else {
+            attributes.addFlashAttribute("error", "Truck not deleted");
+        }
         return "redirect:/trucks";
+
     }
 
 }

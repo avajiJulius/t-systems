@@ -2,10 +2,12 @@ package com.logiweb.avaji.exceptionhandler;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @ControllerAdvice
@@ -24,9 +26,11 @@ public class GlobalExceptionHandler {
         return "exceptions/403";
     }
 
-    @ExceptionHandler(Exception.class)
-    public String serverException(Exception e) {
+    @ExceptionHandler(ConstraintViolationException.class)
+    public String pageOnUniqueValueException(ConstraintViolationException e, RedirectAttributes attributes) {
         logger.error(e.getMessage());
-        return "exceptions/500";
+        attributes.addFlashAttribute("message", "Already contain this unique value");
+        return "exceptions/details";
     }
+
 }

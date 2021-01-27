@@ -1,5 +1,6 @@
 package com.logiweb.avaji.daos;
 
+import com.logiweb.avaji.dtos.DriverDTO;
 import com.logiweb.avaji.dtos.ShiftDetailsDTO;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.WorkShift;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.util.List;
 
 @Repository
 public class ShiftDetailsDAO {
@@ -36,14 +38,23 @@ public class ShiftDetailsDAO {
     }
 
     public void updateShiftDetailsOnCompletedOrder(long id) {
+        String truckId = entityManager.createNamedQuery("Driver.findTruckIdByDriver", String.class)
+                .setParameter("id", id).getSingleResult();
+        entityManager.createNamedQuery("Truck.updateOnCompletedOrder")
+                .setParameter("id", truckId).executeUpdate();
         entityManager.createNamedQuery("Driver.updateOnCompletedOrder")
                 .setParameter("id", id).executeUpdate();
     }
 
     public void updateWorkedHours(long id, double hoursWorked) {
-        Driver driver = entityManager.find(Driver.class, id);
-        double updatedHours = driver.getHoursWorked() + hoursWorked;
-        driver.setHoursWorked(updatedHours);
-        entityManager.merge(driver);
+        List<DriverDTO> drivers = entityManager.createNamedQuery("Driver.findDriversByOrderId", DriverDTO.class)
+                .setParameter("id", id).getResultList();
+
+        for(DriverDTO driverDTO: drivers) {
+            Driver driver = entityManager.find(Driver.class, driverDTO.getId());
+            double updatedHours = driver.getHoursWorked() + hoursWorked;
+            driver.setHoursWorked(updatedHours);
+            entityManager.merge(driver);
+        }
     }
 }

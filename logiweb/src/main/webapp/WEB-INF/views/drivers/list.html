@@ -9,9 +9,21 @@
 </head>
 <body>
 <nav th:replace="fragments/navbar.html :: navigation"></nav>
+<div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+    <p th:text="${message}"></p>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <p th:text="${error}"></p>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
 <div align="center">
     <h1>Drivers List</h1>
-    <a th:href="@{/drivers/new}">Create driver</a>
+    <a class="btn btn-outline-primary" th:href="@{/drivers/new}">Create driver</a>
     <table class="table table-bordered border-4 border-dark">
         <thead class="thead-light">
         <tr>
@@ -38,10 +50,15 @@
                 <span th:if="${driver.truckId == null}">-</span>
             </td>
             <td>
-                <a th:href="@{/drivers/{id}/edit(id=${driver.id})}">Edit</a>
-                <form action="#" th:action="@{/drivers/{id}(id=${driver.id})}" th:method="DELETE">
-                    <input type="submit" value="Delete" />
-                </form>
+                <div th:if="${driver?.truckId}">
+                    Can not apply action, driver completed the order.
+                </div>
+                <div th:unless="${driver?.truckId}">
+                    <a class="btn btn-outline-secondary" th:href="@{/drivers/{id}/edit(id=${driver.id})}">Edit</a>
+                    <form action="#" th:action="@{/drivers/{id}(id=${driver.id})}" th:method="DELETE">
+                        <input class="btn btn-outline-danger" type="submit" value="Delete" />
+                    </form>
+                </div>
             </td>
         </tr>
         </tbody>

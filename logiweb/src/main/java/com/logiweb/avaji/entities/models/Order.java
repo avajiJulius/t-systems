@@ -26,8 +26,8 @@ query = "select o from Order o where o.designatedTruck.truckId like :truckId")
         query = "select o.id from Order o where o.designatedTruck.truckId = " +
                 "(select d.currentTruck.truckId from Driver d where d.id = :id)")
 @NamedQuery(name = "Order.updateOnCompletedOrder",
-        query = "update Order o set o.completed = true, o.designatedTruck = null " +
-                "where o.id = :id")
+        query = "update Order o set o.completed = true, " +
+                "o.designatedTruck = null where o.id = :id")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

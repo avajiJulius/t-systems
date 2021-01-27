@@ -31,15 +31,15 @@ public class TruckServiceImpl implements TruckService {
     }
 
     @Override
-    public void createTruck(TruckDTO truckDTO) {
-        if(!idIsUnique(truckDTO.getTruckId())) {
-            logger.info("Try to create truck with existing truck id: {}", truckDTO.getTruckId());
-            throw new UniqueValidationException("Truck whit this id already existing");
-        }
+    public boolean createTruck(TruckDTO truckDTO) {
         Truck truck = converter.dtoToTruck(truckDTO);
 
-        truckDAO.saveTruck(truck);
-        logger.info("Create truck by id: {}", truck.getTruckId());
+        boolean isSaved = truckDAO.saveTruck(truck);
+        if (isSaved) {
+            logger.info("Create truck by id: {}", truck.getTruckId());
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -71,12 +71,12 @@ public class TruckServiceImpl implements TruckService {
 
 
     @Override
-    public void deleteTruck(String truckID) {
-        truckDAO.deleteTruck(truckID);
-        logger.info("Delete truck by id: {}", truckID);
-    }
-
-    private boolean idIsUnique(String truckId) {
-        return !Optional.ofNullable(truckDAO.findTruckById(truckId)).isPresent();
+    public boolean deleteTruck(String truckID) {
+        boolean result = truckDAO.deleteTruck(truckID);
+        if(result) {
+            logger.info("Delete truck by id: {}", truckID);
+            return true;
+        }
+        return false;
     }
 }

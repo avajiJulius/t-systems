@@ -34,6 +34,7 @@ create table trucks (
     capacity double precision,
     serviceable boolean default true,
     city_code bigint not null,
+    in_use boolean default false,
     primary key (id),
     foreign key (city_code) references cities(city_code)
 );

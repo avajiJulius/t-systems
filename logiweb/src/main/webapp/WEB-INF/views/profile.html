@@ -24,19 +24,31 @@
                             </select>
                         </div>
                     </div>
-                <button th:if="${orderDetails?.completed == false}" type="submit" class="btn btn-primary">Change</button>
+                <button th:if="${orderDetails?.completed == false}" type="submit" class="btn btn-outline-primary">Change</button>
             </form>
 
             <form th:method="PATCH" th:action="@{/profile/finish}">
-                <button th:if="${orderDetails?.completed == true}" type="submit" class="btn btn-primary">Finish</button>
+                <button th:if="${orderDetails?.completed == true}" type="submit" class="btn btn-outline-primary">Finish</button>
             </form>
         </div>
         <div class="col">
-            <p>Your current location: <span th:text="${shiftDetails.cityName}"></span></p>
             <div class="row" >
                 <div class="col">
                     <span>Personal ID : </span>
                     <h5 id="user_id" th:text="${shiftDetails.id}" />
+                </div>
+            </div>
+            <div class="row">
+                <p>Your current location: <span th:text="${shiftDetails.cityName}"></span></p>
+            </div>
+            <div th:if="${orderDetails}" class="row">
+                Change city to :
+                <div th:if="${orderDetails.nextCity.cityCode != -1}">
+                    <a class="btn btn-outline-secondary" th:href="@{/profile/{id}/changeCity(id=${orderDetails.id})}"
+                       th:text="${orderDetails.nextCity.cityName}"></a>
+                </div>
+                <div th:unless="${orderDetails.nextCity.cityCode != -1}">
+                    <p th:text="${orderDetails.nextCity.cityName}"></p>
                 </div>
             </div>
         </div>
@@ -48,16 +60,14 @@
         <div th:if="${orderDetails.completed == false}">
             <div class="row">
                 <div th:if="${orderDetails.completed == false}" class="col">
-                    <table class="table table-bordered border-4 border-dark">
-                        <tr>
-                            <th th:colspan="${#lists.size(orderDetails.coDrivers)}" >Co-Drivers</th>
-                        </tr>
-                        <tr th:each="coDriver : ${orderDetails?.coDrivers}">
-                            <td>
-                                <p><span th:text="${'#' + coDriver.id + ': ' + coDriver.lastName + ' ' + coDriver.firstName}"></span></p>
-                            </td>
-                        </tr>
-                    </table>
+                    <div th:if="${orderDetails?.coDrivers}">
+                        <p>Co-Drivers</p>
+                        <ul th:each="coDriver : ${orderDetails?.coDrivers}">
+                            <li>
+                                <span th:text="${'#' + coDriver.id + ': ' + coDriver.lastName + ' ' + coDriver.firstName}"></span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -78,10 +88,7 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <p>Change city to:<a th:href="@{/profile/{id}/changeCity(id=${orderDetails.id})}"
-                                     th:text="${orderDetails.nextCity.cityName}"></a></p>
-                    <form th:method="PATCH"
-                          th:action="@{/profile/cargo}" th:object="${cargoIds}">
+                    <form th:method="PATCH" th:action="@{/profile/cargo}" th:object="${cargoIds}">
                     <label for="path">Order Waypoints</label>
                     <table id="path" class="table table-bordered border-4 border-dark">
                         <thead>
@@ -125,7 +132,7 @@
                         </tr>
                         </tbody>
                     </table>
-                        <input type="submit" value="Update" />
+                        <button type="submit"  class="btn btn-outline-primary">Update</button>
                     </form>
                 </div>
             </div>

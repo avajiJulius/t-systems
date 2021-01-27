@@ -65,10 +65,8 @@ public class ProfileController {
 
     @GetMapping("/{id}/changeCity")
     @PreAuthorize("hasAuthority('driver:write')")
-    public String updateRemainingPath(@PathVariable("id") long orderId,
-                                      Principal principal) {
-        User user = userDAO.findUserByEmail(principal.getName());
-        orderDetailsService.changeCity(orderId, user.getId());
+    public String updateRemainingPath(@PathVariable("id") long orderId) {
+        orderDetailsService.changeCity(orderId);
         return "redirect:/profile";
     }
 
