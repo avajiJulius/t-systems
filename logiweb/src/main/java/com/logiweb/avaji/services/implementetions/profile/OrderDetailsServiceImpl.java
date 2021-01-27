@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,7 +69,9 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
     }
 
 
+
     @Override
+    @Transactional
     public void updateOrderByCargoStatus(long driverId, List<Long> cargoIds) throws ShiftValidationException {
         shiftDetailsService.changeShiftDetails(driverId, DriverStatus.LOAD_UNLOAD_WORK);
 
@@ -84,7 +87,7 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 
     @Override
     @Transactional
-    public void changeCity(long orderId, long driverId) {
+    public void changeCity(long orderId) {
         OrderDetails orderDetails = orderDetailsDAO.findOrderDetailsEntity(orderId);
 
         List<Long> path = parser.parseStringToLongList(orderDetails.getRemainingPath());
@@ -94,7 +97,7 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 
         double newRemainingHours = pathDetailsService.getShiftHours(path);
         double workedHours = orderDetails.getRemainingWorkingTime() - newRemainingHours;
-        shiftDetailsService.updateWorkedHours(driverId, workedHours);
+        shiftDetailsService.updateWorkedHours(orderId, workedHours);
 
         orderDetails.setRemainingPath(parser.parseLongListToString(path));
         orderDetails.setRemainingWorkingTime(newRemainingHours);

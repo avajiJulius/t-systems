@@ -12,7 +12,7 @@
 <div align="center">
     <h1>Order List</h1>
     <form action="#" th:action="@{/orders/new}" method="GET">
-        <button type="submit" class="btn btn-primary">Create Order</button>
+        <button type="submit" class="btn btn-outline-primary">Create Order</button>
     </form>
     <table class="table table-bordered border-4 border-dark">
 
@@ -40,7 +40,7 @@
             <td>
                 <div th:if="${order.completed == false}">
                     <span th:text="${order?.truckId}" />
-                    <a th:href="@{/orders/{id}/trucks(id=${order.orderId})}"
+                    <a class="btn btn-outline-secondary" th:href="@{/orders/{id}/trucks(id=${order.orderId})}"
                        th:if="${order.truckId == null}">Choose Truck</a>
                 </div>
                 <div th:unless="${order.completed == false}" >
@@ -50,7 +50,8 @@
             <td>
                 <div th:if="${order.completed == false}">
                     <div th:if="${order.truckId == null}">
-                        <a th:href="@{/orders/{id}/trucks(id=${order.orderId})}">Choose Truck</a>
+                        <a class="btn btn-outline-secondary"
+                           th:href="@{/orders/{id}/trucks(id=${order.orderId})}">Choose Truck</a>
                     </div>
                     <div th:unless="${order.truckId == null}">
                         <div th:if="${order?.drivers.size() == order.shiftSize}" >
@@ -59,7 +60,8 @@
                             </ul>
                         </div>
                         <div th:unless="${order?.drivers.size() == order.shiftSize}">
-                            <a th:href="@{/orders/{id}/drivers(id=${order.orderId})}" th:text="${order.shiftSize}"></a>
+                            <a class="btn btn-outline-secondary"
+                               th:href="@{/orders/{id}/drivers(id=${order.orderId})}" th:text="${order.shiftSize}"></a>
                         </div>
                     </div>
                 </div>
@@ -67,7 +69,7 @@
                     -
                 </div>
             </td>
-            <td><a th:href="@{/orders/{id}/cargo(id=${order.orderId})}">Go to Cargo</a></td>
+            <td><a class="btn btn-outline-secondary" th:href="@{/orders/{id}/cargo(id=${order.orderId})}">Go to Cargo</a></td>
         </tr>
         </tbody>
     </table>

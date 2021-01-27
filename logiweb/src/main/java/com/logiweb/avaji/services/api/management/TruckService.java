@@ -16,7 +16,7 @@ public interface TruckService {
      *
      * @param truckDto
      */
-    void createTruck(TruckDTO truckDto);
+    boolean createTruck(TruckDTO truckDto);
 
     /**
      * The <code>readTrucks</code> read all trucks from database.
@@ -57,5 +57,5 @@ public interface TruckService {
      *
      * @param truckID unique identifier for trucks.
      */
-    void deleteTruck(String truckID);
+    boolean deleteTruck(String truckID);
 }

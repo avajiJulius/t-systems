@@ -34,10 +34,9 @@ public interface OrderDetailsService {
     void updateOrderByCargoStatus(long driverId, List<Long> cargoIds) throws ShiftValidationException;
 
     /**
-     * Change city to next by calculate remaining path
+     * Change city to next by calculate remaining path and calculate worked hours for drivers;
      *
      * @param orderId
-     * @param driverId
      */
-    void changeCity(long orderId, long driverId);
+    void changeCity(long orderId);
 }

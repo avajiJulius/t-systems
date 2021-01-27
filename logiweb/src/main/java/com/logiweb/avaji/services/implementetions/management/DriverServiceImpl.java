@@ -23,13 +23,11 @@ public class DriverServiceImpl implements DriverService {
 
     private final DriverDAO driverDAO;
     private final Mapper mapper;
-    private final UserDAO userDAO;
 
     @Autowired
-    public DriverServiceImpl(DriverDAO driverDAO, Mapper mapper, UserDAO userDAO) {
+    public DriverServiceImpl(DriverDAO driverDAO, Mapper mapper) {
         this.driverDAO = driverDAO;
         this.mapper = mapper;
-        this.userDAO = userDAO;
     }
 
     @Override
@@ -39,26 +37,29 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     @Transactional
-    public void createDriver(DriverDTO driverDTO) {
-        if(!emailIsUnique(driverDTO.getEmail())) {
-            logger.info("Try to create user whit register email");
-            throw new UniqueValidationException("Current email already used");
-        }
-
+    public boolean createDriver(DriverDTO driverDTO) {
         Driver driver = mapper.createDriverFromDto(driverDTO);
-        driverDAO.saveDriver(driver);
 
-        logger.info("Create driver by id: {}", driver.getId());
-        createWorkShift(driver.getId());
+        boolean isSaved = driverDAO.saveDriver(driver);
+        if(isSaved) {
+
+            logger.info("Create driver by id: {}", driver.getId());
+            boolean isCreated = createWorkShift(driver.getId());
+
+            if(isCreated) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    private boolean emailIsUnique(String email) {
-        return !Optional.ofNullable(userDAO.findUserByEmail(email)).isPresent();
-    }
-
-    private void createWorkShift(long id) {
-        driverDAO.saveWorkShift(id);
-        logger.info("Create work shift for driver with id: {}", id);
+    private boolean createWorkShift(long id) {
+        boolean isSaved = driverDAO.saveWorkShift(id);
+        if(isSaved) {
+            logger.info("Create work shift for driver with id: {}", id);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -70,9 +71,13 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public void deleteDriver(long driverID) {
-        driverDAO.deleteDriver(driverID);
-        logger.info("Delete driver by id: {}", driverID);
+    public boolean deleteDriver(long driverID) {
+        boolean isDeleted = driverDAO.deleteDriver(driverID);
+        if(isDeleted) {
+            logger.info("Delete driver by id: {}", driverID);
+            return true;
+        }
+        return false;
     }
 
     @Override

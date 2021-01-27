@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -66,7 +67,6 @@ public class OrderController {
         model.addAttribute("cities", countryMapService.readAllCities());
         model.addAttribute("cargo", cargoService.readAllFreeCargo());
         model.addAttribute("form", waypointForm);
-        model.addAttribute("path", "path");
         return "orders/create";
     }
 
@@ -77,9 +77,9 @@ public class OrderController {
     }
 
     @GetMapping("/new/remove")
-    public String removeNewWaypoint(Model model) {
+    public String removeNewWaypoint(RedirectAttributes attributes) {
         if(quantity < 2) {
-            model.addAttribute("message", "Quantity of Waypoint cannot be null");
+            attributes.addAttribute("message", "Quantity of Waypoint cannot be null");
             return "redirect:/orders/new";
         }
         quantity--;
@@ -88,16 +88,8 @@ public class OrderController {
 
     @PostMapping()
     @PreAuthorize("hasAuthority('employee:write')")
-    public String createOrder(@ModelAttribute(name = "form") CreateWaypointsDTO waypoints,
-                              Model model, BindingResult validationResult) throws LoadAndUnloadValidateException {
-
-        try {
-            orderService.createOrderByWaypoints(new Order(), waypoints);
-        }  catch (SuboptimalPathException e) {
-            ObjectError error = new ObjectError("path", e.getMessage());
-            validationResult.addError(error);
-            return "redirect:/orders/new";
-        }
+    public String createOrder(@ModelAttribute(name = "form") CreateWaypointsDTO waypoints) throws LoadAndUnloadValidateException {
+        orderService.createOrderByWaypoints(new Order(), waypoints);
 
         return "redirect:/orders";
     }

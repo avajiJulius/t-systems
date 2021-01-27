@@ -24,7 +24,8 @@ import javax.persistence.*;
 @NamedQuery(name = "Driver.refreshWorkedHours",
         query = "update Driver d set d.hoursWorked = 0")
 @NamedQuery(name = "Driver.findDriversByOrderId",
-        query = "select new com.logiweb.avaji.dtos.DriverDTO(d.id, d.firstName, d.lastName) from Driver d where d.currentTruck.truckId = " +
+        query = "select new com.logiweb.avaji.dtos.DriverDTO(d.id, d.firstName, d.lastName) from Driver d " +
+                "where d.currentTruck.truckId = " +
                 "(select o.designatedTruck.truckId from Order o where o.id = :id)")
 @NamedQuery(name = "Driver.countDriversOfTruck",
                 query = "select count(d) from Driver d " +
@@ -42,6 +43,8 @@ import javax.persistence.*;
         query = "update Driver d set d.currentCity = " +
                 "(select c from City c where c.cityCode = :cityCode) " +
                 "where d.id in (select d.id from Driver d where d.orderDetails.id = :id)")
+@NamedQuery(name = "Driver.findTruckIdByDriver",
+        query = "select d.currentTruck.truckId from Driver d where d.id = :id")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

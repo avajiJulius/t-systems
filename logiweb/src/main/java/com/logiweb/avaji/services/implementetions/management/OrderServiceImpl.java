@@ -114,15 +114,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public void addTruckToOrder(String truckId, long orderId) {
         Truck truck = orderDAO.findTruckEntityById(truckId);
+        truck.setInUse(true);
+
         Order order = orderDAO.findOrderById(orderId);
         order.setDesignatedTruck(truck);
+
         orderDAO.updateOrder(order);
         logger.info("Add truck {} for order by id: {}", truckId, orderId);
     }
 
     @Override
+    @Transactional
     public List<DriverDTO> readDriversForOrder(long orderId) {
         long cityCode = orderDAO.findTruckByOrderId(orderId).getCurrentCity().getCityCode();
         String path = orderDAO.findOrderById(orderId).getPath();

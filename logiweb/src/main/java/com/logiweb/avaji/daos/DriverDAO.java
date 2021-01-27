@@ -30,9 +30,10 @@ public class DriverDAO {
         return query.getResultList();
     }
 
-    public void saveDriver(Driver driver) {
+    public boolean saveDriver(Driver driver) {
         entityManager.persist(driver);
         entityManager.flush();
+        return entityManager.contains(driver);
     }
 
     public void updateDriver(Driver updatedDriver) {
@@ -47,7 +48,7 @@ public class DriverDAO {
     }
 
 
-    public void deleteDriver(long driverId) {
+    public boolean deleteDriver(long driverId) {
         Driver driver = Optional.ofNullable(entityManager.find(Driver.class, driverId))
                 .<DriverNotFoundException>orElseThrow(()  -> {
                     logger.error("Driver with ID {} not found", driverId);
@@ -56,6 +57,10 @@ public class DriverDAO {
         WorkShift workShift = entityManager.find(WorkShift.class, driverId);
         entityManager.remove(workShift);
         entityManager.remove(driver);
+        if(!entityManager.contains(driver)) {
+            return !entityManager.contains(workShift);
+        }
+        return false;
     }
 
 
@@ -67,12 +72,13 @@ public class DriverDAO {
     }
 
 
-    public void saveWorkShift(long id) {
+    public boolean saveWorkShift(long id) {
         Driver driver = entityManager.find(Driver.class, id);
         WorkShift workShift = new WorkShift();
         workShift.setDriver(driver);
         entityManager.persist(workShift);
         entityManager.flush();
+        return entityManager.contains(workShift);
     }
 
     public DriverDTO findDriverById(long id) {

@@ -28,9 +28,10 @@ public class TruckDAO {
     }
 
 
-    public void saveTruck(Truck truck) {
+    public boolean saveTruck(Truck truck) {
         entityManager.persist(truck);
         entityManager.flush();
+        return entityManager.contains(truck);
     }
 
     public TruckDTO findTruckByOrderId(long orderId) {
@@ -43,9 +44,10 @@ public class TruckDAO {
         entityManager.merge(truck);
     }
 
-    public void deleteTruck(String id) {
+    public boolean deleteTruck(String id) {
         Truck truck = entityManager.find(Truck.class, id);
         entityManager.remove(truck);
+        return !entityManager.contains(truck);
     }
 
 
