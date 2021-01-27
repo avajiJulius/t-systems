@@ -10,6 +10,7 @@ import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.OrderDetails;
 import com.logiweb.avaji.exceptions.ShiftValidationException;
+import com.logiweb.avaji.services.api.path.PathDetailsService;
 import com.logiweb.avaji.services.implementetions.utils.PathParser;
 import com.logiweb.avaji.services.api.profile.OrderDetailsService;
 import com.logiweb.avaji.services.api.profile.ShiftDetailsService;
@@ -33,15 +34,18 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
     private final CargoDAO cargoDAO;
     private final PathParser parser;
     private final ShiftDetailsService shiftDetailsService;
+    private final PathDetailsService pathDetailsService;
 
     @Autowired
-    public OrderDetailsServiceImpl(OrderDetailsDAO orderDetailsDAO, OrderDAO orderDAO, PathParser parser,
-                                   CargoDAO cargoDAO, ShiftDetailsService shiftDetailsService) {
+    public OrderDetailsServiceImpl(OrderDetailsDAO orderDetailsDAO, OrderDAO orderDAO, CargoDAO cargoDAO,
+                                   PathParser parser, ShiftDetailsService shiftDetailsService,
+                                   PathDetailsService pathDetailsService) {
         this.orderDetailsDAO = orderDetailsDAO;
         this.orderDAO = orderDAO;
-        this.parser = parser;
         this.cargoDAO = cargoDAO;
+        this.parser = parser;
         this.shiftDetailsService = shiftDetailsService;
+        this.pathDetailsService = pathDetailsService;
     }
 
     @Override
@@ -81,12 +85,13 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
     public void changeCity(long orderId, long driverId) {
         OrderDetails orderDetails = orderDetailsDAO.findOrderDetailsEntity(orderId);
 
-        List<Long> citiesCodes = parser.parseStringToLongList(orderDetails.getRemainingPath());
+        List<Long> path = parser.parseStringToLongList(orderDetails.getRemainingPath());
 
-        Long cityCode = citiesCodes.get(1);
-        citiesCodes.remove(0);
+        Long cityCode = path.get(1);
+        path.remove(0);
 
-        orderDetails.setRemainingPath(parser.parseLongListToString(citiesCodes));
+        orderDetails.setRemainingPath(parser.parseLongListToString(path));
+        orderDetails.setRemainingWorkingTime(pathDetailsService.getShiftHours(path));
 
         orderDetailsDAO.updateOrderDetails(orderDetails, cityCode);
     }

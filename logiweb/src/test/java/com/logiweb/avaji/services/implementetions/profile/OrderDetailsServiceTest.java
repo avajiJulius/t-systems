@@ -5,6 +5,7 @@ import com.logiweb.avaji.daos.OrderDAO;
 import com.logiweb.avaji.daos.OrderDetailsDAO;
 import com.logiweb.avaji.entities.enums.CargoStatus;
 import com.logiweb.avaji.entities.models.Cargo;
+import com.logiweb.avaji.services.api.path.PathDetailsService;
 import com.logiweb.avaji.services.api.profile.ShiftDetailsService;
 import com.logiweb.avaji.services.implementetions.utils.PathParser;
 import org.junit.jupiter.api.Test;
@@ -90,10 +91,14 @@ class OrderDetailsServiceTest {
             return Mockito.mock(PathParser.class);
         }
 
+        public PathDetailsService pathDetailsService() {
+            return Mockito.mock(PathDetailsService.class);
+        }
+
         @Bean
         public OrderDetailsServiceImpl orderDetailsService() {
-            return new OrderDetailsServiceImpl(orderDetailsDAO(), orderDAO(), pathParser(),
-                    cargoDAO(), shiftDetailsService());
+            return new OrderDetailsServiceImpl(orderDetailsDAO(), orderDAO(),
+                    cargoDAO(), pathParser(),shiftDetailsService(), pathDetailsService());
         }
 
     }

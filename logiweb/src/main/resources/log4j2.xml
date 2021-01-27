@@ -13,6 +13,15 @@
             </Policies>
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
+        <RollingFile name="FileError" fileName="/logs/errorlogiweb.log"
+                     filePattern="logs/$${date:yyyy-MM}/error-logiweb-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout pattern="%d %p %c{1} [%t] %m%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
     </Appenders>
     <Loggers>
         <Logger name="com.logiweb.avaji" level="info" additivity="false">
@@ -22,7 +31,7 @@
             <AppenderRef ref="File"/>
         </Logger>
         <Root level="error">
-            <AppenderRef ref="File"/>
+            <AppenderRef ref="FileError"/>
         </Root>
     </Loggers>
 </Configuration>

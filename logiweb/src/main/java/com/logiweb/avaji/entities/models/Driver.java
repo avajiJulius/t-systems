@@ -1,6 +1,5 @@
 package com.logiweb.avaji.entities.models;
 
-import com.logiweb.avaji.dtos.DriverDTO;
 import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.enums.Role;
 import lombok.AllArgsConstructor;

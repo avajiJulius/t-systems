@@ -48,7 +48,7 @@
         <div th:if="${orderDetails.completed == false}">
             <div class="row">
                 <div th:if="${orderDetails.completed == false}" class="col">
-                    <table>
+                    <table class="table table-bordered border-4 border-dark">
                         <tr>
                             <th th:colspan="${#lists.size(orderDetails.coDrivers)}" >Co-Drivers</th>
                         </tr>
@@ -65,11 +65,13 @@
                     <tr>
                         <th>Order ID</th>
                         <th>Path</th>
+                        <th>Remaining Hours Worked</th>
                         <th>Truck ID</th>
                     </tr>
                     <tr>
                         <td th:text="${orderDetails.id}"></td>
                         <td th:text="${orderDetails.prettyPath}"></td>
+                        <td th:text="${orderDetails.remainingWorkingHours}"></td>
                         <td th:text="${orderDetails.truckId}"></td>
                     </tr>
                 </table>
