@@ -12,6 +12,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * This service convert List of cityCodes to string which reflects path and vice versa.
+ * Parse string which reflect path to pretty string
+ * 1-2-6- CONVERT TO Saint-Petersburg - Moscow - Samara
+ *
+ */
+
 @Service
 public class PathParser {
 

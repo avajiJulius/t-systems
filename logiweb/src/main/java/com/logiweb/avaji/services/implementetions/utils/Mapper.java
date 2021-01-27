@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This service convert DTO to Entities and vice versa.
@@ -100,21 +99,5 @@ public class Mapper {
                 .withHoursWorked(driverDTO.getHoursWorked())
                 .withCurrentCity(mapDAO.findCityByCode(driverDTO.getCityCode()))
                 .build();
-    }
-
-    public List<WaypointDTO> toFullWaypointDTO(List<WaypointDTO> waypoints) {
-        List<WaypointDTO> result = new ArrayList<>();
-        List<CargoDTO> cargos = waypoints.stream().map(waypoint ->
-                new CargoDTO(waypoint.getCargoId(), waypoint.getCargoWeight())).distinct().collect(Collectors.toList());
-        for(CargoDTO cargo: cargos) {
-            WaypointDTO load = waypoints.stream().filter(waypoint -> waypoint.getCargoId() == cargo.getCargoId())
-                    .filter(waypoint -> waypoint.getType() == WaypointType.LOADING).findFirst().get();
-            WaypointDTO unload = waypoints.stream().filter(waypoint -> waypoint.getCargoId() == cargo.getCargoId())
-                    .filter(waypoint -> waypoint.getType() == WaypointType.LOADING).findFirst().get();
-            result.add(new WaypointDTO(
-                    load.getCityCode(), unload.getCityCode(),
-                    cargo.getCargoId(), cargo.getCargoWeight()));
-        }
-        return result;
     }
 }

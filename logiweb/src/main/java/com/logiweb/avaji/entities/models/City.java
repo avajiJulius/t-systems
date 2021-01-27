@@ -31,16 +31,6 @@ public class City{
     private long cityCode;
     @Column(name = "city_name")
     private String cityName;
-    @ManyToMany
-    @JoinTable(name = "country_map",
-            joinColumns = @JoinColumn(name = "city_code"),
-            inverseJoinColumns = @JoinColumn(name = "road_id"))
-    private Collection<Road> roads;
-
-    public City(long cityCode, String cityName) {
-        this.cityCode = cityCode;
-        this.cityName = cityName;
-    }
 
     @Override
     public String toString() {

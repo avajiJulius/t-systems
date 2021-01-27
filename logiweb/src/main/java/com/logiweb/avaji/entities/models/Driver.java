@@ -1,6 +1,5 @@
 package com.logiweb.avaji.entities.models;
 
-import com.logiweb.avaji.dtos.DriverDTO;
 import com.logiweb.avaji.entities.enums.DriverStatus;
 import com.logiweb.avaji.entities.enums.Role;
 import lombok.AllArgsConstructor;
@@ -37,12 +36,12 @@ import javax.persistence.*;
 @NamedQuery(name = "Driver.findDriversByIds",
         query = "select d from Driver d where d.id in :driversIds")
 @NamedQuery(name = "Driver.updateOnCompletedOrder",
-        query = "update Driver d set d.currentTruck = null, d.orderDetails = null, d.driverStatus = 'REST' " +
-                "where d.orderDetails.id = :id")
-@NamedQuery(name = "Driver.updateDriverOnCityChange",
-        query = "update Driver d set d.driverStatus = 'DRIVING', d.currentCity = " +
-                "(select c from City c where c.cityCode = :cityCode) " +
+        query = "update Driver d set d.currentTruck = null, d.orderDetails = null " +
                 "where d.id = :id")
+@NamedQuery(name = "Driver.updateDriverOnCityChange",
+        query = "update Driver d set d.currentCity = " +
+                "(select c from City c where c.cityCode = :cityCode) " +
+                "where d.id in (select d.id from Driver d where d.orderDetails.id = :id)")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

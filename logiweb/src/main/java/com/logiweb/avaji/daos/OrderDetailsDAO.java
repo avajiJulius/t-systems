@@ -5,10 +5,14 @@ import com.logiweb.avaji.dtos.WaypointDTO;
 import com.logiweb.avaji.entities.models.Driver;
 import com.logiweb.avaji.entities.models.OrderDetails;
 import com.logiweb.avaji.entities.models.WorkShift;
+import com.logiweb.avaji.services.implementetions.profile.OrderDetailsServiceImpl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
@@ -18,13 +22,21 @@ import java.util.List;
 @Transactional
 public class OrderDetailsDAO {
 
+    private static final Logger logger = LogManager.getLogger(OrderDetailsDAO.class);
+
     @PersistenceContext
     EntityManager entityManager;
 
     public OrderDetailsDTO findOrderDetails(long driverId) {
         TypedQuery<OrderDetailsDTO> query = entityManager.createNamedQuery("OrderDetails.findOrderDetails", OrderDetailsDTO.class)
                 .setParameter("id", driverId);
-        return query.getSingleResult();
+        OrderDetailsDTO orderDetails = null;
+        try {
+            orderDetails = query.getSingleResult();
+        } catch (NoResultException e) {
+            logger.info("No order details for driver with id {}", driverId);
+        }
+        return orderDetails;
     }
 
     public long findOrderIdOfDriverId(long driverId) {
@@ -33,9 +45,11 @@ public class OrderDetailsDAO {
         return query.getSingleResult();
     }
 
-    public void updateOrderDetails(OrderDetails updatedOrderDetails,long driverId, long cityCode) {
+    public void updateOrderDetails(OrderDetails updatedOrderDetails, long cityCode) {
         entityManager.createNamedQuery("Driver.updateDriverOnCityChange")
-                .setParameter("cityCode", cityCode).setParameter("id", driverId).executeUpdate();
+                .setParameter("cityCode", cityCode).setParameter("id", updatedOrderDetails.getId()).executeUpdate();
+        entityManager.createNamedQuery("Truck.updateTruckOnCityChange")
+                .setParameter("cityCode", cityCode).setParameter("id", updatedOrderDetails.getId()).executeUpdate();
         entityManager.merge(updatedOrderDetails);
     }
 
@@ -47,11 +61,6 @@ public class OrderDetailsDAO {
     public void updateOnCompletedOrder(long orderId) {
         entityManager.createNamedQuery("Order.updateOnCompletedOrder")
                 .setParameter("id", orderId).executeUpdate();
-        entityManager.createNamedQuery("Driver.updateOnCompletedOrder")
-                .setParameter("id", orderId).executeUpdate();
-        entityManager.createNamedQuery("WorkShift.updateOnCompletedOrder")
-                .setParameter("id", orderId).setParameter("end", LocalDateTime.now())
-                .executeUpdate();
     }
 
 }

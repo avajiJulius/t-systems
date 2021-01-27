@@ -1,7 +1,5 @@
 package com.logiweb.avaji.dtos;
 
-
-import com.logiweb.avaji.entities.models.Waypoint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,21 +20,22 @@ public class OrderDetailsDTO {
     private String prettyPath;
     private String remainingPathString;
     private Deque<CityDTO> remainingPath = new ArrayDeque<>();
+    private double maxCapacity;
+    private double remainingWorkingHours;
     private CityDTO nextCity;
     private List<WaypointDTO> waypoints = new ArrayList<>();
     private boolean completed;
 
 
     public OrderDetailsDTO(long id, String truckId,
-                           String path, String remainingPathString) {
+                           String path, String remainingPathString,
+                           double maxCapacity, double remainingWorkingHours) {
         this.id = id;
         this.truckId = truckId;
         this.path = path;
         this.remainingPathString = remainingPathString;
-    }
-
-    public OrderDetailsDTO(String remainingPathString) {
-        this.remainingPathString = remainingPathString;
+        this.maxCapacity = maxCapacity;
+        this.remainingWorkingHours = remainingWorkingHours;
     }
 
     public static class Builder {

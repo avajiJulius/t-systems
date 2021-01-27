@@ -17,15 +17,17 @@ public class OrderDTO {
     private boolean completed;
     private String truckId;
     private int shiftSize;
+    private double maxCapacity;
     private List<DriverDTO> drivers = new ArrayList<>();
     private String prettyPath;
 
     public OrderDTO(long orderId, int version, boolean completed,
-                    String truckId, String prettyPath) {
+                    String truckId, double maxCapacity, String prettyPath) {
         this.orderId = orderId;
         this.version = version;
         this.completed = completed;
         this.truckId = truckId;
+        this.maxCapacity = maxCapacity;
         this.prettyPath = prettyPath;
     }
 }

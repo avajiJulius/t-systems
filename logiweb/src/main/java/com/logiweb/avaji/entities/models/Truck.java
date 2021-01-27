@@ -39,11 +39,13 @@ import java.util.List;
                 "t.currentCity.cityCode, t.currentCity.cityName) from Truck t " +
                 "where t.truckId = (select o.designatedTruck.truckId " +
                 "from Order o where o.id = :id)", lockMode = LockModeType.READ)
-
+@NamedQuery(name = "Truck.updateTruckOnCityChange",
+        query = "update Truck t set t.currentCity = " +
+                "(select c from City c where c.cityCode = :cityCode) " +
+                "where t.truckId = (select o.designatedTruck.truckId from Order o where o.id = :id)")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class Truck {
     @Id
     @Column(name = "id")

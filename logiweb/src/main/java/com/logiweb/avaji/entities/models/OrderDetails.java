@@ -1,5 +1,6 @@
 package com.logiweb.avaji.entities.models;
 
+import com.logiweb.avaji.dtos.CityDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,8 @@ import java.util.List;
 @Table(name = "order_details")
 @NamedQuery(name = "OrderDetails.findOrderDetails",
 query = "select new com.logiweb.avaji.dtos.OrderDetailsDTO(" +
-        "od.id, od.order.designatedTruck.truckId, od.order.path, od.remainingPath) from Driver d " +
+        "od.id, od.order.designatedTruck.truckId, od.order.path, od.remainingPath, " +
+        "od.order.maxCapacity, od.remainingWorkingTime) from Driver d " +
         "join d.orderDetails od where d.id = :id")
 @Data
 @NoArgsConstructor
@@ -30,6 +32,8 @@ public class OrderDetails {
     private int version;
     @Column(name = "remaining_path")
     private String remainingPath;
+    @Column(name = "remaining_working_time")
+    private double remainingWorkingTime;
 
     @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "orderDetails")
     private List<Driver> drivers = new ArrayList<>();
@@ -41,5 +45,33 @@ public class OrderDetails {
                 ", version=" + version +
                 ", remainingPath='" + remainingPath +
                 '}';
+    }
+
+    public static class Builder {
+
+        private OrderDetails newOrderDetails;
+
+        public Builder() {
+            newOrderDetails = new OrderDetails();
+        }
+
+        public Builder withOrder(Order order) {
+            newOrderDetails.order = order;
+            return this;
+        }
+
+        public Builder withRemainingPath(String remainingPath) {
+            newOrderDetails.remainingPath = remainingPath;
+            return this;
+        }
+
+        public Builder withRemainingWorkingTime(double remainingWorkingTime) {
+            newOrderDetails.remainingWorkingTime = remainingWorkingTime;
+            return this;
+        }
+
+        public OrderDetails build() {
+            return newOrderDetails;
+        }
     }
 }

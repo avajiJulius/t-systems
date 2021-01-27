@@ -6,15 +6,17 @@ import com.logiweb.avaji.dtos.CreateWaypointsDTO;
 import com.logiweb.avaji.entities.models.Cargo;
 import com.logiweb.avaji.entities.models.Order;
 import com.logiweb.avaji.exceptions.ShiftSizeExceedException;
+import com.logiweb.avaji.exceptions.SuboptimalPathException;
 import com.logiweb.avaji.services.api.management.CargoService;
+import com.logiweb.avaji.services.api.management.TruckService;
 import com.logiweb.avaji.services.api.map.CountryMapService;
 import com.logiweb.avaji.services.api.management.OrderService;
 import com.logiweb.avaji.exceptions.LoadAndUnloadValidateException;
-import com.logiweb.avaji.services.api.path.PathDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,17 +28,16 @@ public class OrderController {
     private final OrderService orderService;
     private final CargoService cargoService;
     private final CountryMapService countryMapService;
-    private final PathDetailsService pathDetailsService;
+    private final TruckService truckService;
 
     private int quantity = 1;
 
-    @Autowired
     public OrderController(OrderService orderService, CargoService cargoService,
-                           CountryMapService countryMapService, PathDetailsService pathDetailsService) {
+                           CountryMapService countryMapService, TruckService truckService) {
         this.orderService = orderService;
         this.cargoService = cargoService;
         this.countryMapService = countryMapService;
-        this.pathDetailsService = pathDetailsService;
+        this.truckService = truckService;
     }
 
     @GetMapping()
@@ -65,6 +66,7 @@ public class OrderController {
         model.addAttribute("cities", countryMapService.readAllCities());
         model.addAttribute("cargo", cargoService.readAllFreeCargo());
         model.addAttribute("form", waypointForm);
+        model.addAttribute("path", "path");
         return "orders/create";
     }
 
@@ -87,11 +89,16 @@ public class OrderController {
     @PostMapping()
     @PreAuthorize("hasAuthority('employee:write')")
     public String createOrder(@ModelAttribute(name = "form") CreateWaypointsDTO waypoints,
-                              Model model) throws LoadAndUnloadValidateException {
+                              Model model, BindingResult validationResult) throws LoadAndUnloadValidateException {
 
-        orderService.createOrderByWaypoints(new Order(), waypoints);
+        try {
+            orderService.createOrderByWaypoints(new Order(), waypoints);
+        }  catch (SuboptimalPathException e) {
+            ObjectError error = new ObjectError("path", e.getMessage());
+            validationResult.addError(error);
+            return "redirect:/orders/new";
+        }
 
-        model.addAttribute("orders", orderService.readAllOrders());
         return "redirect:/orders";
     }
 
@@ -112,25 +119,23 @@ public class OrderController {
         return "redirect:/orders";
     }
 
-
     @GetMapping("/{id}/drivers")
     @PreAuthorize("hasAuthority('employee:read')")
     public String getDriversForOrder(@PathVariable("id") long orderId,
                                      Model model) {
         model.addAttribute("drivers", orderService.readDriversForOrder(orderId));
-        model.addAttribute("shiftSize", pathDetailsService.calculateFreeSpaceInShift(orderId));
+        model.addAttribute("shiftSize", truckService.calculateFreeSpaceInShift(orderId));
         model.addAttribute("orderId", orderId);
         model.addAttribute("driversIds", new AddedDriversDto());
         return "orders/drivers";
     }
 
-
     @PatchMapping("{orderId}/drivers")
     @PreAuthorize("hasAuthority('employee:write')")
     public String addDriversToOrder(@PathVariable("orderId") long orderId,
                                     @ModelAttribute("driversIds") AddedDriversDto driversIds) throws ShiftSizeExceedException {
-        if(driversIds.getIds().size() > pathDetailsService.calculateFreeSpaceInShift(orderId)) {
-            throw new ShiftSizeExceedException();
+        if(driversIds.getIds().size() > truckService.calculateFreeSpaceInShift(orderId)) {
+            throw new ShiftSizeExceedException("Shift size exceed");
         }
         orderService.addDriversToOrder(driversIds.getIds(), orderId);
         return "redirect:/orders";

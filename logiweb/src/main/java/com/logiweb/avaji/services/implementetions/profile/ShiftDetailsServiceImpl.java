@@ -33,49 +33,74 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
 
     @Override
     @Transactional
-    public ShiftDetailsDTO updateShiftDetails(ShiftDetailsDTO updateDetails)
-            throws ShiftValidationException {
-        ShiftDetailsDTO shiftDetails = shiftDetailsDAO.findShiftDetails(updateDetails.getId());
+    public ShiftDetailsDTO changeShiftDetails(long id, DriverStatus driverStatus) throws ShiftValidationException {
+        ShiftDetailsDTO shiftDetails = shiftDetailsDAO.findShiftDetails(id);
 
-        if(!validateShiftAndDriverStatus(updateDetails.isShiftActive(), updateDetails.getDriverStatus())) {
+        updateShiftDetails(shiftDetails, driverStatus);
+
+        return shiftDetailsDAO.findShiftDetails(id);
+    }
+
+    @Override
+    @Transactional
+    public void finishShiftOfCompletedOrder(long id) throws ShiftValidationException {
+        ShiftDetailsDTO shiftDetails = shiftDetailsDAO.findShiftDetails(id);
+
+        if(shiftDetails.isShiftActive() && shiftDetails.getDriverStatus() != DriverStatus.REST) {
+            updateShiftDetails(shiftDetails, DriverStatus.REST);
+        }
+
+        shiftDetailsDAO.updateShiftDetailsOnCompletedOrder(id);
+        logger.info("Driver by id {} finish shift of completed order", id);
+    }
+
+    @Override
+    public void updateWorkedHours(long id, double hoursWorked) {
+        shiftDetailsDAO.updateWorkedHours(id, hoursWorked);
+    }
+
+    private void updateShiftDetails(ShiftDetailsDTO shiftDetails, DriverStatus status) throws ShiftValidationException {
+        setParametersToShiftDetails(shiftDetails, status);
+
+        if(!shiftAndDriverStatusValid(shiftDetails.isShiftActive(), shiftDetails.getDriverStatus())) {
             logger.error("Driver status and shift status conflict");
             throw new ShiftValidationException("Driver status and shift status conflict");
         }
 
-        if(updateDetails.isShiftActive() != shiftDetails.isShiftActive()) {
-            updateWorkShift(shiftDetails, updateDetails.isShiftActive());
-        }
-
-        shiftDetails.setDriverStatus(updateDetails.getDriverStatus());
-
         shiftDetailsDAO.updateShiftDetails(shiftDetails);
         logger.info("Shift details of id {} updated", shiftDetails.getId());
-
-        return shiftDetailsDAO.findShiftDetails(updateDetails.getId());
     }
 
 
-    public boolean validateShiftAndDriverStatus(boolean active, DriverStatus status) {
-        return !active ? status.ordinal() == 0 : status.ordinal() > 0;
+    private void setParametersToShiftDetails(ShiftDetailsDTO shiftDetails, DriverStatus status) {
+        boolean activeDriverStatus = driverStatusIsActive(status);
+
+        if (activeDriverStatus != shiftDetails.isShiftActive()) {
+            updateWorkShift(shiftDetails, activeDriverStatus);
+        }
+        shiftDetails.setDriverStatus(status);
     }
 
-    public void updateWorkShift(ShiftDetailsDTO shiftDetails, boolean updateStatus) {
-        if(updateStatus == true) {
+    private void updateWorkShift(ShiftDetailsDTO shiftDetails, boolean isStatusActive) {
+        if(isStatusActive) {
             shiftDetails.setShiftActive(true);
             shiftDetails.setStart(LocalDateTime.now());
             shiftDetails.setEnd(null);
         } else {
             shiftDetails.setEnd(LocalDateTime.now());
             shiftDetails.setShiftActive(false);
-            updateHoursWorked(shiftDetails);
         }
     }
 
-    private void updateHoursWorked(ShiftDetailsDTO shiftDetails) {
-        double shiftHours = (double) ChronoUnit.HOURS.between(shiftDetails.getStart(), shiftDetails.getEnd()) +
-                shiftDetails.getHoursWorked();
-        shiftDetails.setHoursWorked(shiftHours);
+    private boolean driverStatusIsActive(DriverStatus status) {
+        return status.ordinal() > 0;
     }
+
+    public boolean shiftAndDriverStatusValid(boolean active, DriverStatus status) {
+        return !active ? status.ordinal() == 0 : status.ordinal() > 0;
+    }
+
+
 
 
 }

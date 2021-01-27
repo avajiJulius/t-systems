@@ -43,6 +43,4 @@ public class Road {
     @Column(name = "distance_in_hours")
     private double distanceInHours;
 
-    @ManyToMany(mappedBy = "roads")
-    private List<City> cities = new ArrayList<>();
 }

@@ -1,8 +1,10 @@
 package com.logiweb.avaji.services.implementetions.management;
 
 import com.logiweb.avaji.daos.DriverDAO;
+import com.logiweb.avaji.daos.UserDAO;
 import com.logiweb.avaji.dtos.DriverDTO;
 import com.logiweb.avaji.entities.models.Driver;
+import com.logiweb.avaji.exceptions.UniqueValidationException;
 import com.logiweb.avaji.services.api.management.DriverService;
 import com.logiweb.avaji.services.implementetions.utils.Mapper;
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DriverServiceImpl implements DriverService {
@@ -20,12 +23,13 @@ public class DriverServiceImpl implements DriverService {
 
     private final DriverDAO driverDAO;
     private final Mapper mapper;
+    private final UserDAO userDAO;
 
     @Autowired
-    public DriverServiceImpl(DriverDAO driverDAO,
-                             Mapper mapper) {
+    public DriverServiceImpl(DriverDAO driverDAO, Mapper mapper, UserDAO userDAO) {
         this.driverDAO = driverDAO;
         this.mapper = mapper;
+        this.userDAO = userDAO;
     }
 
     @Override
@@ -36,11 +40,20 @@ public class DriverServiceImpl implements DriverService {
     @Override
     @Transactional
     public void createDriver(DriverDTO driverDTO) {
+        if(!emailIsUnique(driverDTO.getEmail())) {
+            logger.info("Try to create user whit register email");
+            throw new UniqueValidationException("Current email already used");
+        }
+
         Driver driver = mapper.createDriverFromDto(driverDTO);
         driverDAO.saveDriver(driver);
 
         logger.info("Create driver by id: {}", driver.getId());
         createWorkShift(driver.getId());
+    }
+
+    private boolean emailIsUnique(String email) {
+        return !Optional.ofNullable(userDAO.findUserByEmail(email)).isPresent();
     }
 
     private void createWorkShift(long id) {

@@ -3,6 +3,7 @@ package com.logiweb.avaji.services.implementetions.management;
 import com.logiweb.avaji.dtos.TruckDTO;
 import com.logiweb.avaji.entities.models.Truck;
 import com.logiweb.avaji.daos.TruckDAO;
+import com.logiweb.avaji.exceptions.UniqueValidationException;
 import com.logiweb.avaji.services.api.management.TruckService;
 import com.logiweb.avaji.services.implementetions.utils.Mapper;
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -29,13 +31,16 @@ public class TruckServiceImpl implements TruckService {
     }
 
     @Override
-    public void createTruck(TruckDTO truckDto) {
-        Truck truck = converter.dtoToTruck(truckDto);
+    public void createTruck(TruckDTO truckDTO) {
+        if(!idIsUnique(truckDTO.getTruckId())) {
+            logger.info("Try to create truck with existing truck id: {}", truckDTO.getTruckId());
+            throw new UniqueValidationException("Truck whit this id already existing");
+        }
+        Truck truck = converter.dtoToTruck(truckDTO);
 
         truckDAO.saveTruck(truck);
         logger.info("Create truck by id: {}", truck.getTruckId());
     }
-
 
     @Override
     public List<TruckDTO> readTrucks() {
@@ -47,6 +52,13 @@ public class TruckServiceImpl implements TruckService {
         return truckDAO.findTruckById(truckID);
     }
 
+    @Override
+    public int calculateFreeSpaceInShift(long orderId) {
+        TruckDTO truck = truckDAO.findTruckByOrderId(orderId);
+        int currentSize = (int) truckDAO.countDriversOfTruck(truck.getTruckId());
+        int size = truck.getShiftSize();
+        return (size - currentSize);
+    }
 
     @Override
     public void updateTruck(String truckId, TruckDTO updatedTruck) {
@@ -64,4 +76,7 @@ public class TruckServiceImpl implements TruckService {
         logger.info("Delete truck by id: {}", truckID);
     }
 
+    private boolean idIsUnique(String truckId) {
+        return !Optional.ofNullable(truckDAO.findTruckById(truckId)).isPresent();
+    }
 }

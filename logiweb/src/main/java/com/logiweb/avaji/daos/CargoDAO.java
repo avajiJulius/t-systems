@@ -33,4 +33,10 @@ public class CargoDAO {
     public void updateCargo(Cargo cargo) {
         entityManager.merge(cargo);
     }
+
+    public double findCargoWeightById(long cargoId) {
+        TypedQuery<Double> query = entityManager.createNamedQuery("Cargo.findCargoWeightById", Double.class)
+                .setParameter("id", cargoId);
+        return query.getSingleResult();
+    }
 }
