@@ -1,6 +1,6 @@
 package com.logiweb.avaji.exceptionhandler;
 
-import com.logiweb.avaji.exceptions.*;
+import com.logiweb.avaji.exception.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.ui.Model;
