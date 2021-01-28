@@ -97,9 +97,6 @@ public class PathDetailsServiceImpl implements PathDetailsService {
         return from.until(to, ChronoUnit.HOURS);
     }
 
-
-
-
     @Override
     public Path getPath(List<WaypointDTO> waypoints) {
         List<Path> available = new ArrayList<>();
