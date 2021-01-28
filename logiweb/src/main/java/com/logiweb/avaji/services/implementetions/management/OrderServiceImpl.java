@@ -92,7 +92,7 @@ public class OrderServiceImpl implements OrderService {
 
     private void createOrderDetails(long id, double approximateLeadTime) {
         orderDAO.saveOrderDetails(id, approximateLeadTime);
-        logger.info("Create order detail for order id: {} , with approximate lead time: {}", id, approximateLeadTime);
+        logger.info("Create order detail for order id: {} , with time in travel: {}", id, approximateLeadTime);
     }
 
     @Override

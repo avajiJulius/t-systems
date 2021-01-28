@@ -5,6 +5,7 @@ import com.logiweb.avaji.dtos.CityDTO;
 import com.logiweb.avaji.dtos.Path;
 import com.logiweb.avaji.dtos.RoadDTO;
 import com.logiweb.avaji.dtos.WaypointDTO;
+import com.logiweb.avaji.exceptions.SuboptimalPathException;
 import com.logiweb.avaji.services.api.map.CountryMapService;
 import com.logiweb.avaji.services.api.path.PathDetailsService;
 import org.junit.jupiter.api.Test;
@@ -255,21 +256,17 @@ class PathDetailsServiceTest {
     }
 
     @Test
-    void returnMaxCapacityAsExpected2() {
+    void whenGiveWaypoints2ThenThrowSuboptimalPathException() {
         Path path = pathDetailsService.getPath(waypoints2);
-        double maxCapacity = pathDetailsService.getMaxCapacityInTons(path.getPath(), waypoints2);
-        double result = 0.033;
 
-        assertEquals(result, maxCapacity);
+        assertThrows(SuboptimalPathException.class, () -> pathDetailsService.getMaxCapacityInTons(path.getPath(), waypoints2));
     }
 
     @Test
-    void returnMaxCapacityAsExpected3() {
+    void whenGiveWaypoints3ThenThrowSuboptimalPathException() {
         Path path = pathDetailsService.getPath(waypoints3);
-        double maxCapacity = pathDetailsService.getMaxCapacityInTons(path.getPath(), waypoints3);
-        double result = 0.11;
 
-        assertEquals(result, maxCapacity);
+        assertThrows(SuboptimalPathException.class, () -> pathDetailsService.getMaxCapacityInTons(path.getPath(), waypoints3));
     }
 
     @Test
