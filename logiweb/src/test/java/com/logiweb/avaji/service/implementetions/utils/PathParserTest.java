@@ -1,7 +1,7 @@
 package com.logiweb.avaji.service.implementetions.utils;
 
 import com.logiweb.avaji.dao.CountryMapDAO;
-import com.logiweb.avaji.entitie.model.City;
+import com.logiweb.avaji.entity.model.City;
 import com.logiweb.avaji.exception.PathParseException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

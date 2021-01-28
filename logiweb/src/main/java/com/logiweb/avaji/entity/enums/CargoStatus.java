@@ -1,4 +1,4 @@
-package com.logiweb.avaji.entitie.enums;
+package com.logiweb.avaji.entity.enums;
 
 public enum CargoStatus {
     PREPARED, SHIPPED, DELIVERED;

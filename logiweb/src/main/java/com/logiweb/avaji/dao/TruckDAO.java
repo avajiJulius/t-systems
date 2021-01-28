@@ -1,7 +1,7 @@
 package com.logiweb.avaji.dao;
 
 import com.logiweb.avaji.dtos.TruckDTO;
-import com.logiweb.avaji.entitie.model.Truck;
+import com.logiweb.avaji.entity.model.Truck;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,9 +15,9 @@ public class TruckDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
-
-    public List<TruckDTO> findTrucks() {
-        Query query = entityManager.createNamedQuery("Truck.findAllTrucks", TruckDTO.class);
+    public List<TruckDTO> findTrucksPage(int indexFrom, int pageSize) {
+        TypedQuery<TruckDTO> query = entityManager.createNamedQuery("Truck.findAllTrucks", TruckDTO.class)
+                .setFirstResult(indexFrom).setMaxResults(pageSize);
         return query.getResultList();
     }
 
@@ -55,5 +55,11 @@ public class TruckDAO {
         TypedQuery<Long> query = entityManager.createNamedQuery("Driver.countDriversOfTruck", Long.class)
                 .setParameter("id", truckId);
         return query.getSingleResult();
+    }
+
+
+
+    public long countTrucks() {
+        return entityManager.createNamedQuery("Truck.countTrucks", Long.class).getSingleResult();
     }
 }

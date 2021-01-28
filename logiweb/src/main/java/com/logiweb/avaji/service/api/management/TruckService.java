@@ -18,12 +18,7 @@ public interface TruckService {
      */
     boolean createTruck(TruckDTO truckDto);
 
-    /**
-     * The <code>readTrucks</code> read all trucks from database.
-     *
-     * @return list of TruckDTOs
-     */
-    List<TruckDTO> readTrucks();
+    List<TruckDTO> readTrucksPage(int pageNumber, int pageSize);
 
     /**
      * The <code>readTruckById</code> read truck from database by id and convert
@@ -58,4 +53,7 @@ public interface TruckService {
      * @param truckID unique identifier for trucks.
      */
     boolean deleteTruck(String truckID);
+
+    long getTrucksTotalNumbers();
+
 }

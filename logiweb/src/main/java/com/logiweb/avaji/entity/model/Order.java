@@ -1,4 +1,4 @@
-package com.logiweb.avaji.entitie.model;
+package com.logiweb.avaji.entity.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,6 +28,8 @@ query = "select o from Order o where o.designatedTruck.truckId like :truckId")
 @NamedQuery(name = "Order.updateOnCompletedOrder",
         query = "update Order o set o.completed = true, " +
                 "o.designatedTruck = null where o.id = :id")
+@NamedQuery(name="Order.countOrders",
+        query = "select count(o) from Order o")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

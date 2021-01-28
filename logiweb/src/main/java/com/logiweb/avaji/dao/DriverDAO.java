@@ -1,8 +1,8 @@
 package com.logiweb.avaji.dao;
 
 import com.logiweb.avaji.dtos.DriverDTO;
-import com.logiweb.avaji.entitie.model.Driver;
-import com.logiweb.avaji.entitie.model.WorkShift;
+import com.logiweb.avaji.entity.model.Driver;
+import com.logiweb.avaji.entity.model.WorkShift;
 import com.logiweb.avaji.exception.DriverNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,8 +23,10 @@ public class DriverDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<DriverDTO> findAllDrivers() {
-        Query query = entityManager.createNamedQuery("Driver.findAllDrivers", DriverDTO.class);
+
+    public List<DriverDTO> findDriversPage(int indexFrom, int pageSize) {
+        TypedQuery<DriverDTO> query = entityManager.createNamedQuery("Driver.findAllDrivers", DriverDTO.class)
+                .setFirstResult(indexFrom).setMaxResults(pageSize);
         return query.getResultList();
     }
 
@@ -93,5 +95,9 @@ public class DriverDAO {
 
     public Driver findDriverEntity(long driverId) {
         return entityManager.find(Driver.class, driverId);
+    }
+
+    public long countDrivers() {
+        return entityManager.createNamedQuery("Driver.countDrivers", Long.class).getSingleResult();
     }
 }

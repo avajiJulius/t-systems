@@ -1,6 +1,6 @@
 package com.logiweb.avaji.service.api.path;
 
-import com.logiweb.avaji.entitie.model.Path;
+import com.logiweb.avaji.entity.model.Path;
 import com.logiweb.avaji.dtos.WaypointDTO;
 import org.springframework.stereotype.Service;
 

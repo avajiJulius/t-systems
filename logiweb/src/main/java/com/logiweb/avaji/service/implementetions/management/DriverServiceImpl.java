@@ -2,7 +2,7 @@ package com.logiweb.avaji.service.implementetions.management;
 
 import com.logiweb.avaji.dao.DriverDAO;
 import com.logiweb.avaji.dtos.DriverDTO;
-import com.logiweb.avaji.entitie.model.Driver;
+import com.logiweb.avaji.entity.model.Driver;
 import com.logiweb.avaji.service.api.management.DriverService;
 import com.logiweb.avaji.service.implementetions.utils.Mapper;
 import org.apache.logging.log4j.LogManager;
@@ -28,8 +28,12 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public List<DriverDTO> readAllDrivers() {
-        return driverDAO.findAllDrivers();
+    public List<DriverDTO> readDriversPage(int pageNumber, int pageSize) {
+        int indexFrom = 0;
+        if(pageNumber != 1) {
+            indexFrom = (pageNumber - 1) * pageSize;
+        }
+        return driverDAO.findDriversPage(indexFrom, pageSize);
     }
 
     @Override
@@ -80,6 +84,11 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public DriverDTO readDriverById(long id) {
         return driverDAO.findDriverById(id);
+    }
+
+    @Override
+    public long getDriversTotalNumber() {
+        return driverDAO.countDrivers();
     }
 
 

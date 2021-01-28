@@ -5,7 +5,7 @@ import com.logiweb.avaji.dtos.CreateWaypointsDTO;
 import com.logiweb.avaji.dtos.DriverDTO;
 import com.logiweb.avaji.dtos.OrderDTO;
 import com.logiweb.avaji.dtos.TruckDTO;
-import com.logiweb.avaji.entitie.model.Order;
+import com.logiweb.avaji.entity.model.Order;
 import com.logiweb.avaji.exception.LoadAndUnloadValidateException;
 
 import java.util.List;
@@ -17,12 +17,8 @@ import java.util.List;
 
 public interface OrderService {
 
-    /**
-     * The <code>readAllOrders</code> read all orders from database and return order dto.
-     *
-     * @return list of order dtos
-     */
-    List<OrderDTO> readAllOrders();
+
+    List<OrderDTO> readOrdersPage(int pageNumber, int pageSize);
 
 
     /**
@@ -75,6 +71,9 @@ public interface OrderService {
      * @param orderId
      */
     void addDriversToOrder(List<Long> driversIds, long orderId);
+
+
+    long getOrdersTotalNumbers();
 
 
 }

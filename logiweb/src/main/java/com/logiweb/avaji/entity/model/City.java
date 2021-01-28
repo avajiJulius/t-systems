@@ -1,4 +1,4 @@
-package com.logiweb.avaji.entitie.model;
+package com.logiweb.avaji.entity.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,8 +9,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "cities")
 @NamedQuery(name = "City.findAllCities",
-    query = "select distinct new com.logiweb.avaji.dtos.CityDTO(" +
-        "c.cityCode, c.cityName) from City c")
+        query = "select distinct new com.logiweb.avaji.dtos.CityDTO(" +
+                "c.cityCode, c.cityName) from City c")
 @NamedQuery(name = "City.findConnectedCities",
         query = "select case when r.cityA.cityCode = :cityCode then r.cityB.cityCode " +
                 "when r.cityB.cityCode = :cityCode then r.cityA.cityCode " +
@@ -19,7 +19,6 @@ import javax.persistence.*;
 @NamedQuery(name = "City.findCitiesByCodes",
         query = "select new com.logiweb.avaji.dtos.CityDTO(" +
                 "c.cityCode, c.cityName) from City c where c.cityCode in (:codes)")
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

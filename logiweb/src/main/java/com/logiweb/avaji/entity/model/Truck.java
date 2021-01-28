@@ -1,4 +1,4 @@
-package com.logiweb.avaji.entitie.model;
+package com.logiweb.avaji.entity.model;
 
 
 import lombok.AllArgsConstructor;
@@ -45,6 +45,8 @@ import java.util.List;
 @NamedQuery(name = "Truck.updateOnCompletedOrder",
         query = "update Truck t set t.inUse = false " +
                 "where t.truckId = :id")
+@NamedQuery(name = "Truck.countTrucks",
+            query = "select count(t) from Truck t")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

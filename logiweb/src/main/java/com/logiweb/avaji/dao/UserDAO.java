@@ -1,6 +1,6 @@
 package com.logiweb.avaji.dao;
 
-import com.logiweb.avaji.entitie.model.User;
+import com.logiweb.avaji.entity.model.User;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

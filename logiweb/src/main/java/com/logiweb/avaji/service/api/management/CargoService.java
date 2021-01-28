@@ -1,6 +1,6 @@
 package com.logiweb.avaji.service.api.management;
 
-import com.logiweb.avaji.entitie.model.Cargo;
+import com.logiweb.avaji.entity.model.Cargo;
 
 import java.util.List;
 

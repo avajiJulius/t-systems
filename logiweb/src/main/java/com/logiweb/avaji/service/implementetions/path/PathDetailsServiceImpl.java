@@ -2,11 +2,11 @@ package com.logiweb.avaji.service.implementetions.path;
 
 import com.logiweb.avaji.dtos.*;
 
-import com.logiweb.avaji.entitie.model.Path;
+import com.logiweb.avaji.entity.model.Path;
 import com.logiweb.avaji.exception.SuboptimalPathException;
 import com.logiweb.avaji.service.api.map.CountryMapService;
 import com.logiweb.avaji.service.api.path.PathDetailsService;
-import com.logiweb.avaji.entitie.model.CountryMap;
+import com.logiweb.avaji.entity.model.CountryMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

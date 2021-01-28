@@ -1,7 +1,8 @@
 package com.logiweb.avaji.service.implementetions.management;
 
+import com.logiweb.avaji.dtos.OrderDTO;
 import com.logiweb.avaji.dtos.TruckDTO;
-import com.logiweb.avaji.entitie.model.Truck;
+import com.logiweb.avaji.entity.model.Truck;
 import com.logiweb.avaji.dao.TruckDAO;
 import com.logiweb.avaji.service.api.management.TruckService;
 import com.logiweb.avaji.service.implementetions.utils.Mapper;
@@ -41,9 +42,14 @@ public class TruckServiceImpl implements TruckService {
     }
 
     @Override
-    public List<TruckDTO> readTrucks() {
-        return truckDAO.findTrucks();
+    public List<TruckDTO> readTrucksPage(int pageNumber, int pageSize) {
+        int indexFrom = 0;
+        if(pageNumber != 1) {
+            indexFrom = (pageNumber - 1) * pageSize;
+        }
+        return truckDAO.findTrucksPage(indexFrom, pageSize);
     }
+
 
     @Override
     public TruckDTO readTruckById(String truckID) {
@@ -76,5 +82,10 @@ public class TruckServiceImpl implements TruckService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public long getTrucksTotalNumbers() {
+        return truckDAO.countTrucks();
     }
 }

@@ -2,7 +2,7 @@ package com.logiweb.avaji.service.implementetions.profile;
 
 import com.logiweb.avaji.dao.ShiftDetailsDAO;
 import com.logiweb.avaji.dtos.ShiftDetailsDTO;
-import com.logiweb.avaji.entitie.enums.DriverStatus;
+import com.logiweb.avaji.entity.enums.DriverStatus;
 import com.logiweb.avaji.exception.ShiftValidationException;
 import com.logiweb.avaji.service.api.profile.ShiftDetailsService;
 import org.apache.logging.log4j.LogManager;

@@ -11,12 +11,9 @@ import java.util.List;
  */
 public interface DriverService {
 
-    /**
-     * The <code>readDrivers</code> read all drivers from database and convert them to dto;
-     *
-     * @return list of DriverDTO.
-     */
-    List<DriverDTO> readAllDrivers();
+
+    List<DriverDTO> readDriversPage(int pageNumber, int page_size);
+
 
     /**
      * The <code>createDriver</code> create and insert driver entity into database
@@ -51,4 +48,6 @@ public interface DriverService {
      * @return driver dto
      */
     DriverDTO readDriverById(long id);
+
+    long getDriversTotalNumber();
 }

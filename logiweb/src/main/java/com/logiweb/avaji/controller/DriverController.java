@@ -12,9 +12,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/drivers")
 public class DriverController {
+
+    private final int PAGE_SIZE = 5;
 
     private final DriverService driverService;
     private final CountryMapService mapService;
@@ -28,7 +32,19 @@ public class DriverController {
     @GetMapping()
     @PreAuthorize("hasAuthority('employee:read')")
     public String getAllDrivers(Model model) {
-        model.addAttribute("drivers", driverService.readAllDrivers());
+        return getDriversPage(1, model);
+    }
+
+    @GetMapping("/page/{number}")
+    @PreAuthorize("hasAuthority('employee:read')")
+    public String getDriversPage(@PathVariable("number") int pageNumber,
+                                 Model model) {
+        long totalNumber = driverService.getDriversTotalNumber();
+        int totalPages = (int) (totalNumber/PAGE_SIZE) + 1;
+        model.addAttribute("drivers", driverService.readDriversPage(pageNumber, PAGE_SIZE));
+        model.addAttribute("totalItems", totalNumber);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("currentPage", pageNumber);
         return "drivers/list";
     }
 

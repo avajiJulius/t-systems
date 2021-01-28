@@ -1,4 +1,4 @@
-package com.logiweb.avaji.entitie.enums;
+package com.logiweb.avaji.entity.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -53,16 +53,37 @@
                 <div th:if="${driver?.truckId}">
                     Can not apply action, driver completed the order.
                 </div>
-                <div th:unless="${driver?.truckId}">
-                    <a class="btn btn-outline-secondary" th:href="@{/drivers/{id}/edit(id=${driver.id})}">Edit</a>
-                    <form action="#" th:action="@{/drivers/{id}(id=${driver.id})}" th:method="DELETE">
-                        <input class="btn btn-outline-danger" type="submit" value="Delete" />
-                    </form>
+                <div class="row" th:unless="${driver?.truckId}">
+                    <div class="col">
+                        <a class="btn btn-outline-secondary" th:href="@{/drivers/{id}/edit(id=${driver.id})}">Edit</a>
+                    </div>
+                    <div>
+                        <form class="col" th:action="@{/drivers/{id}(id=${driver.id})}" th:method="DELETE">
+                            <input class="btn btn-outline-danger" type="submit" value="Delete" />
+                        </form>
+                    </div>
                 </div>
             </td>
         </tr>
         </tbody>
     </table>
+    <div th:if="${totalPages > 1}">
+        <div class="row col-sm-10">
+            <div class="col-sm-2">
+                Total Rows: [[${totalItems}]]
+            </div>
+            <div class="col-sm-1">
+                <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+                    <a th:if="${currentPage != i}" th:href="@{/drivers/page/{number}(number=${i})}">[[${i}]]</a>
+                    <span th:unless="${currentPage != i}">[[${i}]]</span>
+                </span>
+            </div>
+            <div class="col-sm-1">
+                <a th:if="${currentPage < totalPages}" th:href="@{/drivers/page/{number}(number=${totalPages})}">Last</a>
+                <span th:unless="${currentPage < totalPages}">Last</span>
+            </div>
+        </div>
+    </div>
 </div>
 <script th:replace="fragments/script.html :: jquery"></script>
 <script th:replace="fragments/script.html :: popper"></script>

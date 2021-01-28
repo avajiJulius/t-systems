@@ -43,7 +43,7 @@
             <td th:text="${truck.serviceable}" />
             <td th:text="${truck.currentCityName}"/>
             <td>
-                <div th:if="${truck.inUse == false}">
+                <div class="row" th:if="${truck.inUse == false}">
                     <a class="btn btn-outline-secondary" th:href="@{/trucks/{id}/edit(id=${truck.truckId})}">Edit</a>
                     <form action="#" th:action="@{/trucks/{id}(id=${truck.truckId})}" th:method="DELETE">
                         <input class="btn btn-outline-danger" type="submit" value="Delete"/>
@@ -56,6 +56,23 @@
         </tr>
         </tbody>
     </table>
+    <div th:if="${totalPages > 1}">
+        <div class="row col-sm-10">
+            <div class="col-sm-2">
+                Total Rows: [[${totalItems}]]
+            </div>
+            <div class="col-sm-1">
+                <span th:each="i : ${#numbers.sequence(1, totalPages)}">
+                    <a th:if="${currentPage != i}" th:href="@{/trucks/page/{number}(number=${i})}">[[${i}]]</a>
+                    <span th:unless="${currentPage != i}">[[${i}]]</span>
+                </span>
+            </div>
+            <div class="col-sm-1">
+                <a th:if="${currentPage < totalPages}" th:href="@{/trucks/page/{number}(number=${totalPages})}">Last</a>
+                <span th:unless="${currentPage < totalPages}">Last</span>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script th:replace="fragments/script.html :: jquery"></script>

@@ -2,7 +2,7 @@ package com.logiweb.avaji.service.implementetions.path;
 
 import com.logiweb.avaji.dao.TruckDAO;
 import com.logiweb.avaji.dtos.CityDTO;
-import com.logiweb.avaji.entitie.model.Path;
+import com.logiweb.avaji.entity.model.Path;
 import com.logiweb.avaji.dtos.RoadDTO;
 import com.logiweb.avaji.dtos.WaypointDTO;
 import com.logiweb.avaji.exception.SuboptimalPathException;

@@ -1,7 +1,7 @@
 package com.logiweb.avaji.service.implementetions.management;
 
 import com.logiweb.avaji.dao.CargoDAO;
-import com.logiweb.avaji.entitie.model.Cargo;
+import com.logiweb.avaji.entity.model.Cargo;
 import com.logiweb.avaji.service.api.management.CargoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

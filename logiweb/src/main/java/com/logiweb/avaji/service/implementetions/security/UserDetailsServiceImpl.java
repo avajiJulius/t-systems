@@ -1,7 +1,7 @@
 package com.logiweb.avaji.service.implementetions.security;
 
-import com.logiweb.avaji.entitie.model.User;
-import com.logiweb.avaji.entitie.enums.Role;
+import com.logiweb.avaji.entity.model.User;
+import com.logiweb.avaji.entity.enums.Role;
 import com.logiweb.avaji.dao.UserDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

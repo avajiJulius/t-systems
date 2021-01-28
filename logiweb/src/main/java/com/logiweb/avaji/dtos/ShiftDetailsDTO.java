@@ -1,6 +1,6 @@
 package com.logiweb.avaji.dtos;
 
-import com.logiweb.avaji.entitie.enums.DriverStatus;
+import com.logiweb.avaji.entity.enums.DriverStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -4,7 +4,7 @@ import com.logiweb.avaji.dao.CargoDAO;
 import com.logiweb.avaji.dao.DriverDAO;
 import com.logiweb.avaji.dtos.*;
 import com.logiweb.avaji.dao.OrderDAO;
-import com.logiweb.avaji.entitie.model.*;
+import com.logiweb.avaji.entity.model.*;
 import com.logiweb.avaji.service.implementetions.utils.PathParser;
 import com.logiweb.avaji.service.api.management.OrderService;
 import com.logiweb.avaji.service.implementetions.utils.Mapper;
@@ -41,11 +41,16 @@ public class OrderServiceImpl implements OrderService {
         this.cargoDAO = cargoDAO;
     }
 
+
     @Override
     @Transactional
-    public List<OrderDTO> readAllOrders() {
-        List<OrderDTO> allOrders = orderDAO.findAllOrders();
-        for (OrderDTO orderDTO : allOrders) {
+    public List<OrderDTO> readOrdersPage(int pageNumber, int pageSize) {
+        int indexFrom = 0;
+        if(pageNumber != 1) {
+            indexFrom = (pageNumber - 1) * pageSize;
+        }
+        List<OrderDTO> orderPage = orderDAO.findOrdersPage(indexFrom, pageSize);
+        for (OrderDTO orderDTO : orderPage) {
             orderDTO.setDrivers(orderDAO.findDriversByOrderId(orderDTO.getOrderId()));
 
             if(orderDTO.getTruckId() != null) {
@@ -55,10 +60,8 @@ public class OrderServiceImpl implements OrderService {
 
             orderDTO.setPrettyPath(parser.toPrettyPath(orderDTO.getPrettyPath()));
         }
-
-        return allOrders;
+        return orderPage;
     }
-
 
     @Override
     public void createOrderByWaypoints(Order order, CreateWaypointsDTO dto) {
@@ -154,5 +157,10 @@ public class OrderServiceImpl implements OrderService {
         }
         driverDAO.updateDrivers(drivers);
         logger.info("Add driver to order by id: {}", orderId);
+    }
+
+    @Override
+    public long getOrdersTotalNumbers() {
+        return orderDAO.countOrders();
     }
 }

@@ -1,6 +1,6 @@
-package com.logiweb.avaji.entitie.model;
+package com.logiweb.avaji.entity.model;
 
-import com.logiweb.avaji.entitie.enums.Role;
+import com.logiweb.avaji.entity.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Inheritance(strategy = InheritanceType.JOINED)
 @NamedQueries(value = {
         @NamedQuery(name = "User.findUserByEmail",
-        query = "select new com.logiweb.avaji.entitie.model.User(" +
+        query = "select new com.logiweb.avaji.entity.model.User(" +
                 "u.id, u.email, u.password, u.enable, u.role) from User u where u.email = :email")
 })
 @Data

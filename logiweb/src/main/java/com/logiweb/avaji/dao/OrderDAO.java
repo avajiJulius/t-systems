@@ -1,7 +1,7 @@
 package com.logiweb.avaji.dao;
 
 import com.logiweb.avaji.dtos.*;
-import com.logiweb.avaji.entitie.model.*;
+import com.logiweb.avaji.entity.model.*;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
@@ -15,8 +15,9 @@ public class OrderDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<OrderDTO> findAllOrders() {
-        TypedQuery<OrderDTO> query = entityManager.createNamedQuery("Order.findAllOrders", OrderDTO.class);
+    public List<OrderDTO> findOrdersPage(int indexFrom, int pageSize) {
+        TypedQuery<OrderDTO> query = entityManager.createNamedQuery("Order.findAllOrders", OrderDTO.class)
+                .setFirstResult(indexFrom).setMaxResults(pageSize);
         return query.getResultList();
     }
 
@@ -99,5 +100,10 @@ public class OrderDAO {
             entityManager.persist(waypoint);
         }
         entityManager.flush();
+    }
+
+
+    public long countOrders() {
+        return entityManager.createNamedQuery("Order.countOrders", Long.class).getSingleResult();
     }
 }

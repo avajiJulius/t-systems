@@ -1,7 +1,7 @@
 package com.logiweb.avaji.dtos;
 
-import com.logiweb.avaji.entitie.enums.CargoStatus;
-import com.logiweb.avaji.entitie.enums.WaypointType;
+import com.logiweb.avaji.entity.enums.CargoStatus;
+import com.logiweb.avaji.entity.enums.WaypointType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

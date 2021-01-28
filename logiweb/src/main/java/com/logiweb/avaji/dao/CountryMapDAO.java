@@ -2,7 +2,7 @@ package com.logiweb.avaji.dao;
 
 import com.logiweb.avaji.dtos.CityDTO;
 import com.logiweb.avaji.dtos.RoadDTO;
-import com.logiweb.avaji.entitie.model.City;
+import com.logiweb.avaji.entity.model.City;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

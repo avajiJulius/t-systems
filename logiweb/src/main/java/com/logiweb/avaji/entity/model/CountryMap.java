@@ -1,4 +1,4 @@
-package com.logiweb.avaji.entitie.model;
+package com.logiweb.avaji.entity.model;
 
 import com.logiweb.avaji.dtos.RoadDTO;
 import com.logiweb.avaji.service.api.map.CountryMapService;

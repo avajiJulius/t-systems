@@ -18,6 +18,8 @@ import java.util.List;
 @RequestMapping("/trucks")
 public class TruckController {
 
+    private final int PAGE_SIZE = 5;
+
     private final TruckService truckService;
     private final CountryMapService mapService;
 
@@ -30,9 +32,19 @@ public class TruckController {
     @GetMapping()
     @PreAuthorize("hasAuthority('employee:read')")
     public String getTrucks(Model model) {
-        List<TruckDTO> truckList = truckService.readTrucks();
+        return getTrucksPage(1, model);
+    }
 
-        model.addAttribute("truckList", truckList);
+    @GetMapping("/page/{number}")
+    @PreAuthorize("hasAuthority('employee:read')")
+    public String getTrucksPage(@PathVariable("number") int pageNumber,
+                                Model model) {
+        long totalNumber = truckService.getTrucksTotalNumbers();
+        int totalPages = (int) totalNumber/PAGE_SIZE + 1;
+        model.addAttribute("truckList", truckService.readTrucksPage(pageNumber, PAGE_SIZE));
+        model.addAttribute("totalItems", totalNumber);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("currentPage", pageNumber);
         return "trucks/list";
     }
 

@@ -2,8 +2,8 @@ package com.logiweb.avaji.dao;
 
 import com.logiweb.avaji.dtos.DriverDTO;
 import com.logiweb.avaji.dtos.ShiftDetailsDTO;
-import com.logiweb.avaji.entitie.model.Driver;
-import com.logiweb.avaji.entitie.model.WorkShift;
+import com.logiweb.avaji.entity.model.Driver;
+import com.logiweb.avaji.entity.model.WorkShift;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

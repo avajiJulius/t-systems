@@ -1,7 +1,7 @@
 package com.logiweb.avaji.dao;
 
 import com.logiweb.avaji.dtos.OrderDetailsDTO;
-import com.logiweb.avaji.entitie.model.OrderDetails;
+import com.logiweb.avaji.entity.model.OrderDetails;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;

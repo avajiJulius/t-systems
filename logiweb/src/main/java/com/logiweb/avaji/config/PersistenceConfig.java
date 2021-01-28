@@ -36,7 +36,7 @@ public class PersistenceConfig {
         LocalContainerEntityManagerFactoryBean em
                 = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan("com.logiweb.avaji.entities.models");
+        em.setPackagesToScan("com.logiweb.avaji.entity.model");
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);

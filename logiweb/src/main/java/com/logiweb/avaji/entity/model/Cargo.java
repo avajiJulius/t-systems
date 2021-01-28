@@ -1,6 +1,6 @@
-package com.logiweb.avaji.entitie.model;
+package com.logiweb.avaji.entity.model;
 
-import com.logiweb.avaji.entitie.enums.CargoStatus;
+import com.logiweb.avaji.entity.enums.CargoStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

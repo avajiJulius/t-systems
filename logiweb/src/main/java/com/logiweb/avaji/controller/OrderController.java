@@ -3,8 +3,8 @@ package com.logiweb.avaji.controller;
 import com.logiweb.avaji.dtos.AddedDriversDto;
 import com.logiweb.avaji.dtos.WaypointDTO;
 import com.logiweb.avaji.dtos.CreateWaypointsDTO;
-import com.logiweb.avaji.entitie.model.Cargo;
-import com.logiweb.avaji.entitie.model.Order;
+import com.logiweb.avaji.entity.model.Cargo;
+import com.logiweb.avaji.entity.model.Order;
 import com.logiweb.avaji.exception.ShiftSizeExceedException;
 import com.logiweb.avaji.service.api.management.CargoService;
 import com.logiweb.avaji.service.api.management.TruckService;
@@ -23,12 +23,15 @@ import java.util.List;
 @RequestMapping("/orders")
 public class OrderController {
 
+    private final int PAGE_SIZE = 5;
+    private int quantity = 1;
+
+
     private final OrderService orderService;
     private final CargoService cargoService;
     private final CountryMapService countryMapService;
     private final TruckService truckService;
 
-    private int quantity = 1;
 
     public OrderController(OrderService orderService, CargoService cargoService,
                            CountryMapService countryMapService, TruckService truckService) {
@@ -41,9 +44,22 @@ public class OrderController {
     @GetMapping()
     @PreAuthorize("hasAuthority('employee:read')")
     public String getAllOrders(Model model) {
-        model.addAttribute("orders", orderService.readAllOrders());
+        return getOrdersPage(1, model);
+    }
+
+    @GetMapping("/page/{number}")
+    @PreAuthorize("hasAuthority('employee:read')")
+    public String getOrdersPage(@PathVariable("number") int pageNumber,
+                                 Model model) {
+        long totalNumber = orderService.getOrdersTotalNumbers();
+        int totalPages = (int) totalNumber/PAGE_SIZE + 1;
+        model.addAttribute("orders", orderService.readOrdersPage(pageNumber, PAGE_SIZE));
+        model.addAttribute("totalItems", totalNumber);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("currentPage", pageNumber);
         return "orders/list";
     }
+
 
     @GetMapping("/{id}/cargo")
     @PreAuthorize("hasAuthority('employee:read')")

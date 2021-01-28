@@ -1,7 +1,7 @@
-package com.logiweb.avaji.entitie.model;
+package com.logiweb.avaji.entity.model;
 
-import com.logiweb.avaji.entitie.enums.DriverStatus;
-import com.logiweb.avaji.entitie.enums.Role;
+import com.logiweb.avaji.entity.enums.DriverStatus;
+import com.logiweb.avaji.entity.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,6 +30,8 @@ import javax.persistence.*;
 @NamedQuery(name = "Driver.countDriversOfTruck",
                 query = "select count(d) from Driver d " +
                         "where d.currentTruck in (select t from Truck t where t.truckId = :id)")
+@NamedQuery(name = "Driver.countDrivers",
+        query = "select count(d) from Driver d")
 @NamedQuery(name = "Driver.findDriverById",
         query = "select new com.logiweb.avaji.dtos.DriverDTO(d.id, d.version,d.firstName, d.lastName, " +
                 "d.hoursWorked, d.driverStatus, d.currentCity.cityCode, d.currentCity.cityName) " +
