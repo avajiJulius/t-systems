@@ -1,10 +1,10 @@
 package com.logiweb.avaji.service.implementetions.management;
 
-import com.logiweb.avaji.dtos.OrderDTO;
 import com.logiweb.avaji.dtos.TruckDTO;
 import com.logiweb.avaji.entity.model.Truck;
 import com.logiweb.avaji.dao.TruckDAO;
 import com.logiweb.avaji.service.api.management.TruckService;
+import com.logiweb.avaji.service.api.validator.UniqueValidatorService;
 import com.logiweb.avaji.service.implementetions.utils.Mapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,15 +22,20 @@ public class TruckServiceImpl implements TruckService {
 
     private final TruckDAO truckDAO;
     private final Mapper converter;
+    private final UniqueValidatorService uniqueValidatorService;
 
     @Autowired
-    public TruckServiceImpl(TruckDAO truckDAO, Mapper converter) {
+    public TruckServiceImpl(TruckDAO truckDAO, Mapper converter,
+                            UniqueValidatorService uniqueValidatorService) {
         this.truckDAO = truckDAO;
         this.converter = converter;
+        this.uniqueValidatorService = uniqueValidatorService;
     }
 
     @Override
     public boolean createTruck(TruckDTO truckDTO) {
+        uniqueValidatorService.validateTruckIdUnique(truckDTO.getTruckId());
+
         Truck truck = converter.dtoToTruck(truckDTO);
 
         boolean isSaved = truckDAO.saveTruck(truck);

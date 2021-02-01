@@ -54,14 +54,10 @@
                     Can not apply action, driver completed the order.
                 </div>
                 <div class="row" th:unless="${driver?.truckId}">
-                    <div class="col">
-                        <a class="btn btn-outline-secondary" th:href="@{/drivers/{id}/edit(id=${driver.id})}">Edit</a>
-                    </div>
-                    <div>
-                        <form class="col" th:action="@{/drivers/{id}(id=${driver.id})}" th:method="DELETE">
-                            <input class="btn btn-outline-danger" type="submit" value="Delete" />
-                        </form>
-                    </div>
+                    <a class="btn btn-outline-secondary" th:href="@{/drivers/{id}/edit(id=${driver.id})}">Edit</a>
+                    <form th:action="@{/drivers/{id}(id=${driver.id})}" th:method="DELETE">
+                        <input class="btn btn-outline-danger" type="submit" value="Delete" />
+                    </form>
                 </div>
             </td>
         </tr>

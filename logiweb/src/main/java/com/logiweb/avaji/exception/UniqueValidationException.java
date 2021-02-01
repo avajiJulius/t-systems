@@ -1,7 +1,16 @@
 package com.logiweb.avaji.exception;
 
 public class UniqueValidationException extends RuntimeException {
-    public UniqueValidationException(String message) {
+
+    private String pathName;
+
+    public String getPathName() {
+        return pathName;
+    }
+
+    public UniqueValidationException(String message, String pathName) {
+        super(message);
+        this.pathName = pathName;
     }
 
     public UniqueValidationException(String message, Throwable cause) {
@@ -12,6 +21,4 @@ public class UniqueValidationException extends RuntimeException {
         super(cause);
     }
 
-    public UniqueValidationException() {
-    }
 }

@@ -3,6 +3,7 @@ package com.logiweb.avaji.exceptionhandler;
 import com.logiweb.avaji.exception.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,6 +38,15 @@ public class LocalExceptionHandler {
         logger.error(exception.getMessage());
         attributes.addFlashAttribute("message", exception.getMessage());
         return "redirect:/orders/new";
+    }
+
+    @ExceptionHandler(UniqueValidationException.class)
+    public String uniqueValidationExceptionHandler(UniqueValidationException exception,
+                                                   RedirectAttributes attributes) {
+        logger.error(exception.getMessage());
+        attributes.addFlashAttribute("message", exception.getMessage());
+        String redirectPath = exception.getPathName() + "/new";
+        return "redirect:/" + redirectPath;
     }
 
     @ExceptionHandler(ShiftSizeExceedException.class)

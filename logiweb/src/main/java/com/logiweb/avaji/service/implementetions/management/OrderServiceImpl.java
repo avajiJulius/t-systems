@@ -5,6 +5,7 @@ import com.logiweb.avaji.dao.DriverDAO;
 import com.logiweb.avaji.dtos.*;
 import com.logiweb.avaji.dao.OrderDAO;
 import com.logiweb.avaji.entity.model.*;
+import com.logiweb.avaji.service.api.management.DriverService;
 import com.logiweb.avaji.service.implementetions.sender.JmsSender;
 import com.logiweb.avaji.service.implementetions.utils.PathParser;
 import com.logiweb.avaji.service.api.management.OrderService;
@@ -28,18 +29,18 @@ public class OrderServiceImpl implements OrderService {
     private final Mapper converter;
     private final PathDetailsService pathDetailsService;
     private final PathParser parser;
-    private final DriverDAO driverDAO;
+    private final DriverService driverService;
     private final CargoDAO cargoDAO;
     private final JmsSender jmsSender;
 
     @Autowired
     public OrderServiceImpl(OrderDAO orderDAO, Mapper converter, PathDetailsService pathDetailsService,
-                            PathParser parser, DriverDAO driverDAO, CargoDAO cargoDAO, JmsSender jmsSender) {
+                            PathParser parser, DriverService driverService, CargoDAO cargoDAO, JmsSender jmsSender) {
         this.orderDAO = orderDAO;
         this.converter = converter;
         this.pathDetailsService = pathDetailsService;
         this.parser = parser;
-        this.driverDAO = driverDAO;
+        this.driverService = driverService;
         this.cargoDAO = cargoDAO;
         this.jmsSender = jmsSender;
     }
@@ -154,12 +155,12 @@ public class OrderServiceImpl implements OrderService {
         String truckId = orderDAO.findOrderById(orderId).getDesignatedTruck().getTruckId();
         OrderDetails orderDetails = orderDAO.findOrderDetails(orderId);
         Truck truck = orderDAO.findTruckEntityById(truckId);
-        List<Driver> drivers = driverDAO.findDriversByIds(driversIds);
+        List<Driver> drivers = driverService.readDriversByIds(driversIds);
         for(Driver driver: drivers) {
             driver.setCurrentTruck(truck);
             driver.setOrderDetails(orderDetails);
         }
-        driverDAO.updateDrivers(drivers);
+        driverService.updateDrivers(drivers);
         logger.info("Add driver to order by id: {}", orderId);
     }
 
