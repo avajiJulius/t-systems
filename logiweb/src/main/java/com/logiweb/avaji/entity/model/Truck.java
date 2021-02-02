@@ -47,6 +47,8 @@ import java.util.List;
                 "where t.truckId = :id")
 @NamedQuery(name = "Truck.countTrucks",
             query = "select count(t) from Truck t")
+@NamedQuery(name = "Truck.countTruckById",
+            query = "select count(1) from Truck t where t.truckId = :id")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -1,6 +1,7 @@
 package com.logiweb.avaji.service.api.management;
 
 import com.logiweb.avaji.dtos.DriverDTO;
+import com.logiweb.avaji.entity.model.Driver;
 
 import java.util.List;
 
@@ -33,6 +34,9 @@ public interface DriverService {
      */
     void updateDriver(long id,DriverDTO updatedDriver);
 
+
+    void updateDriver(Driver driver);
+
     /**
      * The <code>deleteDriver</code> delete driver entity from the database by driver id.
      *
@@ -50,4 +54,8 @@ public interface DriverService {
     DriverDTO readDriverById(long id);
 
     long getDriversTotalNumber();
+
+    List<Driver> readDriversByIds(List<Long> driversIds);
+
+    void updateDrivers(List<Driver> drivers);
 }

@@ -10,11 +10,11 @@ import javax.persistence.*;
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
-@NamedQueries(value = {
-        @NamedQuery(name = "User.findUserByEmail",
-        query = "select new com.logiweb.avaji.entity.model.User(" +
-                "u.id, u.email, u.password, u.enable, u.role) from User u where u.email = :email")
-})
+@NamedQuery(name = "User.findUserByEmail",
+query = "select new com.logiweb.avaji.entity.model.User(" +
+        "u.id, u.email, u.password, u.enable, u.role) from User u where u.email = :email")
+@NamedQuery(name = "User.countUserByEmail",
+        query = "select count(1) from User u where u.email = :email")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

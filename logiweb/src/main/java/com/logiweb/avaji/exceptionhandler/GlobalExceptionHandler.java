@@ -26,11 +26,4 @@ public class GlobalExceptionHandler {
         return "exceptions/403";
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public String pageOnUniqueValueException(ConstraintViolationException e, RedirectAttributes attributes) {
-        logger.error(e.getMessage());
-        attributes.addFlashAttribute("message", "Already contain this unique value");
-        return "exceptions/details";
-    }
-
 }
