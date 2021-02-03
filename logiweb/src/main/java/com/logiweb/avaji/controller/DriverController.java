@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
 
 @Controller
 @RequestMapping("/drivers")
@@ -40,10 +39,10 @@ public class DriverController {
     public String getDriversPage(@PathVariable("number") int pageNumber,
                                  Model model) {
         long totalNumber = driverService.getDriversTotalNumber();
-        int totalPages = (int) (totalNumber/PAGE_SIZE) + 1;
+        int totalPages = (int) Math.ceil((double) totalNumber / PAGE_SIZE);
         model.addAttribute("drivers", driverService.readDriversPage(pageNumber, PAGE_SIZE));
         model.addAttribute("totalItems", totalNumber);
-        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalPages",  totalPages);
         model.addAttribute("currentPage", pageNumber);
         return "drivers/list";
     }

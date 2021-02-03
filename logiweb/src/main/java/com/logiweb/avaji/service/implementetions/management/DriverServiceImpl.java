@@ -59,7 +59,7 @@ public class DriverServiceImpl implements DriverService {
             if(isCreated) {
                 logger.info("Create driver by id: {}", driver.getId());
                 logger.info("Create work shift for driver with id: {}", driver.getId());
-                sender.send("driver.topic", "Create driver");
+                sender.send("driver.topic", "+1 driver");
 
                 return true;
             }
@@ -86,7 +86,7 @@ public class DriverServiceImpl implements DriverService {
         driverDAO.updateDriver(driver);
         logger.info("Update driver by id: {}", driver.getId());
 
-        sender.send("driver.topic", "DriverUpdated");
+        sender.send("driver.topic", "update 1 driver");
     }
 
     @Override
@@ -94,7 +94,7 @@ public class DriverServiceImpl implements DriverService {
         boolean isDeleted = driverDAO.deleteDriver(driverID);
         if(isDeleted) {
             logger.info("Delete driver by id: {}", driverID);
-            sender.send("driver.topic", "Delete driver");
+            sender.send("driver.topic", "-1 driver");
             return true;
         }
         return false;
@@ -118,7 +118,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public void updateDrivers(List<Driver> drivers) {
         driverDAO.updateDrivers(drivers);
-        sender.send("driver.topic", "Update drivers");
+        sender.send("driver.topic", "Update " + drivers.size() + " drivers");
     }
 
 

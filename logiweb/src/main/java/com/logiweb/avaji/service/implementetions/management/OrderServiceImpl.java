@@ -1,7 +1,6 @@
 package com.logiweb.avaji.service.implementetions.management;
 
 import com.logiweb.avaji.dao.CargoDAO;
-import com.logiweb.avaji.dao.DriverDAO;
 import com.logiweb.avaji.dtos.*;
 import com.logiweb.avaji.dao.OrderDAO;
 import com.logiweb.avaji.entity.model.*;
@@ -88,7 +87,7 @@ public class OrderServiceImpl implements OrderService {
         double approximateLeadTime = pathDetailsService.getShiftHours(path);
         createOrderDetails(id, approximateLeadTime);
 
-        jmsSender.send("test.queue", "Order is created!");
+        jmsSender.send("order.topic", "+1 order");
     }
 
     private void setCargoWeight(List<WaypointDTO> waypointsDTO) {
@@ -107,6 +106,8 @@ public class OrderServiceImpl implements OrderService {
     public void deleteOrder(long orderId) {
         orderDAO.deleteOrder(orderId);
         logger.info("Delete order by id: {}", orderId);
+
+        jmsSender.send("order.topic", "If order in last 10 send, else ignore");
     }
 
 
@@ -132,6 +133,8 @@ public class OrderServiceImpl implements OrderService {
 
         orderDAO.updateOrder(order);
         logger.info("Add truck {} for order by id: {}", truckId, orderId);
+
+        jmsSender.send("truck.topic", "+1 in use, -1 truck is free");
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.logiweb.avaji.entity.model.Truck;
 import com.logiweb.avaji.dao.TruckDAO;
 import com.logiweb.avaji.service.api.management.TruckService;
 import com.logiweb.avaji.service.api.validator.UniqueValidatorService;
+import com.logiweb.avaji.service.implementetions.sender.JmsSender;
 import com.logiweb.avaji.service.implementetions.utils.Mapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,13 +24,15 @@ public class TruckServiceImpl implements TruckService {
     private final TruckDAO truckDAO;
     private final Mapper converter;
     private final UniqueValidatorService uniqueValidatorService;
+    private final JmsSender jmsSender;
 
     @Autowired
     public TruckServiceImpl(TruckDAO truckDAO, Mapper converter,
-                            UniqueValidatorService uniqueValidatorService) {
+                            UniqueValidatorService uniqueValidatorService, JmsSender jmsSender) {
         this.truckDAO = truckDAO;
         this.converter = converter;
         this.uniqueValidatorService = uniqueValidatorService;
+        this.jmsSender = jmsSender;
     }
 
     @Override
@@ -41,6 +44,7 @@ public class TruckServiceImpl implements TruckService {
         boolean isSaved = truckDAO.saveTruck(truck);
         if (isSaved) {
             logger.info("Create truck by id: {}", truck.getTruckId());
+            jmsSender.send("truck.topic", "+1 truck");
             return true;
         }
         return false;
@@ -76,6 +80,7 @@ public class TruckServiceImpl implements TruckService {
 
         truckDAO.updateTruck(truck);
         logger.info("Update truck by id: {}", truckId);
+        jmsSender.send("truck.topic", "update 1 truck");
     }
 
 
@@ -84,6 +89,7 @@ public class TruckServiceImpl implements TruckService {
         boolean result = truckDAO.deleteTruck(truckID);
         if(result) {
             logger.info("Delete truck by id: {}", truckID);
+            jmsSender.send("truck.topic", "-1 truck");
             return true;
         }
         return false;

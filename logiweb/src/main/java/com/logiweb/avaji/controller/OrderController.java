@@ -52,7 +52,7 @@ public class OrderController {
     public String getOrdersPage(@PathVariable("number") int pageNumber,
                                  Model model) {
         long totalNumber = orderService.getOrdersTotalNumbers();
-        int totalPages = (int) totalNumber/PAGE_SIZE + 1;
+        int totalPages = (int) Math.ceil((double) totalNumber / PAGE_SIZE);
         model.addAttribute("orders", orderService.readOrdersPage(pageNumber, PAGE_SIZE));
         model.addAttribute("totalItems", totalNumber);
         model.addAttribute("totalPages", totalPages);

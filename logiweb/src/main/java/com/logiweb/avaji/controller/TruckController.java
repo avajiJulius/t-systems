@@ -40,7 +40,7 @@ public class TruckController {
     public String getTrucksPage(@PathVariable("number") int pageNumber,
                                 Model model) {
         long totalNumber = truckService.getTrucksTotalNumbers();
-        int totalPages = (int) totalNumber/PAGE_SIZE + 1;
+        int totalPages = (int) Math.ceil((double) totalNumber / PAGE_SIZE);
         model.addAttribute("truckList", truckService.readTrucksPage(pageNumber, PAGE_SIZE));
         model.addAttribute("totalItems", totalNumber);
         model.addAttribute("totalPages", totalPages);
