@@ -46,6 +46,7 @@ create table orders (
     path varchar,
     truck_id varchar(7) default null,
     max_capacity double precision,
+    last_edit_date timestamp null,
     primary key (id),
     foreign key (truck_id) references trucks(id)
 );

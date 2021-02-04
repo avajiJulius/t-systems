@@ -15,7 +15,7 @@ public class InitializeListenerImpl implements InitializeListener {
     }
 
     @Override
-    @JmsListener(destination = "")
+    @JmsListener(destination = "123")
     public void responseOnInit() {
         producerService.sendFullInformation();
     }

@@ -4,8 +4,9 @@ import com.logiweb.avaji.dtos.TruckDTO;
 import com.logiweb.avaji.entity.model.Truck;
 import com.logiweb.avaji.dao.TruckDAO;
 import com.logiweb.avaji.service.api.management.TruckService;
+import com.logiweb.avaji.service.api.mq.InformationProducerService;
 import com.logiweb.avaji.service.api.validator.UniqueValidatorService;
-import com.logiweb.avaji.service.implementetions.sender.JmsSender;
+import com.logiweb.avaji.service.implementetions.mq.InformationProducerServiceImpl;
 import com.logiweb.avaji.service.implementetions.utils.Mapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,15 +25,16 @@ public class TruckServiceImpl implements TruckService {
     private final TruckDAO truckDAO;
     private final Mapper converter;
     private final UniqueValidatorService uniqueValidatorService;
-    private final JmsSender jmsSender;
+    private final InformationProducerService producerService;
 
     @Autowired
     public TruckServiceImpl(TruckDAO truckDAO, Mapper converter,
-                            UniqueValidatorService uniqueValidatorService, JmsSender jmsSender) {
+                            UniqueValidatorService uniqueValidatorService,
+                            InformationProducerService informationProducerService) {
         this.truckDAO = truckDAO;
         this.converter = converter;
         this.uniqueValidatorService = uniqueValidatorService;
-        this.jmsSender = jmsSender;
+        this.producerService = informationProducerService;
     }
 
     @Override
@@ -44,7 +46,7 @@ public class TruckServiceImpl implements TruckService {
         boolean isSaved = truckDAO.saveTruck(truck);
         if (isSaved) {
             logger.info("Create truck by id: {}", truck.getTruckId());
-            jmsSender.send("truck.topic", "+1 truck");
+            producerService.sendTruckInformation();
             return true;
         }
         return false;
@@ -80,7 +82,7 @@ public class TruckServiceImpl implements TruckService {
 
         truckDAO.updateTruck(truck);
         logger.info("Update truck by id: {}", truckId);
-        jmsSender.send("truck.topic", "update 1 truck");
+        producerService.sendTruckInformation();
     }
 
 
@@ -89,7 +91,7 @@ public class TruckServiceImpl implements TruckService {
         boolean result = truckDAO.deleteTruck(truckID);
         if(result) {
             logger.info("Delete truck by id: {}", truckID);
-            jmsSender.send("truck.topic", "-1 truck");
+            producerService.sendTruckInformation();
             return true;
         }
         return false;

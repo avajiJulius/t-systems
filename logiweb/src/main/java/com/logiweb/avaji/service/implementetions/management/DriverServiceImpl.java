@@ -4,8 +4,8 @@ import com.logiweb.avaji.dao.DriverDAO;
 import com.logiweb.avaji.dtos.DriverDTO;
 import com.logiweb.avaji.entity.model.Driver;
 import com.logiweb.avaji.service.api.management.DriverService;
+import com.logiweb.avaji.service.api.mq.InformationProducerService;
 import com.logiweb.avaji.service.api.validator.UniqueValidatorService;
-import com.logiweb.avaji.service.implementetions.sender.JmsSender;
 import com.logiweb.avaji.service.implementetions.utils.Mapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,16 +23,16 @@ public class DriverServiceImpl implements DriverService {
     private final DriverDAO driverDAO;
     private final Mapper mapper;
     private final UniqueValidatorService uniqueValidatorService;
-    private final JmsSender sender;
-
+    private final InformationProducerService producerService;
 
     @Autowired
     public DriverServiceImpl(DriverDAO driverDAO, Mapper mapper,
-                             UniqueValidatorService uniqueValidatorService, JmsSender sender) {
+                             UniqueValidatorService uniqueValidatorService,
+                             InformationProducerService producerService) {
         this.driverDAO = driverDAO;
         this.mapper = mapper;
         this.uniqueValidatorService = uniqueValidatorService;
-        this.sender = sender;
+        this.producerService = producerService;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class DriverServiceImpl implements DriverService {
             if(isCreated) {
                 logger.info("Create driver by id: {}", driver.getId());
                 logger.info("Create work shift for driver with id: {}", driver.getId());
-                sender.send("driver.topic", "+1 driver");
+                producerService.sendDriverInformation();
 
                 return true;
             }
@@ -86,7 +86,7 @@ public class DriverServiceImpl implements DriverService {
         driverDAO.updateDriver(driver);
         logger.info("Update driver by id: {}", driver.getId());
 
-        sender.send("driver.topic", "update 1 driver");
+        producerService.sendDriverInformation();
     }
 
     @Override
@@ -94,7 +94,8 @@ public class DriverServiceImpl implements DriverService {
         boolean isDeleted = driverDAO.deleteDriver(driverID);
         if(isDeleted) {
             logger.info("Delete driver by id: {}", driverID);
-            sender.send("driver.topic", "-1 driver");
+            producerService.sendDriverInformation();
+
             return true;
         }
         return false;
@@ -118,7 +119,7 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public void updateDrivers(List<Driver> drivers) {
         driverDAO.updateDrivers(drivers);
-        sender.send("driver.topic", "Update " + drivers.size() + " drivers");
+        producerService.sendDriverInformation();
     }
 
 

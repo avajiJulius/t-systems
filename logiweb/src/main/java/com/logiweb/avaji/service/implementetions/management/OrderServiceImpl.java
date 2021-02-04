@@ -5,7 +5,7 @@ import com.logiweb.avaji.dtos.*;
 import com.logiweb.avaji.dao.OrderDAO;
 import com.logiweb.avaji.entity.model.*;
 import com.logiweb.avaji.service.api.management.DriverService;
-import com.logiweb.avaji.service.implementetions.sender.JmsSender;
+import com.logiweb.avaji.service.api.mq.InformationProducerService;
 import com.logiweb.avaji.service.implementetions.utils.PathParser;
 import com.logiweb.avaji.service.api.management.OrderService;
 import com.logiweb.avaji.service.implementetions.utils.Mapper;
@@ -31,18 +31,19 @@ public class OrderServiceImpl implements OrderService {
     private final PathParser parser;
     private final DriverService driverService;
     private final CargoDAO cargoDAO;
-    private final JmsSender jmsSender;
+    private final InformationProducerService producerService;
 
     @Autowired
     public OrderServiceImpl(OrderDAO orderDAO, Mapper converter, PathDetailsService pathDetailsService,
-                            PathParser parser, DriverService driverService, CargoDAO cargoDAO, JmsSender jmsSender) {
+                            PathParser parser, DriverService driverService, CargoDAO cargoDAO,
+                            InformationProducerService informationProducerService) {
         this.orderDAO = orderDAO;
         this.converter = converter;
         this.pathDetailsService = pathDetailsService;
         this.parser = parser;
         this.driverService = driverService;
         this.cargoDAO = cargoDAO;
-        this.jmsSender = jmsSender;
+        this.producerService = informationProducerService;
     }
 
     @Override
@@ -89,7 +90,7 @@ public class OrderServiceImpl implements OrderService {
         double approximateLeadTime = pathDetailsService.getShiftHours(path);
         createOrderDetails(id, approximateLeadTime);
 
-        jmsSender.send("order.topic", "+1 order");
+        producerService.sendOrderInformation();
     }
 
     private void setCargoWeight(List<WaypointDTO> waypointsDTO) {
@@ -109,7 +110,7 @@ public class OrderServiceImpl implements OrderService {
         orderDAO.deleteOrder(orderId);
         logger.info("Delete order by id: {}", orderId);
 
-        jmsSender.send("order.topic", "If order in last 10 send, else ignore");
+        producerService.sendOrderInformation();
     }
 
 
@@ -137,7 +138,8 @@ public class OrderServiceImpl implements OrderService {
         orderDAO.updateOrder(order);
         logger.info("Add truck {} for order by id: {}", truckId, orderId);
 
-        jmsSender.send("truck.topic", "+1 in use, -1 truck is free");
+        producerService.sendOrderInformation();
+        producerService.sendTruckInformation();
     }
 
     @Override
@@ -168,6 +170,8 @@ public class OrderServiceImpl implements OrderService {
         }
         driverService.updateDrivers(drivers);
         logger.info("Add driver to order by id: {}", orderId);
+
+        producerService.sendOrderInformation();
     }
 
     @Override

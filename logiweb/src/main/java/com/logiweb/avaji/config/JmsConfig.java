@@ -14,6 +14,9 @@ import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
 
 import javax.jms.ConnectionFactory;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
 
 @Configuration
 @EnableJms
@@ -23,12 +26,14 @@ public class JmsConfig {
     @Autowired
     private Environment environment;
 
+
     @Bean
     public ConnectionFactory connectionFactory() {
         ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory();
         factory.setBrokerURL(environment.getProperty("activemq.url"));
-        factory.setUserName(environment.getProperty("activemq.password"));
-        factory.setPassword(environment.getProperty("activemq.username"));
+        factory.setUserName(environment.getProperty("activemq.username"));
+        factory.setPassword(environment.getProperty("activemq.password"));
+        factory.setTrustedPackages(Arrays.asList("com.logiweb.avaji"));
         return factory;
     }
 
@@ -55,4 +60,14 @@ public class JmsConfig {
         factory.setConnectionFactory(connectionFactory());
         return factory;
     }
+
+    @Bean
+    public MessageConverter messageConverter() {
+        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+        converter.setTargetType(MessageType.TEXT);
+        converter.setTypeIdPropertyName("_type");
+        return converter;
+    }
+
+
 }

@@ -33,7 +33,4 @@ public class DriverInformationListener implements MessageListener {
         }
     }
 
-    public DriverDetails getDriverDetails() {
-        return null;
-    }
 }
