@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @NamedQuery(name = "Order.findAllOrders",
 query = "select new com.logiweb.avaji.dtos.OrderDTO(" +
         "o.id, o.version, o.completed, o.designatedTruck.truckId, " +
-        "o.maxCapacity,o.path) from Order o")
+        "o.maxCapacity,o.path) from Order o order by o.lastEditDate desc ")
 @NamedQuery(name = "Order.findWaypointsOfThisOrder",
 query = "select w from Waypoint w where w.waypointOrder.id = :orderId " )
 @NamedQuery(name = "Order.findOrderById",
@@ -28,7 +29,7 @@ query = "select o from Order o where o.designatedTruck.truckId like :truckId")
                 "(select d.currentTruck.truckId from Driver d where d.id = :id)")
 @NamedQuery(name = "Order.updateOnCompletedOrder",
         query = "update Order o set o.completed = true, " +
-                "o.designatedTruck = null where o.id = :id")
+                "o.designatedTruck = null, o.lastEditDate = :date where o.id = :id")
 @NamedQuery(name="Order.countOrders",
         query = "select count(o) from Order o")
 @Data
@@ -53,6 +54,8 @@ public class Order implements Serializable {
     private Truck designatedTruck;
     @Column(name = "max_capacity")
     private double maxCapacity;
+    @Column(name = "last_edit_date")
+    private LocalDateTime lastEditDate;
 
 
     @OneToMany(cascade = CascadeType.REFRESH ,fetch = FetchType.LAZY,

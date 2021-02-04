@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.time.LocalDateTime;
 
 @Repository
 @Transactional
@@ -54,7 +55,7 @@ public class OrderDetailsDAO {
     @Transactional
     public void updateOnCompletedOrder(long orderId) {
         entityManager.createNamedQuery("Order.updateOnCompletedOrder")
-                .setParameter("id", orderId).executeUpdate();
+                .setParameter("id", orderId).setParameter("date", LocalDateTime.now()).executeUpdate();
     }
 
 }

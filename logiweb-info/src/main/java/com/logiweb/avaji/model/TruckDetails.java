@@ -1,5 +1,7 @@
 package com.logiweb.avaji.model;
 
+import javax.enterprise.inject.Model;
+
 public class TruckDetails implements Details {
     private int totalNumber;
     private int availableNumber;

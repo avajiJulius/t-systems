@@ -47,6 +47,9 @@ import javax.persistence.*;
                 "where d.id in (select d.id from Driver d where d.orderDetails.id = :id)")
 @NamedQuery(name = "Driver.findTruckIdByDriver",
         query = "select d.currentTruck.truckId from Driver d where d.id = :id")
+@NamedQuery(name = "Driver.countAvailableDrivers",
+query = "select count(d.id)" +
+        "from Driver d where d.orderDetails is null")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

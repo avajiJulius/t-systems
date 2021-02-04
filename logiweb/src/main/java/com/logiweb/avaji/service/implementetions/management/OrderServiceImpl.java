@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -80,6 +81,7 @@ public class OrderServiceImpl implements OrderService {
 
         double maxCapacityInTons = pathDetailsService.getMaxCapacityInTons(path, waypointsDTO);
         order.setMaxCapacity(maxCapacityInTons);
+        order.setLastEditDate(LocalDateTime.now());
 
         long id = orderDAO.saveOrder(order);
         logger.info("Create order by id: {} with max capacity {}", id, order.getMaxCapacity());
@@ -130,6 +132,7 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = orderDAO.findOrderById(orderId);
         order.setDesignatedTruck(truck);
+        order.setLastEditDate(LocalDateTime.now());
 
         orderDAO.updateOrder(order);
         logger.info("Add truck {} for order by id: {}", truckId, orderId);
