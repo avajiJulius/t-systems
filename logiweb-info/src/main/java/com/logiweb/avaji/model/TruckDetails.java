@@ -1,6 +1,6 @@
 package com.logiweb.avaji.model;
 
-public class TruckDetails {
+public class TruckDetails implements Details {
     private int totalNumber;
     private int availableNumber;
     private int inUseNumber;

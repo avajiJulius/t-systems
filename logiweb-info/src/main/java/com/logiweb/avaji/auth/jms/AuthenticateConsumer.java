@@ -6,6 +6,7 @@ import javax.ejb.Singleton;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import java.util.ArrayList;
 import java.util.List;
 
 @MessageDriven(name = "authenticateConsumer",
@@ -15,7 +16,7 @@ activationConfig = {
 @Singleton
 public class AuthenticateConsumer implements MessageListener {
 
-    private List<AuthenticatedUser> users;
+    private List<AuthenticatedUser> users = new ArrayList<>();
 
     @Override
     public void onMessage(Message message) {

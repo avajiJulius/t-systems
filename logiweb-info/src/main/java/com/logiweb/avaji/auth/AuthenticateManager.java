@@ -13,7 +13,7 @@ import java.util.List;
 @Model
 public class AuthenticateManager {
 
-    private List<AuthenticatedUser> authenticatedUsers = new ArrayList<>();
+    private List<AuthenticatedUser> authenticatedUsers;
 
     @Inject
     private AuthenticateSender sender;

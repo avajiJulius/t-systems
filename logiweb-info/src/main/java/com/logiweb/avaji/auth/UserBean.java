@@ -35,7 +35,7 @@ public class UserBean implements Serializable {
         return authenticate;
     }
 
-    public void authenticate(String email, String password) {
+    public void login() {
         this.authenticate = authenticateManager.isAuthenticated(email, password);
     }
 }

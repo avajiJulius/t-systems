@@ -4,7 +4,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html" xmlns:p="http://primefaces.org/ui">
 
 <h:head>
     <title>Login</title>
@@ -12,9 +12,9 @@
 
 <h:body>
     <h:form>
-        Email <h:inputText value="#{userBean.email}" />
-        Password <h:inputText value="#{userBean.password}" />
-        <h:commandButton value="Login" action="#{userBean.signIn()}"/>
+        Email <h:inputText value="#{userBean.email}" var="email" />
+        Password <h:inputText value="#{userBean.password}" var="password"/>
+        <p:commandButton value="Login" action="#{userBean.login()}"/>
     </h:form>
 
 </h:body>

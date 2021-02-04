@@ -2,7 +2,7 @@ package com.logiweb.avaji.model;
 
 import java.util.Deque;
 
-public class OrderDetails {
+public class OrderDetails implements Details {
 
     private Deque<Order> lastOrders;
 
