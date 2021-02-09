@@ -11,26 +11,70 @@
 </h:head>
 <h:body>
 
-    <h1>Driver Information</h1>
-    <h:dataTable value="#{tableInfo.information.driverInfo}" var="driverInfo" styleClass="order-table"
-                 headerClass="order-table-header" rowClasses="order-table-odd-row,order-table-even-row">
 
-        <h:column>
-            <f:facet name="header">Total</f:facet>
-            #{driverInfo.totalNumber}
-        </h:column>
+    <h:panelGrid id="information">
+        <h1>Order Information</h1>
+        <h:dataTable value="#{tableInfo.information.orderInfo.lastOrders}" var="order" styleClass="order-table"
+                     headerClass="order-table-header" rowClasses="order-table-odd-row,order-table-even-row">
 
-        <h:column>
-            <f:facet name="header">Available</f:facet>
-            #{driverInfo.availableNumber}
-        </h:column>
+            <h:column>
+                <f:facet name="header">#</f:facet>
+                #{order.orderId}
+            </h:column>
 
-        <h:column>
-            <f:facet name="header">Unavalable</f:facet>
-            #{driverInfo.unavailableNumber}
-        </h:column>
+            <h:column>
+                <f:facet name="header">Completed Status</f:facet>
+                #{order.completed}
+            </h:column>
 
-    </h:dataTable>
+        </h:dataTable>
 
+        <h1>Truck Information</h1>
+        <h:dataTable value="#{tableInfo.information.truckInfo}" var="truckInfo" styleClass="order-table"
+                     headerClass="order-table-header" rowClasses="order-table-odd-row,order-table-even-row">
+
+            <h:column>
+                <f:facet name="header">Total</f:facet>
+                #{truckInfo.totalNumber}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Available</f:facet>
+                #{truckInfo.availableNumber}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">In Use</f:facet>
+                #{truckInfo.inUseNumber}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Faulty</f:facet>
+                #{truckInfo.faultyNumber}
+            </h:column>
+
+        </h:dataTable>
+
+        <h1>Driver Information</h1>
+        <h:dataTable value="#{tableInfo.information.driverInfo}" var="driverInfo" styleClass="order-table"
+                     headerClass="order-table-header" rowClasses="order-table-odd-row,order-table-even-row">
+
+            <h:column>
+                <f:facet name="header">Total</f:facet>
+                #{driverInfo.totalNumber}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Available</f:facet>
+                #{driverInfo.availableNumber}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Unavalable</f:facet>
+                #{driverInfo.unavailableNumber}
+            </h:column>
+
+        </h:dataTable>
+    </h:panelGrid>
 </h:body>
 </html>
