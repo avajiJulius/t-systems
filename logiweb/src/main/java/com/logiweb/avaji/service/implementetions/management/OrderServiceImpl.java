@@ -90,7 +90,7 @@ public class OrderServiceImpl implements OrderService {
         double approximateLeadTime = pathDetailsService.getShiftHours(path);
         createOrderDetails(id, approximateLeadTime);
 
-        producerService.sendOrderInformation();
+        producerService.updateOrderInformation();
     }
 
     private void setCargoWeight(List<WaypointDTO> waypointsDTO) {
@@ -110,7 +110,7 @@ public class OrderServiceImpl implements OrderService {
         orderDAO.deleteOrder(orderId);
         logger.info("Delete order by id: {}", orderId);
 
-        producerService.sendOrderInformation();
+        producerService.updateOrderInformation();
     }
 
 
@@ -138,8 +138,8 @@ public class OrderServiceImpl implements OrderService {
         orderDAO.updateOrder(order);
         logger.info("Add truck {} for order by id: {}", truckId, orderId);
 
-        producerService.sendOrderInformation();
-        producerService.sendTruckInformation();
+        producerService.updateOrderInformation();
+        producerService.updateTruckInformation();
     }
 
     @Override
@@ -171,7 +171,7 @@ public class OrderServiceImpl implements OrderService {
         driverService.updateDrivers(drivers);
         logger.info("Add driver to order by id: {}", orderId);
 
-        producerService.sendOrderInformation();
+        producerService.updateOrderInformation();
     }
 
     @Override

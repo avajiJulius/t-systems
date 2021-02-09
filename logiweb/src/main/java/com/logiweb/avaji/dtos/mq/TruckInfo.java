@@ -1,9 +1,11 @@
-package com.logiweb.avaji.entity.model.mq;
+package com.logiweb.avaji.dtos.mq;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class TruckInfo {
+public class TruckInfo implements Serializable {
     private int totalNumber;
     private long availableNumber;
     private long inUseNumber;

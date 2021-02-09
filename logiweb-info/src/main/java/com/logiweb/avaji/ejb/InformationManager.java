@@ -1,56 +1,36 @@
 package com.logiweb.avaji.ejb;
 
-import com.logiweb.avaji.mdb.ConsumerManager;
-import com.logiweb.avaji.model.DriverDetails;
-import com.logiweb.avaji.model.OrderDetails;
-import com.logiweb.avaji.model.TruckDetails;
+import com.logiweb.avaji.model.Information;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.jms.*;
 
 @Stateless
 @LocalBean
 public class InformationManager {
 
-    @EJB
-    private ConsumerManager consumerManager;
+    private Information information;
 
-    @Resource(lookup = "java:/MQConnectionFactory")
-    private ConnectionFactory connectionFactory;
+    @Inject
+    @JMSConnectionFactory("java:/RemoteJmsXA")
+    @JMSPasswordCredential(userName = "amq", password = "amq")
+    private JMSContext context;
 
-    @Resource(lookup = "java:jboss/activemq/queue/StartQueue")
+    @Resource(lookup = "java:global/remoteContext/initQueue")
     private Queue queue;
 
-    @PostConstruct
-    private void init() {
-        try (Connection connection = connectionFactory.createConnection();
-             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)) {
-
-            connection.start();
-
-            System.out.println("SEND START");
-            MessageProducer producer = session.createProducer(queue);
-
-            producer.send(session.createTextMessage("START"));
-
-        } catch (JMSException e) {
-            e.printStackTrace();
-        }
+    public void init() {
+        context.createProducer().send(queue, "START");
     }
 
-    public DriverDetails getDriverDetails() {
-        return consumerManager.getDriverDetails();
+    public Information getInformation() {
+        return information;
     }
 
-    public TruckDetails getTruckDetails() {
-        return consumerManager.getTruckDetails();
-    }
-
-    public OrderDetails getOrderDetails() {
-        return consumerManager.getOrderDetails();
+    public void setInformation(Information information) {
+        this.information = information;
     }
 }
