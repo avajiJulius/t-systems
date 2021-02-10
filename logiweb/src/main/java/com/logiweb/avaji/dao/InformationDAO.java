@@ -2,16 +2,19 @@ package com.logiweb.avaji.dao;
 
 import com.logiweb.avaji.dtos.OrderDTO;
 import com.logiweb.avaji.dtos.TruckDTO;
-import com.logiweb.avaji.entity.model.mq.DriverInfo;
-import com.logiweb.avaji.entity.model.mq.OrderInfo;
-import com.logiweb.avaji.entity.model.mq.TruckInfo;
+import com.logiweb.avaji.dtos.mq.DriverInfo;
+import com.logiweb.avaji.dtos.mq.InfoOrderDTO;
+import com.logiweb.avaji.dtos.mq.OrderInfo;
+import com.logiweb.avaji.dtos.mq.TruckInfo;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
+@Transactional
 public class InformationDAO {
 
     @PersistenceContext
@@ -30,10 +33,12 @@ public class InformationDAO {
     }
 
     public OrderInfo getOrderInformation() {
-        List<OrderDTO> result = entityManager.createNamedQuery("Order.findAllOrders", OrderDTO.class)
+        List<InfoOrderDTO> result = entityManager.createNamedQuery("Order.findAllInfoOrders", InfoOrderDTO.class)
                 .setFirstResult(0).setMaxResults(10).getResultList();
         OrderInfo info = new OrderInfo();
-        info.setLastOrdersByList(result);
+        if (!result.isEmpty()) {
+            info.setLastOrdersByList(result);
+        }
         return info;
     }
 

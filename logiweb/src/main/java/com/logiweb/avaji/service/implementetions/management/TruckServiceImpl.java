@@ -6,7 +6,6 @@ import com.logiweb.avaji.dao.TruckDAO;
 import com.logiweb.avaji.service.api.management.TruckService;
 import com.logiweb.avaji.service.api.mq.InformationProducerService;
 import com.logiweb.avaji.service.api.validator.UniqueValidatorService;
-import com.logiweb.avaji.service.implementetions.mq.InformationProducerServiceImpl;
 import com.logiweb.avaji.service.implementetions.utils.Mapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,7 +45,7 @@ public class TruckServiceImpl implements TruckService {
         boolean isSaved = truckDAO.saveTruck(truck);
         if (isSaved) {
             logger.info("Create truck by id: {}", truck.getTruckId());
-            producerService.sendTruckInformation();
+            producerService.updateTruckInformation();
             return true;
         }
         return false;
@@ -82,7 +81,7 @@ public class TruckServiceImpl implements TruckService {
 
         truckDAO.updateTruck(truck);
         logger.info("Update truck by id: {}", truckId);
-        producerService.sendTruckInformation();
+        producerService.updateTruckInformation();
     }
 
 
@@ -91,7 +90,7 @@ public class TruckServiceImpl implements TruckService {
         boolean result = truckDAO.deleteTruck(truckID);
         if(result) {
             logger.info("Delete truck by id: {}", truckID);
-            producerService.sendTruckInformation();
+            producerService.updateTruckInformation();
             return true;
         }
         return false;

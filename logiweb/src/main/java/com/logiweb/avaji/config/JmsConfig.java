@@ -1,22 +1,22 @@
 package com.logiweb.avaji.config;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
+import com.logiweb.avaji.service.implementetions.mq.InitializeListener;
+import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jms.annotation.EnableJms;
-import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
+import org.springframework.jms.support.destination.DestinationResolver;
+import org.springframework.jms.support.destination.DynamicDestinationResolver;
 
-import javax.jms.ConnectionFactory;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Arrays;
+import javax.jms.JMSException;
 
 @Configuration
 @EnableJms
@@ -25,40 +25,49 @@ public class JmsConfig {
 
     @Autowired
     private Environment environment;
+    @Autowired
+    private InitializeListener listener;
 
 
     @Bean
-    public ConnectionFactory connectionFactory() {
+    public ActiveMQConnectionFactory activeMQConnectionFactory() throws JMSException {
         ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory();
         factory.setBrokerURL(environment.getProperty("activemq.url"));
-        factory.setUserName(environment.getProperty("activemq.username"));
-        factory.setPassword(environment.getProperty("activemq.password"));
-        factory.setTrustedPackages(Arrays.asList("com.logiweb.avaji"));
         return factory;
     }
 
+
     @Bean
-    public JmsTemplate jmsTemplate() {
+    public JmsTemplate jmsTemplate() throws JMSException {
         JmsTemplate jmsTemplate = new JmsTemplate();
-        jmsTemplate.setConnectionFactory(connectionFactory());
+        jmsTemplate.setConnectionFactory(activeMQConnectionFactory());
         jmsTemplate.setPubSubDomain(true);
-        jmsTemplate.setMessageConverter(jacksonJmsMessageConverter());
+        jmsTemplate.setMessageConverter(messageConverter());
         return jmsTemplate;
     }
 
+//    @Bean
+//    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory() {
+//        DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
+//        factory.setConnectionFactory(activeMQConnectionFactory());
+//        factory.setDestinationResolver(destinationResolver());
+//        factory.setSessionTransacted(true);
+//        factory.setConcurrency("3-10");
+//        return factory;
+//    }
+
     @Bean
-    public MessageConverter jacksonJmsMessageConverter() {
-        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
-        converter.setTargetType(MessageType.TEXT);
-        converter.setTypeIdPropertyName("_type");
-        return converter;
+    public DestinationResolver destinationResolver() {
+        return new DynamicDestinationResolver();
     }
 
     @Bean
-    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory() {
-        DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
-        factory.setConnectionFactory(connectionFactory());
-        return factory;
+    public DefaultMessageListenerContainer messageListenerContainer() throws JMSException {
+        DefaultMessageListenerContainer messageListenerContainer = new DefaultMessageListenerContainer();
+        messageListenerContainer.setConnectionFactory(activeMQConnectionFactory());
+        messageListenerContainer.setupMessageListener(listener);
+        messageListenerContainer.setDestinationName("initQueue");
+        return messageListenerContainer;
     }
 
     @Bean
@@ -68,6 +77,5 @@ public class JmsConfig {
         converter.setTypeIdPropertyName("_type");
         return converter;
     }
-
 
 }

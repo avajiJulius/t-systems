@@ -1,24 +1,26 @@
 package com.logiweb.avaji.service.implementetions.mq;
 
-import com.logiweb.avaji.entity.model.mq.OrderInfo;
-import com.logiweb.avaji.entity.model.mq.TruckInfo;
+import com.logiweb.avaji.dtos.mq.InformationDTO;
 import com.logiweb.avaji.service.api.mq.InformationProducerService;
 import com.logiweb.avaji.service.api.mq.InformationService;
-import com.logiweb.avaji.service.implementetions.management.DriverServiceImpl;
-import org.apache.activemq.broker.BrokerService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 
 
 @Service
+@Transactional
 public class InformationProducerServiceImpl implements InformationProducerService {
 
     private static final Logger logger = LogManager.getLogger(InformationProducerServiceImpl.class);
+
+    private static InformationDTO informationDTO;
+
 
     private final JmsTemplate jmsTemplate;
     private final InformationService informationService;
@@ -29,32 +31,33 @@ public class InformationProducerServiceImpl implements InformationProducerServic
         this.informationService = informationService;
     }
 
-
-    @Override
-    public void sendFullInformation() {
-        sendOrderInformation();
-        sendTruckInformation();
-        sendDriverInformation();
+    @PostConstruct
+    private void init() {
+        if (informationDTO == null) {
+            informationDTO = informationService.getFullInformation();
+        }
     }
 
     @Override
-    public void sendTruckInformation() {
-        TruckInfo truckInfo = informationService.getTruckInformation();
-        jmsTemplate.convertAndSend("truck.topic", truckInfo);
-        logger.info("Send {}", truckInfo.toString());
+    public void updateTruckInformation() {
+        informationDTO.setTruckInfo(informationService.getTruckInformation());
+        sendInformation();
     }
 
     @Override
-    public void sendOrderInformation() {
-        OrderInfo orderInfo = informationService.getOrderInformation();
-        jmsTemplate.convertAndSend("order.topic", orderInfo);
-        logger.info("Send {}", orderInfo.toString());
+    public void updateOrderInformation() {
+        informationDTO.setOrderInfo(informationService.getOrderInformation());
+        sendInformation();
     }
 
     @Override
-    public void sendDriverInformation() {
-        OrderInfo orderInfo = informationService.getOrderInformation();
-        jmsTemplate.convertAndSend("driver.topic", orderInfo);
-        logger.info("Send {}", orderInfo.toString());
+    public void updateDriverInformation() {
+        informationDTO.setDriverInfo(informationService.getDriverInformation());
+        sendInformation();
+    }
+
+    @Override
+    public void sendInformation() {
+        jmsTemplate.convertAndSend("driverTopic", informationDTO);
     }
 }

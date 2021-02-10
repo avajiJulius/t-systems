@@ -1,12 +1,10 @@
 package com.logiweb.avaji.model;
 
-import javax.enterprise.inject.Model;
 
-public class TruckDetails implements Details {
+public class TruckInfo implements Details {
     private int totalNumber;
     private int availableNumber;
     private int inUseNumber;
-    private int onOrderNumber;
     private int faultyNumber;
 
     public int getTotalNumber() {
@@ -31,14 +29,6 @@ public class TruckDetails implements Details {
 
     public void setInUseNumber(int inUseNumber) {
         this.inUseNumber = inUseNumber;
-    }
-
-    public int getOnOrderNumber() {
-        return onOrderNumber;
-    }
-
-    public void setOnOrderNumber(int onOrderNumber) {
-        this.onOrderNumber = onOrderNumber;
     }
 
     public int getFaultyNumber() {

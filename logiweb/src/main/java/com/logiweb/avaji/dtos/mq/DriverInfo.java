@@ -1,9 +1,11 @@
-package com.logiweb.avaji.entity.model.mq;
+package com.logiweb.avaji.dtos.mq;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class DriverInfo {
+public class DriverInfo implements Serializable {
     private long totalNumber;
     private long availableNumber;
     private long unavailableNumber;

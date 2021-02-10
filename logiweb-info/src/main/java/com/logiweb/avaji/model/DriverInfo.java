@@ -1,6 +1,6 @@
 package com.logiweb.avaji.model;
 
-public class DriverDetails implements Details {
+public class DriverInfo implements Details {
 
     private int totalNumber;
     private int availableNumber;
