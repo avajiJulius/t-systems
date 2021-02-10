@@ -1,18 +1,17 @@
-package com.logiweb.avaji.ejb;
-
-import com.logiweb.avaji.model.Information;
+package com.logiweb.avaji.service;
 
 import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.jms.*;
+import javax.jms.JMSConnectionFactory;
+import javax.jms.JMSContext;
+import javax.jms.JMSPasswordCredential;
+import javax.jms.Queue;
 
 @Stateless
 @LocalBean
-public class InformationManager {
-
-    private Information information;
+public class InitializeService {
 
     @Inject
     @JMSConnectionFactory("java:/RemoteJmsXA")
@@ -24,13 +23,5 @@ public class InformationManager {
 
     public void init() {
         context.createProducer().send(queue, "START");
-    }
-
-    public Information getInformation() {
-        return information;
-    }
-
-    public void setInformation(Information information) {
-        this.information = information;
     }
 }

@@ -1,8 +1,7 @@
-package com.logiweb.avaji.mdb;
+package com.logiweb.avaji.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.logiweb.avaji.ejb.InformationManager;
 import com.logiweb.avaji.model.Information;
 import org.jboss.ejb3.annotation.ResourceAdapter;
 
@@ -22,7 +21,7 @@ import javax.jms.*;
 public class InformationListener implements MessageListener {
 
     @Inject
-    private InformationManager informationManager;
+    private InformationService informationService;
 
     @Override
     public void onMessage(Message message) {
@@ -32,7 +31,7 @@ public class InformationListener implements MessageListener {
             ObjectMapper mapper = new ObjectMapper();
             Information information = mapper.readValue(jsonDetails, Information.class);
 
-            informationManager.setInformation(information);
+            informationService.updateInformation(information);
 
         } catch (JMSException | JsonProcessingException e) {
             e.printStackTrace();
