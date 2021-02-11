@@ -7,20 +7,18 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 
 
 @Service
-@Transactional
 public class InformationProducerServiceImpl implements InformationProducerService {
 
     private static final Logger logger = LogManager.getLogger(InformationProducerServiceImpl.class);
 
     private static InformationDTO informationDTO;
-
 
     private final JmsTemplate jmsTemplate;
     private final InformationService informationService;
@@ -39,24 +37,28 @@ public class InformationProducerServiceImpl implements InformationProducerServic
     }
 
     @Override
+    @Async
     public void updateTruckInformation() {
         informationDTO.setTruckInfo(informationService.getTruckInformation());
         sendInformation();
     }
 
     @Override
+    @Async
     public void updateOrderInformation() {
         informationDTO.setOrderInfo(informationService.getOrderInformation());
         sendInformation();
     }
 
     @Override
+    @Async
     public void updateDriverInformation() {
         informationDTO.setDriverInfo(informationService.getDriverInformation());
         sendInformation();
     }
 
     @Override
+    @Async
     public void sendInformation() {
         jmsTemplate.convertAndSend("driverTopic", informationDTO);
     }

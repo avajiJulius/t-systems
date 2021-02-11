@@ -10,6 +10,7 @@ import com.logiweb.avaji.entity.enums.DriverStatus;
 import com.logiweb.avaji.entity.model.Cargo;
 import com.logiweb.avaji.entity.model.OrderDetails;
 import com.logiweb.avaji.exception.ShiftValidationException;
+import com.logiweb.avaji.service.api.mq.InformationProducerService;
 import com.logiweb.avaji.service.api.path.PathDetailsService;
 import com.logiweb.avaji.service.implementetions.utils.PathParser;
 import com.logiweb.avaji.service.api.profile.OrderDetailsService;
@@ -36,17 +37,19 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
     private final PathParser parser;
     private final ShiftDetailsService shiftDetailsService;
     private final PathDetailsService pathDetailsService;
+    private final InformationProducerService informationService;
 
     @Autowired
     public OrderDetailsServiceImpl(OrderDetailsDAO orderDetailsDAO, OrderDAO orderDAO, CargoDAO cargoDAO,
                                    PathParser parser, ShiftDetailsService shiftDetailsService,
-                                   PathDetailsService pathDetailsService) {
+                                   PathDetailsService pathDetailsService, InformationProducerService informationService) {
         this.orderDetailsDAO = orderDetailsDAO;
         this.orderDAO = orderDAO;
         this.cargoDAO = cargoDAO;
         this.parser = parser;
         this.shiftDetailsService = shiftDetailsService;
         this.pathDetailsService = pathDetailsService;
+        this.informationService = informationService;
     }
 
     @Override
@@ -80,7 +83,9 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 
         if(orderIsComplete(orderId)) {
             orderDetailsDAO.updateOnCompletedOrder(orderId);
+
             logger.info("Order by id {} is completed", orderId);
+            informationService.updateOrderInformation();
         }
     }
 
@@ -102,6 +107,9 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
         orderDetails.setRemainingWorkingTime(newRemainingHours);
 
         orderDetailsDAO.updateOrderDetails(orderDetails, cityCode);
+
+        informationService.updateDriverInformation();
+        informationService.updateTruckInformation();
     }
 
 

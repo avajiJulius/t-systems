@@ -4,6 +4,7 @@ import com.logiweb.avaji.dao.ShiftDetailsDAO;
 import com.logiweb.avaji.dtos.ShiftDetailsDTO;
 import com.logiweb.avaji.entity.enums.DriverStatus;
 import com.logiweb.avaji.exception.ShiftValidationException;
+import com.logiweb.avaji.service.api.mq.InformationProducerService;
 import com.logiweb.avaji.service.api.profile.ShiftDetailsService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,10 +20,12 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
     private static final Logger logger = LogManager.getLogger(ShiftDetailsServiceImpl.class);
 
     private final ShiftDetailsDAO shiftDetailsDAO;
+    private final InformationProducerService informationService;
 
     @Autowired
-    public ShiftDetailsServiceImpl(ShiftDetailsDAO shiftDetailsDAO) {
+    public ShiftDetailsServiceImpl(ShiftDetailsDAO shiftDetailsDAO, InformationProducerService informationService) {
         this.shiftDetailsDAO = shiftDetailsDAO;
+        this.informationService = informationService;
     }
 
     @Override
@@ -36,6 +39,7 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
         ShiftDetailsDTO shiftDetails = shiftDetailsDAO.findShiftDetails(id);
 
         updateShiftDetails(shiftDetails, driverStatus);
+        informationService.updateDriverInformation();
 
         return shiftDetailsDAO.findShiftDetails(id);
     }
@@ -50,7 +54,11 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
         }
 
         shiftDetailsDAO.updateShiftDetailsOnCompletedOrder(id);
+
         logger.info("Driver by id {} finish shift of completed order", id);
+        informationService.updateDriverInformation();
+        informationService.updateTruckInformation();
+
     }
 
     @Override

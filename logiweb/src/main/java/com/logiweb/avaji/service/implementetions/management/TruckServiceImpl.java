@@ -80,6 +80,7 @@ public class TruckServiceImpl implements TruckService {
         Truck truck = converter.dtoToTruck(updatedTruck);
 
         truckDAO.updateTruck(truck);
+
         logger.info("Update truck by id: {}", truckId);
         producerService.updateTruckInformation();
     }

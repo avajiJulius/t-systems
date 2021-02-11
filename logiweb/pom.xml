@@ -38,11 +38,13 @@
             <scope>provided</scope>
         </dependency>
 
+
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
         </dependency>
+
 
         <dependency>
             <groupId>org.thymeleaf</groupId>
@@ -54,7 +56,6 @@
             <artifactId>thymeleaf-extras-springsecurity5</artifactId>
             <version>3.0.4.RELEASE</version>
         </dependency>
-
 
 
         <dependency>
@@ -84,8 +85,6 @@
             <artifactId>hibernate-validator</artifactId>
             <version>${hibernate.validator.version}</version>
         </dependency>
-
-
 
 
         <dependency>
@@ -119,6 +118,8 @@
             <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
         </dependency>
+
+
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
@@ -139,18 +140,18 @@
             <artifactId>spring-security-data</artifactId>
             <version>${security.version}</version>
         </dependency>
+
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jms</artifactId>
             <version>${spring.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>artemis-spring-integration</artifactId>
             <version>2.16.0</version>
         </dependency>
-
 
 
         <dependency>
@@ -163,7 +164,6 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.12.1</version>
         </dependency>
-
 
 
         <dependency>
@@ -199,13 +199,13 @@
             <version>${log4j.version}</version>
         </dependency>
 
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>

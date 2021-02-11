@@ -4,6 +4,7 @@ import com.logiweb.avaji.dao.ShiftDetailsDAO;
 import com.logiweb.avaji.dtos.ShiftDetailsDTO;
 import com.logiweb.avaji.entity.enums.DriverStatus;
 import com.logiweb.avaji.exception.ShiftValidationException;
+import com.logiweb.avaji.service.api.mq.InformationProducerService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +44,13 @@ class ShiftDetailsServiceTest {
             return Mockito.mock(ShiftDetailsDAO.class);
         }
 
+        public InformationProducerService informationProducerService() {
+            return Mockito.mock(InformationProducerService.class);
+        }
+
         @Bean
         public ShiftDetailsServiceImpl shiftDetailsService() {
-            return new ShiftDetailsServiceImpl(shiftDetailsDAO());
+            return new ShiftDetailsServiceImpl(shiftDetailsDAO(), informationProducerService());
         }
     }
 

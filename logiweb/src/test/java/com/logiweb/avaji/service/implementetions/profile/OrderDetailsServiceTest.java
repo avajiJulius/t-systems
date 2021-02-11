@@ -5,6 +5,7 @@ import com.logiweb.avaji.dao.OrderDAO;
 import com.logiweb.avaji.dao.OrderDetailsDAO;
 import com.logiweb.avaji.entity.enums.CargoStatus;
 import com.logiweb.avaji.entity.model.Cargo;
+import com.logiweb.avaji.service.api.mq.InformationProducerService;
 import com.logiweb.avaji.service.api.path.PathDetailsService;
 import com.logiweb.avaji.service.api.profile.ShiftDetailsService;
 import com.logiweb.avaji.service.implementetions.utils.PathParser;
@@ -95,10 +96,15 @@ class OrderDetailsServiceTest {
             return Mockito.mock(PathDetailsService.class);
         }
 
+        public InformationProducerService informationProducerService() {
+            return Mockito.mock(InformationProducerService.class);
+        }
+
         @Bean
         public OrderDetailsServiceImpl orderDetailsService() {
             return new OrderDetailsServiceImpl(orderDetailsDAO(), orderDAO(),
-                    cargoDAO(), pathParser(),shiftDetailsService(), pathDetailsService());
+                    cargoDAO(), pathParser(),shiftDetailsService(),
+                    pathDetailsService(), informationProducerService());
         }
 
     }
