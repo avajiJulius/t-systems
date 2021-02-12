@@ -2,6 +2,7 @@ package com.logiweb.avaji.controller;
 
 import com.logiweb.avaji.dao.UserDAO;
 import com.logiweb.avaji.dtos.CargoChangeDTO;
+import com.logiweb.avaji.dtos.OrderDetailsDTO;
 import com.logiweb.avaji.dtos.ShiftDetailsDTO;
 import com.logiweb.avaji.service.api.profile.OrderDetailsService;
 import com.logiweb.avaji.service.api.profile.ShiftDetailsService;
@@ -13,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
@@ -65,7 +67,14 @@ public class ProfileController {
 
     @GetMapping("/{id}/changeCity")
     @PreAuthorize("hasAuthority('driver:write')")
-    public String updateRemainingPath(@PathVariable("id") long orderId) {
+    public String updateRemainingPath(@PathVariable("id") long orderId, Principal principal,
+                                      RedirectAttributes attributes) {
+        User user = userDAO.findUserByEmail(principal.getName());
+        OrderDetailsDTO orderDetails = orderDetailsService.readOrderDetails(user.getId());
+        if (!orderDetails.getLoadCargo().isEmpty() || !orderDetails.getUnloadCargo().isEmpty()) {
+            attributes.addFlashAttribute("message", "Complete load/unload actions");
+            return "redirect:/profile";
+        }
         orderDetailsService.changeCity(orderId);
         return "redirect:/profile";
     }

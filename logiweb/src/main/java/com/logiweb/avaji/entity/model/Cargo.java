@@ -42,5 +42,8 @@ public class Cargo {
     @Enumerated(value = EnumType.STRING)
     private CargoStatus cargoStatus;
 
-
+    public Cargo(long cargoId, String title) {
+        this.cargoId = cargoId;
+        this.cargoTitle = title;
+    }
 }

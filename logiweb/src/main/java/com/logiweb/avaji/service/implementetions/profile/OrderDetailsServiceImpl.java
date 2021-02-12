@@ -7,6 +7,7 @@ import com.logiweb.avaji.dao.OrderDetailsDAO;
 import com.logiweb.avaji.dtos.*;
 import com.logiweb.avaji.entity.enums.CargoStatus;
 import com.logiweb.avaji.entity.enums.DriverStatus;
+import com.logiweb.avaji.entity.enums.WaypointType;
 import com.logiweb.avaji.entity.model.Cargo;
 import com.logiweb.avaji.entity.model.OrderDetails;
 import com.logiweb.avaji.exception.ShiftValidationException;
@@ -65,11 +66,29 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 
         orderDetails.setCompleted(orderIsComplete(orderDetails.getId()));
         orderDetails.setPrettyPath(parser.toPrettyPath(orderDetails.getPath()));
-        orderDetails.setWaypoints(orderDAO.findWaypointsOfThisOrder(orderDetails.getId()));
+
+        List<WaypointDTO> waypoints = orderDAO.findWaypointsOfThisOrder(orderDetails.getId());
+        orderDetails.setWaypoints(waypoints);
+
+        setCargoAvailableForAction(orderDetails, waypoints);
 
         return orderDetails;
     }
 
+    private void setCargoAvailableForAction(OrderDetailsDTO orderDetails, List<WaypointDTO> waypoints) {
+        List<WaypointDTO> actionWaypoint = waypoints.stream()
+                .filter(w -> w.getCityCode() == orderDetails.getRemainingPath().getFirst().getCityCode())
+                .collect(Collectors.toList());
+
+        List<Cargo> loadCargo = actionWaypoint.stream()
+                .filter(w -> w.getCargoStatus() == CargoStatus.PREPARED && w.getType() == WaypointType.LOADING)
+                .map(waypoint -> new Cargo(waypoint.getCargoId(), waypoint.getCargoTitle())).collect(Collectors.toList());
+        List<Cargo> unloadCargo = actionWaypoint.stream()
+                .filter(w -> w.getCargoStatus() == CargoStatus.SHIPPED && w.getType() == WaypointType.UNLOADING)
+                .map(waypoint -> new Cargo(waypoint.getCargoId(), waypoint.getCargoTitle())).collect(Collectors.toList());
+        orderDetails.setLoadCargo(loadCargo);
+        orderDetails.setUnloadCargo(unloadCargo);
+    }
 
 
     @Override

@@ -1,5 +1,6 @@
 package com.logiweb.avaji.dtos;
 
+import com.logiweb.avaji.entity.model.Cargo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,8 @@ public class OrderDetailsDTO {
     private CityDTO nextCity;
     private List<WaypointDTO> waypoints = new ArrayList<>();
     private boolean completed;
+    private List<Cargo> loadCargo = new ArrayList<>();
+    private List<Cargo> unloadCargo = new ArrayList<>();
 
 
     public OrderDetailsDTO(long id, String truckId,
