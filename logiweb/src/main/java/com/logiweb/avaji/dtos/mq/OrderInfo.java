@@ -5,17 +5,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderInfo implements Serializable {
-    private Deque<InfoOrderDTO> lastOrders = new ArrayDeque<>();
+    private List<InfoOrderDTO> lastOrders = new ArrayList<>();
 
     public void setLastOrdersByList(List<InfoOrderDTO> orders) {
         this.lastOrders.addAll(orders);
+    }
+
+    public List<InfoOrderDTO> getLastOrders() {
+        return lastOrders;
     }
 }

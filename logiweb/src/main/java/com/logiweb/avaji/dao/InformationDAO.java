@@ -1,16 +1,15 @@
 package com.logiweb.avaji.dao;
 
+import com.logiweb.avaji.dtos.DriverDTO;
 import com.logiweb.avaji.dtos.OrderDTO;
 import com.logiweb.avaji.dtos.TruckDTO;
-import com.logiweb.avaji.dtos.mq.DriverInfo;
-import com.logiweb.avaji.dtos.mq.InfoOrderDTO;
-import com.logiweb.avaji.dtos.mq.OrderInfo;
-import com.logiweb.avaji.dtos.mq.TruckInfo;
+import com.logiweb.avaji.dtos.mq.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Repository
@@ -55,5 +54,11 @@ public class InformationDAO {
                 .withInUse(inUse)
                 .withFaulty(faulty)
                 .build();
+    }
+
+    public List<InfoDriverDTO> findDriversOfOrder(long orderId) {
+        TypedQuery<InfoDriverDTO> query = entityManager.createNamedQuery("Driver.findInfoDriversByOrderId", InfoDriverDTO.class)
+                .setParameter("id", orderId);
+        return query.getResultList();
     }
 }

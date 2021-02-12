@@ -40,7 +40,14 @@
             <td scope="row" th:text="${truck.truckId}" />
             <td th:text="${truck.shiftSize}" />
             <td th:text="${truck.capacity}" />
-            <td th:text="${truck.serviceable}" />
+            <td>
+                <div th:if="${truck.serviceable}">
+                    OK
+                </div>
+                <div th:unless="${truck.serviceable}">
+                    Damaged
+                </div>
+            </td>
             <td th:text="${truck.currentCityName}"/>
             <td>
                 <div class="row" th:if="${truck.inUse == false}">

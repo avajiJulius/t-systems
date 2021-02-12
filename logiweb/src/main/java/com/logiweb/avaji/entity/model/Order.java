@@ -18,7 +18,7 @@ query = "select new com.logiweb.avaji.dtos.OrderDTO(" +
         "o.maxCapacity,o.path) from Order o order by o.lastEditDate desc ")
 @NamedQuery(name = "Order.findAllInfoOrders",
         query = "select new com.logiweb.avaji.dtos.mq.InfoOrderDTO(" +
-                "o.id, o.completed) from Order o order by o.lastEditDate desc ")
+                "o.id, o.completed, o.designatedTruck.truckId, o.path) from Order o order by o.lastEditDate desc ")
 @NamedQuery(name = "Order.findWaypointsOfThisOrder",
 query = "select w from Waypoint w where w.waypointOrder.id = :orderId " )
 @NamedQuery(name = "Order.findOrderById",

@@ -69,7 +69,8 @@ public class PathDetailsServiceImpl implements PathDetailsService {
 
             if(capacity == 0 && !loadAvailable.isEmpty()) {
                 logger.error("Path is suboptimal");
-                throw new SuboptimalPathException("Path is suboptimal");
+                throw new SuboptimalPathException("Path is suboptimal. Because truck goes empty from " + countryMap.getCityNameByCode(code)+
+                        " to next waypoint city.");
             }
         }
 

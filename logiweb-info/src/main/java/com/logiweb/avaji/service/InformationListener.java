@@ -28,11 +28,11 @@ public class InformationListener implements MessageListener {
         try {
             String jsonDetails = ((TextMessage) message).getText();
             System.out.println(jsonDetails);
+
             ObjectMapper mapper = new ObjectMapper();
             Information information = mapper.readValue(jsonDetails, Information.class);
 
             informationService.updateInformation(information);
-
         } catch (JMSException | JsonProcessingException e) {
             e.printStackTrace();
         }

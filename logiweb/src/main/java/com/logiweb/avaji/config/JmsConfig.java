@@ -46,16 +46,6 @@ public class JmsConfig {
         return jmsTemplate;
     }
 
-//    @Bean
-//    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory() {
-//        DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
-//        factory.setConnectionFactory(activeMQConnectionFactory());
-//        factory.setDestinationResolver(destinationResolver());
-//        factory.setSessionTransacted(true);
-//        factory.setConcurrency("3-10");
-//        return factory;
-//    }
-
     @Bean
     public DestinationResolver destinationResolver() {
         return new DynamicDestinationResolver();

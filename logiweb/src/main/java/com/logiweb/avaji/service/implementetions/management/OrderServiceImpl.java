@@ -93,7 +93,8 @@ public class OrderServiceImpl implements OrderService {
         producerService.updateOrderInformation();
     }
 
-    private void setCargoWeight(List<WaypointDTO> waypointsDTO) {
+    @Override
+    public void setCargoWeight(List<WaypointDTO> waypointsDTO) {
         for (WaypointDTO dto : waypointsDTO) {
              double weight = cargoDAO.findCargoWeightById(dto.getCargoId());
             dto.setCargoWeight(weight);

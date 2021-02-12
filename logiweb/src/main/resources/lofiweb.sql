@@ -181,7 +181,7 @@ values ('Titanium', 12000, 'PREPARED', 0), ('Wood', 6300, 'PREPARED', 0), ('Clay
        ('Magnesite', 5900, 'PREPARED',0), ('Gravel', 10600, 'PREPARED', 0), ('Sand', 6100, 'PREPARED', 0),
        ('Dolomite', 2200, 'PREPARED', 0), ('Gypsum', 700, 'PREPARED', 0), ('Calcareous Tuffs', 1500, 'PREPARED', 0),
        ('Quartzite', 3200, 'PREPARED',0), ('Marble', 8600, 'PREPARED', 0), ('Granite', 8700, 'PREPARED', 0),
-       ('Lead', 9100, 'PREPARED', 0), ('Tin', 4800, 'PREPARED', 0);
+       ('Lead', 9100, 'PREPARED', 0), ('Tin', 4800, 'PREPARED', 0), ('SUPER HEAVY FOR TEST', 90000000, 'PREPARED', 0);
 
 
 

@@ -32,4 +32,9 @@ public class CountryMapServiceImpl implements CountryMapService {
         return countryMapDAO.findAllRoads();
     }
 
+    @Override
+    public String readCityNameByCode(long code) {
+        return countryMapDAO.findCityByCode(code).getCityName();
+    }
+
 }

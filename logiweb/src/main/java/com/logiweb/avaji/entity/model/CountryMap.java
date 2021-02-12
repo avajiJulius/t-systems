@@ -18,9 +18,11 @@ public class CountryMap {
 
     private Set<Long> cities = new HashSet<>();
     private List<RoadDTO> roads = new ArrayList<>();
+    private final CountryMapService countryMapService;
 
     @Autowired
     public CountryMap(CountryMapService mapService) {
+        this.countryMapService = mapService;
         this.cities.addAll(mapService.readAllCities().stream().map(c -> c.getCityCode()).collect(Collectors.toSet()));
         this.roads.addAll(mapService.readAllRoads());
         logger.info("Create country map");
@@ -34,5 +36,9 @@ public class CountryMap {
     public double getDistanceBetween(long start, long goal) {
         return roads.stream().filter(r -> r.getCityACode() == start)
                 .filter(r -> r.getCityBCode() == goal).findFirst().get().getDistance();
+    }
+
+    public String getCityNameByCode(long code) {
+        return countryMapService.readCityNameByCode(code);
     }
 }

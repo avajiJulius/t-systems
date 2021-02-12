@@ -63,8 +63,9 @@ public class DriverController {
     public String createDriver(@ModelAttribute("driver") @Validated(DriverDTO.Create.class) DriverDTO driver,
                                BindingResult result, Model model, RedirectAttributes attributes) {
         if (result.hasErrors()) {
-            model.addAttribute("driver", new DriverDTO());
+            model.addAttribute("driver", driver);
             model.addAttribute("cities", mapService.readAllCities());
+
             return "drivers/create";
         }
 

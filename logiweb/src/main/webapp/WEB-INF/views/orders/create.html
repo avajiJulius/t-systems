@@ -9,21 +9,17 @@
 </head>
 <body>
 <nav th:replace="fragments/navbar.html :: navigation"></nav>
-<div th:if="${message}" class="alert alert-warning alert-dismissible fade show" role="alert">
-    <p th:text="${message}"></p>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
 <div align="center">
     <h1>Create Order</h1>
     <div class="container">
         <div class="row justify-content-md-center">
             <div class="col-8">
             <form action="#" th:action="@{/orders/}" th:object="${form}" method="POST">
+                <small class="form-text text-muted"
+                       style="color:red" th:if="${#fields.hasErrors('waypointsDto')}" th:errors="*{waypointsDto}">path error</small>
+                <a class="btn btn-outline-primary" th:href="@{/orders/new/{quantity}(quantity=*{waypointsDto.size() + 1})}" role="button">Add</a>
+                <a th:if="*{waypointsDto.size() > 1}" class="btn btn-outline-primary"  th:href="@{/orders/new/{quantity}(quantity=*{waypointsDto.size() - 1})}" role="button">Remove</a>
                 <fieldset>
-                    <a class="btn btn-outline-primary" th:href="@{/orders/new/add}" role="button">Add</a>
-                    <a class="btn btn-outline-primary"  th:href="@{/orders/new/remove}" role="button">Remove</a>
                     <table class="table table-bordered border-4 border-dark">
                         <thead>
                         <tr>
@@ -69,6 +65,11 @@
     </div>
 </div>
 <a class="btn btn-outline-primary" th:href="@{/orders/}">Back to Orders List</a>
+<script>
+    function addWaypoint() {
+        document.querySelector('#content')
+    }
+</script>
 <script th:replace="fragments/script.html :: jquery"></script>
 <script th:replace="fragments/script.html :: popper"></script>
 <script th:replace="fragments/script.html :: bootstrap"></script>

@@ -5,7 +5,6 @@ import com.logiweb.avaji.dtos.DriverDTO;
 import com.logiweb.avaji.entity.model.Driver;
 import com.logiweb.avaji.service.api.management.DriverService;
 import com.logiweb.avaji.service.api.mq.InformationProducerService;
-import com.logiweb.avaji.service.api.validator.UniqueValidatorService;
 import com.logiweb.avaji.service.implementetions.utils.Mapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,16 +21,13 @@ public class DriverServiceImpl implements DriverService {
 
     private final DriverDAO driverDAO;
     private final Mapper mapper;
-    private final UniqueValidatorService uniqueValidatorService;
     private final InformationProducerService producerService;
 
     @Autowired
     public DriverServiceImpl(DriverDAO driverDAO, Mapper mapper,
-                             UniqueValidatorService uniqueValidatorService,
                              InformationProducerService producerService) {
         this.driverDAO = driverDAO;
         this.mapper = mapper;
-        this.uniqueValidatorService = uniqueValidatorService;
         this.producerService = producerService;
     }
 
@@ -47,8 +43,6 @@ public class DriverServiceImpl implements DriverService {
     @Override
     @Transactional
     public boolean createDriver(DriverDTO driverDTO) {
-        uniqueValidatorService.validateEmailUnique(driverDTO.getEmail());
-
         Driver driver = mapper.createDriverFromDto(driverDTO);
 
         boolean isSaved = driverDAO.saveDriver(driver);

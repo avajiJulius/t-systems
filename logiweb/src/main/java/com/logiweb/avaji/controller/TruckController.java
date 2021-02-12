@@ -59,6 +59,7 @@ public class TruckController {
     public String createTruck(@ModelAttribute("truck") @Validated(TruckDTO.Create.class) TruckDTO truckDto,
                               BindingResult result, Model model, RedirectAttributes attributes) {
         if (result.hasErrors()) {
+            model.addAttribute("truck", truckDto);
             model.addAttribute("cities", mapService.readAllCities());
             return "trucks/create";
         }

@@ -19,8 +19,8 @@
                         <div class="col">
                             <span>Your status: </span>
                             <select th:field="*{driverStatus}">
-                                <option th:value="${shiftDetails.driverStatus}" th:text="${shiftDetails.driverStatus}" selected />
-                                <option th:if="${shiftDetails.driverStatus != ds}" th:each="ds : ${driverStatus}" th:value="${ds}" th:text="${ds}" />
+                                <option th:value="${shiftDetails.driverStatus}" th:text="${shiftDetails.driverStatus.status}" selected />
+                                <option th:if="${shiftDetails.driverStatus != ds}" th:each="ds : ${driverStatus}" th:value="${ds}" th:text="${ds.status}" />
                             </select>
                         </div>
                     </div>
@@ -105,7 +105,7 @@
                             <td th:text="${waypoint.cityName}"></td>
                             <td th:text="${waypoint.type}"></td>
                             <td th:text="${waypoint.cargoTitle}"></td>
-                            <td th:text="${waypoint.cargoStatus}"></td>
+                            <td th:text="${waypoint.cargoStatus.status}"></td>
                             <td>
                                 <div th:if="${waypoint.cityCode == orderDetails.remainingPath.peekFirst().cityCode}">
                                     <div th:if="${waypoint.type.ordinal() == 0}">

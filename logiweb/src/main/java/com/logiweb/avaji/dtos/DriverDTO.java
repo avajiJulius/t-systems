@@ -1,6 +1,7 @@
 package com.logiweb.avaji.dtos;
 
 import com.logiweb.avaji.entity.enums.DriverStatus;
+import com.logiweb.avaji.validation.annotation.EmailUnique;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
+import javax.validation.constraints.Pattern;
 
 @Data
 @NoArgsConstructor
@@ -19,12 +21,17 @@ public class DriverDTO {
 
     private long id;
     private int version;
-    @NotBlank(groups = {Create.class, Update.class}, message = "firstName")
+    @NotBlank(groups = {Create.class, Update.class}, message = "First name must be filled")
+    @Pattern(groups = {Create.class, Update.class}, regexp = "^[\\p{L} \\.'\\-]+$",
+            message = "Not a valid first name")
     private String firstName;
-    @NotBlank(groups = {Create.class, Update.class}, message = "last Name")
+    @NotBlank(groups = {Create.class, Update.class}, message = "Last name must be filled")
+    @Pattern(groups = {Create.class, Update.class}, regexp = "^[\\p{L} \\.'\\-]+$",
+            message = "Not a valid last name")
     private String lastName;
     @Null(groups = {Update.class}, message = "Cannot update email")
     @NotBlank(groups = {Create.class}, message = "Email must be not null")
+    @EmailUnique(groups = {Create.class})
     private String email;
     @Null(groups = {Update.class}, message = "Cannot update password")
     @NotBlank(groups = {Create.class}, message = "Password must be not null")

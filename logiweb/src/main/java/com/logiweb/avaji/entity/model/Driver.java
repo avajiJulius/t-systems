@@ -27,6 +27,10 @@ import javax.persistence.*;
         query = "select new com.logiweb.avaji.dtos.DriverDTO(d.id, d.firstName, d.lastName) from Driver d " +
                 "where d.currentTruck.truckId = " +
                 "(select o.designatedTruck.truckId from Order o where o.id = :id)")
+@NamedQuery(name = "Driver.findInfoDriversByOrderId",
+        query = "select new com.logiweb.avaji.dtos.mq.InfoDriverDTO(d.id, d.firstName, d.lastName) from Driver d " +
+                "where d.currentTruck.truckId = " +
+                "(select o.designatedTruck.truckId from Order o where o.id = :id)")
 @NamedQuery(name = "Driver.countDriversOfTruck",
                 query = "select count(d) from Driver d " +
                         "where d.currentTruck in (select t from Truck t where t.truckId = :id)")

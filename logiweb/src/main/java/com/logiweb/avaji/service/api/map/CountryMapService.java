@@ -24,4 +24,6 @@ public interface CountryMapService {
      * @return all roads
      */
     List<RoadDTO> readAllRoads();
+
+    String readCityNameByCode(long code);
 }

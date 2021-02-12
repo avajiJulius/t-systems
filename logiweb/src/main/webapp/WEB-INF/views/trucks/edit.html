@@ -17,7 +17,7 @@
             <form th:method="PATCH" th:action="@{/trucks/{id}(id=${truck.truckId})}" th:object="${truck}" >
                 <input type="number" hidden="true" th:field="*{version}" />
                 <div class="form-group row">
-                    <label for="capacity" class="col-sm-2 col-form-label">Capacity</label>
+                    <label for="capacity" class="col-sm-2 col-form-label">Capacity(tons)</label>
                     <div class="col-sm-10">
                         <input type="number" th:field="*{capacity}" id="capacity" placeholder="Capacity">
                     </div>

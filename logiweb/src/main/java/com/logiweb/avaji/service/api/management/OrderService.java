@@ -1,10 +1,7 @@
 package com.logiweb.avaji.service.api.management;
 
 
-import com.logiweb.avaji.dtos.CreateWaypointsDTO;
-import com.logiweb.avaji.dtos.DriverDTO;
-import com.logiweb.avaji.dtos.OrderDTO;
-import com.logiweb.avaji.dtos.TruckDTO;
+import com.logiweb.avaji.dtos.*;
 import com.logiweb.avaji.entity.model.Order;
 import com.logiweb.avaji.exception.LoadAndUnloadValidateException;
 
@@ -29,6 +26,8 @@ public interface OrderService {
      * @param dto CreateWaypointDTO
      */
     void createOrderByWaypoints(Order order, CreateWaypointsDTO dto) throws LoadAndUnloadValidateException;
+
+    void setCargoWeight(List<WaypointDTO> waypointsDTO);
 
     /**
      * The <code>deleteOrder</code> delete order by id.

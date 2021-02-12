@@ -1,38 +1,46 @@
 package com.logiweb.avaji.service.implementetions.mq;
 
 import com.logiweb.avaji.dao.InformationDAO;
-import com.logiweb.avaji.dtos.mq.DriverInfo;
-import com.logiweb.avaji.dtos.mq.InformationDTO;
-import com.logiweb.avaji.dtos.mq.TruckInfo;
-import com.logiweb.avaji.dtos.mq.OrderInfo;
+import com.logiweb.avaji.dtos.mq.*;
 import com.logiweb.avaji.service.api.mq.InformationService;
+import com.logiweb.avaji.service.implementetions.utils.PathParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class InformationServiceImpl implements InformationService {
 
     private final InformationDAO informationDAO;
+    private final PathParser pathParser;
 
     @Autowired
-    public InformationServiceImpl(InformationDAO informationDAO) {
+    public InformationServiceImpl(InformationDAO informationDAO, PathParser pathParser) {
         this.informationDAO = informationDAO;
+        this.pathParser = pathParser;
     }
 
 
     @Override
+    @Transactional
     public InformationDTO getFullInformation() {
-        OrderInfo orderInformation = informationDAO.getOrderInformation();
-        TruckInfo truckInformation = informationDAO.getTruckInformation();
-        DriverInfo driverInformation = informationDAO.getDriverInformation();
-
-        return new InformationDTO(orderInformation, truckInformation, driverInformation);
+        return new InformationDTO(getOrderInformation(), getTruckInformation(), getDriverInformation());
     }
 
 
     @Override
     public OrderInfo getOrderInformation() {
-        return informationDAO.getOrderInformation();
+        List<InfoOrderDTO> lastOrders = informationDAO.getOrderInformation().getLastOrders();
+        for (InfoOrderDTO order : lastOrders) {
+            order.setDrivers(informationDAO.findDriversOfOrder(order.getOrderId()));
+            String path = pathParser.toPrettyPath(order.getPath());
+            order.setPath(path);
+        }
+
+        return new OrderInfo(lastOrders);
+
     }
 
     @Override

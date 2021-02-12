@@ -27,6 +27,25 @@
                 #{order.completed}
             </h:column>
 
+            <h:column>
+                <f:facet name="header">Path</f:facet>
+                #{order.path}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Truck ID</f:facet>
+                #{order.truckId}
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">Drivers</f:facet>
+                <ul>
+                <ui:repeat value="#{order.drivers}" var="driver">
+                    <li><h:outputText value="#{driver.lastName} #{driver.firstName}"/></li>
+                </ui:repeat>
+                </ul>
+            </h:column>
+
         </h:dataTable>
 
         <h1>Truck Information</h1>

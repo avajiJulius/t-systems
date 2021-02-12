@@ -23,23 +23,18 @@ public class TruckServiceImpl implements TruckService {
 
     private final TruckDAO truckDAO;
     private final Mapper converter;
-    private final UniqueValidatorService uniqueValidatorService;
     private final InformationProducerService producerService;
 
     @Autowired
     public TruckServiceImpl(TruckDAO truckDAO, Mapper converter,
-                            UniqueValidatorService uniqueValidatorService,
                             InformationProducerService informationProducerService) {
         this.truckDAO = truckDAO;
         this.converter = converter;
-        this.uniqueValidatorService = uniqueValidatorService;
         this.producerService = informationProducerService;
     }
 
     @Override
     public boolean createTruck(TruckDTO truckDTO) {
-        uniqueValidatorService.validateTruckIdUnique(truckDTO.getTruckId());
-
         Truck truck = converter.dtoToTruck(truckDTO);
 
         boolean isSaved = truckDAO.saveTruck(truck);

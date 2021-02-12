@@ -14,6 +14,8 @@ import com.logiweb.avaji.exception.LoadAndUnloadValidateException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -24,8 +26,7 @@ import java.util.List;
 public class OrderController {
 
     private final int PAGE_SIZE = 5;
-    private int quantity = 1;
-
+    private CreateWaypointsDTO dtoBefore;
 
     private final OrderService orderService;
     private final CargoService cargoService;
@@ -70,9 +71,11 @@ public class OrderController {
         return "orders/cargo";
     }
 
-    @GetMapping("/new")
+
+    @GetMapping("/new/{quantity}")
     @PreAuthorize("hasAuthority('employee:write')")
-    public String getOrderForm(Model model) {
+    public String getOrderForm(@PathVariable(name = "quantity") Integer quantity,
+                               Model model) {
         CreateWaypointsDTO waypointForm = new CreateWaypointsDTO();
         for (int i = 0; i < quantity; i++) {
             waypointForm.addWaypointDto(new WaypointDTO());
@@ -83,25 +86,16 @@ public class OrderController {
         return "orders/create";
     }
 
-    @GetMapping("/new/add")
-    public String addNewWaypoint() {
-        quantity++;
-        return "redirect:/orders/new";
-    }
-
-    @GetMapping("/new/remove")
-    public String removeNewWaypoint(RedirectAttributes attributes) {
-        if(quantity < 2) {
-            attributes.addAttribute("message", "Quantity of Waypoint cannot be null");
-            return "redirect:/orders/new";
-        }
-        quantity--;
-        return "redirect:/orders/new";
-    }
-
     @PostMapping()
     @PreAuthorize("hasAuthority('employee:write')")
-    public String createOrder(@ModelAttribute(name = "form") CreateWaypointsDTO waypoints) throws LoadAndUnloadValidateException {
+    public String createOrder(@ModelAttribute(name = "form") @Validated CreateWaypointsDTO waypoints,
+                              BindingResult result, Model model) throws LoadAndUnloadValidateException {
+        if(result.hasErrors()) {
+            model.addAttribute("cities", countryMapService.readAllCities());
+            model.addAttribute("cargo", cargoService.readAllFreeCargo());
+            model.addAttribute("form", waypoints);
+            return "orders/create";
+        }
         orderService.createOrderByWaypoints(new Order(), waypoints);
 
         return "redirect:/orders";

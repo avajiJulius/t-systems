@@ -1,5 +1,6 @@
 package com.logiweb.avaji.dtos;
 
+import com.logiweb.avaji.validation.annotation.TruckIDUnique;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ public class TruckDTO {
     @Pattern(groups = {Create.class}, regexp = "^[A-Z]{2}[A-Z0-9]{0,7}[0-9]{5}$",
             message = "Truck ID must consist of two alphabet characters at first and five numbers")
     @Length(groups = {Create.class}, min = 7, max = 7, message = "Length of truck ID must be 7 characters")
+    @TruckIDUnique(groups = {Create.class})
     private String truckId;
     private int version;
     @NotNull(message = "Must be filed")

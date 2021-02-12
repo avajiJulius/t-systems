@@ -54,15 +54,4 @@ public class AppConfig implements WebMvcConfigurer {
         registry.viewResolver(resolver);
     }
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/scripts/**")
-                .addResourceLocations("classpath:/static/js/");
-    }
-
-    @Override
-    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-        configurer.enable();
-    }
-
 }

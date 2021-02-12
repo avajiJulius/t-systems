@@ -9,6 +9,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
 
 
 public class AppConfigDispatcherServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
@@ -40,7 +41,6 @@ public class AppConfigDispatcherServletInitializer extends AbstractAnnotationCon
         dispatcherServlet.setThrowExceptionIfNoHandlerFound(true);
         return dispatcherServlet;
     }
-
 
     private void registerDelegatingFilter(ServletContext context) {
         context.addFilter("securityFilter", new DelegatingFilterProxy("springSecurityFilterChain"))
