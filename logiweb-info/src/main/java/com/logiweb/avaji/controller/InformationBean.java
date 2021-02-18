@@ -4,6 +4,8 @@ import com.logiweb.avaji.service.InformationService;
 import com.logiweb.avaji.model.Information;
 import com.logiweb.avaji.service.InitializeService;
 import com.logiweb.avaji.util.InformationUpdateEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -17,6 +19,8 @@ import java.io.Serializable;
 @Named(value = "informationBean")
 @ApplicationScoped
 public class InformationBean implements Serializable {
+
+    private static final Logger logger = LogManager.getLogger(InformationBean.class);
 
     private Information information;
 
@@ -33,6 +37,7 @@ public class InformationBean implements Serializable {
     private void init() {
         initializeService.init();
         load();
+        logger.info("Application Initialize");
     }
 
     public void load() {

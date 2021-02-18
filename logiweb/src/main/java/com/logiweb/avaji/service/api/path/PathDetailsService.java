@@ -4,6 +4,7 @@ import com.logiweb.avaji.entity.model.Path;
 import com.logiweb.avaji.dtos.WaypointDTO;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.util.List;
 
 /**
@@ -33,8 +34,6 @@ public interface PathDetailsService {
      * @return approximate shift hours
      */
     double getShiftHours(List<Long> path);
-
-    long calculateTimeUntilEndOfMonth();
 
     /**
      * Calculate shortest path by modified A* algorithm

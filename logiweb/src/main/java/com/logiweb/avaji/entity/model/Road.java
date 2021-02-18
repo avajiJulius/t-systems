@@ -1,6 +1,7 @@
 package com.logiweb.avaji.entity.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,7 +24,7 @@ query = "select r.distanceInHours from Road r " +
 query = "select count(r) from Road r " +
         "where r.cityA.cityCode = :cityACode " +
         "and r.cityB.cityCode = :cityBCode")
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Road {

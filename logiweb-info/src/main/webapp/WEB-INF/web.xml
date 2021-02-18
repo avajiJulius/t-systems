@@ -29,5 +29,13 @@
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
 
+    <error-page>
+        <error-code>500</error-code>
+        <location>/error.html</location>
+    </error-page>
 
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error.html</location>
+    </error-page>
 </web-app>

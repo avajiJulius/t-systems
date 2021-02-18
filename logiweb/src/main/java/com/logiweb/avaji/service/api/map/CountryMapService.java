@@ -2,6 +2,7 @@ package com.logiweb.avaji.service.api.map;
 
 import com.logiweb.avaji.dtos.CityDTO;
 import com.logiweb.avaji.dtos.RoadDTO;
+import com.logiweb.avaji.entity.model.City;
 
 import java.util.List;
 
@@ -26,4 +27,6 @@ public interface CountryMapService {
     List<RoadDTO> readAllRoads();
 
     String readCityNameByCode(long code);
+
+    City findCityByCode(long currentCityCode);
 }

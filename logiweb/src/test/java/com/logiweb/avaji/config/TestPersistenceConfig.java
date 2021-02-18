@@ -18,13 +18,14 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan("com.logiweb.avaji")
-@PropertySource({"classpath:application.properties"})
-public class PersistenceConfig {
+@PropertySource({"classpath:test.properties"})
+@Profile("integration")
+public class TestPersistenceConfig {
 
     private final Environment environment;
 
     @Autowired
-    public PersistenceConfig(Environment environment) {
+    public TestPersistenceConfig(Environment environment) {
         this.environment = environment;
     }
 

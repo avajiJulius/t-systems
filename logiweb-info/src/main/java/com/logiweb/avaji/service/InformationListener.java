@@ -2,7 +2,10 @@ package com.logiweb.avaji.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.logiweb.avaji.exception.MessageProcessingException;
 import com.logiweb.avaji.model.Information;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jboss.ejb3.annotation.ResourceAdapter;
 
 import javax.ejb.ActivationConfigProperty;
@@ -20,21 +23,28 @@ import javax.jms.*;
 @ResourceAdapter(value="remote-artemis")
 public class InformationListener implements MessageListener {
 
+    private static final Logger logger = LogManager.getLogger(InformationListener.class);
+
     @Inject
-    private InformationService informationService;
+    InformationService informationService;
 
     @Override
     public void onMessage(Message message) {
         try {
             String jsonDetails = ((TextMessage) message).getText();
-            System.out.println(jsonDetails);
 
             ObjectMapper mapper = new ObjectMapper();
             Information information = mapper.readValue(jsonDetails, Information.class);
 
             informationService.updateInformation(information);
-        } catch (JMSException | JsonProcessingException e) {
-            e.printStackTrace();
+
+
+        } catch (JMSException e) {
+            logger.error("JMS exception");
+            throw new MessageProcessingException("Cannot process message because jms exception");
+        } catch (JsonProcessingException e) {
+            logger.error("Cannot process message");
+            throw new MessageProcessingException("Cannot process message");
         }
     }
 

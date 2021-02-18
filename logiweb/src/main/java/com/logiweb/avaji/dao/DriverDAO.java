@@ -64,12 +64,7 @@ public class DriverDAO {
     }
 
 
-    @Scheduled(cron = "0 0 0 1 */1 *")
-    public void refreshWorkedHours() {
-        Query query = entityManager.createNamedQuery("Driver.refreshWorkedHours");
-        int rows = query.executeUpdate();
-        logger.debug("Worked Hours success refreshed on {} rows", rows);
-    }
+
 
 
     public boolean saveWorkShift(long id) {

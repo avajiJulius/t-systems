@@ -38,5 +38,7 @@ public class City{
                 '}';
     }
 
-
+    public City(String cityName) {
+        this.cityName = cityName;
+    }
 }

@@ -6,11 +6,13 @@ import com.logiweb.avaji.service.api.management.OrderService;
 import com.logiweb.avaji.service.api.path.PathDetailsService;
 import com.logiweb.avaji.validation.annotation.WaypointsValid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.List;
 
+@Component
 public class WaypointsValidator implements ConstraintValidator<WaypointsValid, List<WaypointDTO>> {
 
     private final PathDetailsService pathDetailsService;

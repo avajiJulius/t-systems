@@ -2,6 +2,8 @@ package com.logiweb.avaji.service;
 
 import com.logiweb.avaji.model.Information;
 import com.logiweb.avaji.util.InformationUpdateEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateful;
@@ -14,10 +16,12 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class InformationService {
 
-    private Information information;
+    private static final Logger logger = LogManager.getLogger(InformationService.class);
+
+    private  Information information;
 
     @Inject
-    private BeanManager beanManager;
+    BeanManager beanManager;
 
     public Information getInformation() {
         return information;
@@ -25,6 +29,7 @@ public class InformationService {
 
     public void updateInformation(Information information) {
         this.information = information;
+        logger.debug("Information is updated");
         beanManager.fireEvent(new InformationUpdateEvent());
     }
 }

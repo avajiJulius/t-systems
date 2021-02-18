@@ -1,5 +1,6 @@
 package com.logiweb.avaji.service.implementetions.utils;
 
+import com.logiweb.avaji.config.TestConfig;
 import com.logiweb.avaji.dao.CountryMapDAO;
 import com.logiweb.avaji.entity.model.City;
 import com.logiweb.avaji.exception.PathParseException;
@@ -9,6 +10,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import javax.persistence.EntityManagerFactory;
@@ -21,48 +23,9 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 
-@SpringJUnitConfig(PathParserTest.Config.class)
+@SpringJUnitConfig(TestConfig.class)
+@ActiveProfiles("test")
 class PathParserTest {
-
-    static class Config {
-        private List<City> cities = Stream.of(
-                new City(1, "A"),
-                new City(2, "B"),
-                new City(3, "C"),
-                new City(4, "D"),
-                new City(5, "E"),
-                new City(6, "F"),
-                new City(7, "G"),
-                new City(8, "H"),
-                new City(9, "I"),
-                new City(10, "J")
-        ).collect(Collectors.toList());
-
-        @Bean
-        public EntityManagerFactory entityManagerFactory() {
-            return Mockito.mock(EntityManagerFactory.class);
-        }
-
-        @Bean
-        public CountryMapDAO countryMapDAO() {
-            CountryMapDAO mock = Mockito.mock(CountryMapDAO.class);
-            Mockito.when(mock.findCityByCode(anyLong())).thenAnswer(new Answer<Object>() {
-                @Override
-                public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                    Object[] arguments = invocationOnMock.getArguments();
-                    int index = Integer.parseInt(String.valueOf(arguments[0])) - 1;
-                    return cities.get(index);
-                }
-            });
-            return mock;
-        }
-
-        @Bean
-        public PathParser pathStringParser() {
-            return new PathParser(countryMapDAO());
-        }
-
-    }
 
     @Autowired
     public CountryMapDAO countryMapDAO;

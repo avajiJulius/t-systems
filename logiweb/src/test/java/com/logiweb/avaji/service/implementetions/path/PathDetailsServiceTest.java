@@ -1,18 +1,13 @@
 package com.logiweb.avaji.service.implementetions.path;
 
-import com.logiweb.avaji.dao.TruckDAO;
-import com.logiweb.avaji.dtos.CityDTO;
+import com.logiweb.avaji.config.TestConfig;
 import com.logiweb.avaji.entity.model.Path;
-import com.logiweb.avaji.dtos.RoadDTO;
 import com.logiweb.avaji.dtos.WaypointDTO;
 import com.logiweb.avaji.exception.SuboptimalPathException;
-import com.logiweb.avaji.service.api.map.CountryMapService;
 import com.logiweb.avaji.service.api.path.PathDetailsService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.List;
@@ -21,63 +16,9 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringJUnitConfig(PathDetailsServiceTest.Config.class)
+@SpringJUnitConfig(TestConfig.class)
+@ActiveProfiles("test")
 class PathDetailsServiceTest {
-
-    @Configuration
-    static class Config {
-        public CountryMapService countryMapService() {
-            CountryMapService mock = Mockito.mock(CountryMapService.class);
-            Mockito.when(mock.readAllCities())
-                    .thenReturn(Stream.of(
-                            new CityDTO(1, "A"),
-                            new CityDTO(2, "B"),
-                            new CityDTO(3, "C"),
-                            new CityDTO(4, "D"),
-                            new CityDTO(5, "E"),
-                            new CityDTO(6, "G"),
-                            new CityDTO(7, "H")
-                    ).collect(Collectors.toList()));
-            Mockito.when(mock.readAllRoads())
-                    .thenReturn(Stream.of(
-                            new RoadDTO(1,2,2),
-                            new RoadDTO(1,3,2),
-                            new RoadDTO(1,6,5),
-                            new RoadDTO(2,1,2),
-                            new RoadDTO(2,3,1),
-                            new RoadDTO(2,4,2),
-                            new RoadDTO(2,5,3),
-                            new RoadDTO(3,1,2),
-                            new RoadDTO(3,2,1),
-                            new RoadDTO(3,5,2),
-                            new RoadDTO(3,6,2),
-                            new RoadDTO(4,2,2),
-                            new RoadDTO(4,5,2),
-                            new RoadDTO(5,2,3),
-                            new RoadDTO(5,3,2),
-                            new RoadDTO(5,4,2),
-                            new RoadDTO(5,6,3),
-                            new RoadDTO(5,7,3),
-                            new RoadDTO(6,1,5),
-                            new RoadDTO(6,3,2),
-                            new RoadDTO(6,5,3),
-                            new RoadDTO(6,7,1),
-                            new RoadDTO(7,5,3),
-                            new RoadDTO(7,6,1)
-                    ).collect(Collectors.toList()));
-            return mock;
-        }
-
-        public TruckDAO truckDAO() {
-            return Mockito.mock(TruckDAO.class);
-        }
-
-        @Bean
-        public PathDetailsService pathDetailsService() {
-            return new PathDetailsServiceImpl(countryMapService());
-        }
-    }
-
 
     @Autowired
     private PathDetailsService pathDetailsService;
@@ -286,4 +227,5 @@ class PathDetailsServiceTest {
 
         assertEquals(result, maxCapacity);
     }
+
 }

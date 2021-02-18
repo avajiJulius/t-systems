@@ -44,19 +44,15 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     public boolean createDriver(DriverDTO driverDTO) {
         Driver driver = mapper.createDriverFromDto(driverDTO);
-
         boolean isSaved = driverDAO.saveDriver(driver);
-        if(isSaved) {
+        boolean isCreated = createWorkShift(driver.getId());
 
-            boolean isCreated = createWorkShift(driver.getId());
+        if(isSaved && isCreated) {
+            logger.info("Create driver by id: {}", driver.getId());
+            logger.info("Create work shift for driver with id: {}", driver.getId());
 
-            if(isCreated) {
-                logger.info("Create driver by id: {}", driver.getId());
-                logger.info("Create work shift for driver with id: {}", driver.getId());
-                producerService.updateDriverInformation();
-
-                return true;
-            }
+            producerService.updateDriverInformation();
+            return true;
         }
         return false;
     }

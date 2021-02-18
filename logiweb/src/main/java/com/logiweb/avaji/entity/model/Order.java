@@ -69,6 +69,15 @@ public class Order implements Serializable {
     private OrderDetails orderDetails;
 
 
+    public Order(boolean completed, String path, Truck designatedTruck,
+                 double maxCapacity, LocalDateTime lastEditDate) {
+        this.completed = completed;
+        this.path = path;
+        this.designatedTruck = designatedTruck;
+        this.maxCapacity = maxCapacity;
+        this.lastEditDate = lastEditDate;
+    }
+
     @Override
     public String toString() {
         return "Order{" +

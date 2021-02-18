@@ -7,6 +7,16 @@ public class TruckInfo {
     private int inUseNumber;
     private int faultyNumber;
 
+    public TruckInfo() {
+    }
+
+    public TruckInfo(int totalNumber, int availableNumber, int inUseNumber, int faultyNumber) {
+        this.totalNumber = totalNumber;
+        this.availableNumber = availableNumber;
+        this.inUseNumber = inUseNumber;
+        this.faultyNumber = faultyNumber;
+    }
+
     public int getTotalNumber() {
         return totalNumber;
     }
@@ -37,5 +47,15 @@ public class TruckInfo {
 
     public void setFaultyNumber(int faultyNumber) {
         this.faultyNumber = faultyNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "TruckInfo{" +
+                "totalNumber=" + totalNumber +
+                ", availableNumber=" + availableNumber +
+                ", inUseNumber=" + inUseNumber +
+                ", faultyNumber=" + faultyNumber +
+                '}';
     }
 }

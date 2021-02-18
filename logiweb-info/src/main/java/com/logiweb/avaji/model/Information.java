@@ -6,6 +6,14 @@ public class Information {
     private TruckInfo truckInfo;
     private DriverInfo driverInfo;
 
+    public Information() {
+    }
+
+    public Information(OrderInfo orderInfo, TruckInfo truckInfo, DriverInfo driverInfo) {
+        this.orderInfo = orderInfo;
+        this.truckInfo = truckInfo;
+        this.driverInfo = driverInfo;
+    }
 
     public OrderInfo getOrderInfo() {
         return orderInfo;
@@ -29,5 +37,14 @@ public class Information {
 
     public void setDriverInfo(DriverInfo driverInfo) {
         this.driverInfo = driverInfo;
+    }
+
+    @Override
+    public String toString() {
+        return "Information{" +
+                "orderInfo=" + orderInfo +
+                ", truckInfo=" + truckInfo +
+                ", driverInfo=" + driverInfo +
+                '}';
     }
 }

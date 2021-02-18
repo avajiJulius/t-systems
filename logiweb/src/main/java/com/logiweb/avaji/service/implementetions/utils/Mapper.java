@@ -10,6 +10,7 @@ import com.logiweb.avaji.entity.model.Driver;
 import com.logiweb.avaji.entity.model.Order;
 import com.logiweb.avaji.entity.model.Truck;
 import com.logiweb.avaji.entity.model.Waypoint;
+import com.logiweb.avaji.service.api.map.CountryMapService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,14 +26,14 @@ import java.util.List;
 @Service
 public class Mapper {
 
-    private final CountryMapDAO mapDAO;
+    private final CountryMapService countryMapService;
     private final CargoDAO cargoDAO;
     private final PasswordEncoder encoder;
 
     @Autowired
-    public Mapper(CountryMapDAO mapDAO, CargoDAO cargoDAO,
+    public Mapper(CountryMapService countryMapService, CargoDAO cargoDAO,
                   PasswordEncoder encoder) {
-        this.mapDAO = mapDAO;
+        this.countryMapService = countryMapService;
         this.cargoDAO = cargoDAO;
         this.encoder = encoder;
     }
@@ -48,7 +49,7 @@ public class Mapper {
         truck.setTruckId(truckDto.getTruckId());
         truck.setVersion(truckDto.getVersion());
         truck.setShiftSize(truckDto.getShiftSize());
-        truck.setCurrentCity(mapDAO.findCityByCode(truckDto.getCurrentCityCode()));
+        truck.setCurrentCity(countryMapService.findCityByCode(truckDto.getCurrentCityCode()));
         truck.setCapacity(truckDto.getCapacity());
         truck.setServiceable(truckDto.isServiceable());
         return truck;
@@ -69,9 +70,9 @@ public class Mapper {
 
     private List<Waypoint> addWaypoints(List<Waypoint> waypoints, List<WaypointDTO> waypointsDtos, Order order) {
         for (WaypointDTO dto: waypointsDtos) {
-            Waypoint load = new Waypoint(mapDAO.findCityByCode(dto.getLoadCityCode()),
+            Waypoint load = new Waypoint(countryMapService.findCityByCode(dto.getLoadCityCode()),
                     WaypointType.LOADING, order, cargoDAO.findCargoById(dto.getCargoId()));
-            Waypoint unload = new Waypoint(mapDAO.findCityByCode(dto.getUnloadCityCode()),
+            Waypoint unload = new Waypoint(countryMapService.findCityByCode(dto.getUnloadCityCode()),
                     WaypointType.UNLOADING, order, cargoDAO.findCargoById(dto.getCargoId()));
             waypoints.add(load);
             waypoints.add(unload);
@@ -88,7 +89,7 @@ public class Mapper {
                 .withFirstName(driverDTO.getFirstName())
                 .withLastName(driverDTO.getLastName())
                 .withHoursWorked(0.0).withDriverStatus(DriverStatus.REST)
-                .withCurrentCity(mapDAO.findCityByCode(driverDTO.getCityCode()))
+                .withCurrentCity(countryMapService.findCityByCode(driverDTO.getCityCode()))
                 .build();
     }
 
@@ -97,7 +98,7 @@ public class Mapper {
                 .withFirstName(driverDTO.getFirstName())
                 .withLastName(driverDTO.getLastName())
                 .withHoursWorked(driverDTO.getHoursWorked())
-                .withCurrentCity(mapDAO.findCityByCode(driverDTO.getCityCode()))
+                .withCurrentCity(countryMapService.findCityByCode(driverDTO.getCityCode()))
                 .build();
     }
 }

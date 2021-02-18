@@ -6,6 +6,7 @@ import com.logiweb.avaji.dao.OrderDAO;
 import com.logiweb.avaji.entity.model.*;
 import com.logiweb.avaji.service.api.management.DriverService;
 import com.logiweb.avaji.service.api.mq.InformationProducerService;
+import com.logiweb.avaji.service.implementetions.utils.DateTimeService;
 import com.logiweb.avaji.service.implementetions.utils.PathParser;
 import com.logiweb.avaji.service.api.management.OrderService;
 import com.logiweb.avaji.service.implementetions.utils.Mapper;
@@ -32,11 +33,12 @@ public class OrderServiceImpl implements OrderService {
     private final DriverService driverService;
     private final CargoDAO cargoDAO;
     private final InformationProducerService producerService;
+    private final DateTimeService timeService;
 
     @Autowired
     public OrderServiceImpl(OrderDAO orderDAO, Mapper converter, PathDetailsService pathDetailsService,
                             PathParser parser, DriverService driverService, CargoDAO cargoDAO,
-                            InformationProducerService informationProducerService) {
+                            InformationProducerService informationProducerService, DateTimeService timeService) {
         this.orderDAO = orderDAO;
         this.converter = converter;
         this.pathDetailsService = pathDetailsService;
@@ -44,6 +46,7 @@ public class OrderServiceImpl implements OrderService {
         this.driverService = driverService;
         this.cargoDAO = cargoDAO;
         this.producerService = informationProducerService;
+        this.timeService = timeService;
     }
 
     @Override
@@ -54,18 +57,12 @@ public class OrderServiceImpl implements OrderService {
             indexFrom = (pageNumber - 1) * pageSize;
         }
         List<OrderDTO> orderPage = orderDAO.findOrdersPage(indexFrom, pageSize);
-        for (OrderDTO orderDTO : orderPage) {
-            orderDTO.setDrivers(orderDAO.findDriversByOrderId(orderDTO.getOrderId()));
 
-            if(orderDTO.getTruckId() != null) {
-                orderDTO.setShiftSize(
-                        orderDAO.findTruckByOrderId(orderDTO.getOrderId()).getShiftSize());
-            }
+        fillOrders(orderPage);
 
-            orderDTO.setPrettyPath(parser.toPrettyPath(orderDTO.getPrettyPath()));
-        }
         return orderPage;
     }
+
 
     @Override
     public void createOrderByWaypoints(Order order, CreateWaypointsDTO dto) {
@@ -77,21 +74,17 @@ public class OrderServiceImpl implements OrderService {
 
         List<Long> path = pathDetailsService.getPath(waypointsDTO).getPath();
 
-        String stringPath = parser.parseLongListToString(path);
-        order.setPath(stringPath);
-
-        double maxCapacityInTons = pathDetailsService.getMaxCapacityInTons(path, waypointsDTO);
-        order.setMaxCapacity(maxCapacityInTons);
-        order.setLastEditDate(LocalDateTime.now());
+        Map<String, Object> pathDetails = calculatePathDetails(path, waypointsDTO);
+        fillOrder(order, pathDetails);
 
         long id = orderDAO.saveOrder(order);
         logger.info("Create order by id: {} with max capacity {}", id, order.getMaxCapacity());
 
-        double approximateLeadTime = pathDetailsService.getShiftHours(path);
-        createOrderDetails(id, approximateLeadTime);
+        createOrderDetails(id, path);
 
         producerService.updateOrderInformation();
     }
+
 
     @Override
     public void setCargoWeight(List<WaypointDTO> waypointsDTO) {
@@ -101,10 +94,6 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    private void createOrderDetails(long id, double approximateLeadTime) {
-        orderDAO.saveOrderDetails(id, approximateLeadTime);
-        logger.info("Create order detail for order id: {} , with time in travel: {}", id, approximateLeadTime);
-    }
 
     @Override
     public void deleteOrder(long orderId) {
@@ -148,35 +137,82 @@ public class OrderServiceImpl implements OrderService {
     public List<DriverDTO> readDriversForOrder(long orderId) {
         long cityCode = orderDAO.findTruckByOrderId(orderId).getCurrentCity().getCityCode();
         String path = orderDAO.findOrderById(orderId).getPath();
-        double shiftHours = pathDetailsService.getShiftHours(parser.parseStringToLongList(path));
 
-        long untilEndOfMonth = pathDetailsService.calculateTimeUntilEndOfMonth();
-        if(shiftHours > untilEndOfMonth) {
-            shiftHours = (double) untilEndOfMonth;
-        }
+        double shiftHours = calculateMaxShiftHours(path);
 
         return orderDAO.findDriverForOrder(shiftHours, cityCode);
     }
 
+
+
     @Override
     @Transactional
     public void addDriversToOrder(List<Long> driversIds, long orderId) {
-        String truckId = orderDAO.findOrderById(orderId).getDesignatedTruck().getTruckId();
-        OrderDetails orderDetails = orderDAO.findOrderDetails(orderId);
-        Truck truck = orderDAO.findTruckEntityById(truckId);
         List<Driver> drivers = driverService.readDriversByIds(driversIds);
-        for(Driver driver: drivers) {
-            driver.setCurrentTruck(truck);
-            driver.setOrderDetails(orderDetails);
-        }
+        fillDrivers(drivers, orderId);
+
         driverService.updateDrivers(drivers);
         logger.info("Add driver to order by id: {}", orderId);
 
         producerService.updateOrderInformation();
     }
 
+
     @Override
     public long getOrdersTotalNumbers() {
         return orderDAO.countOrders();
     }
+
+    private void fillOrders(List<OrderDTO> orderPage) {
+        for (OrderDTO orderDTO : orderPage) {
+            if(orderDTO.getTruckId() != null) {
+                orderDTO.setDrivers(orderDAO.findDriversByOrderId(orderDTO.getOrderId()));
+                orderDTO.setShiftSize(
+                        orderDAO.findTruckByOrderId(orderDTO.getOrderId()).getShiftSize());
+            }
+            orderDTO.setPrettyPath(parser.toPrettyPath(orderDTO.getPrettyPath()));
+        }
+    }
+
+    private void fillOrder(Order order, Map<String, Object> pathDetails) {
+        order.setPath((String) pathDetails.get("path"));
+        order.setMaxCapacity((Double) pathDetails.get("capacity"));
+        order.setLastEditDate(LocalDateTime.now());
+    }
+
+    private Map<String, Object> calculatePathDetails(List<Long> path, List<WaypointDTO> waypointsDTO) {
+        Map<String, Object> pathDetails = new HashMap<>();
+
+        pathDetails.put("path", parser.parseLongListToString(path));
+        pathDetails.put("capacity", pathDetailsService.getMaxCapacityInTons(path, waypointsDTO));
+
+        return pathDetails;
+    }
+
+    private void createOrderDetails(long id, List<Long> path) {
+        double approximateLeadTime = pathDetailsService.getShiftHours(path);
+        orderDAO.saveOrderDetails(id, approximateLeadTime);
+        logger.info("Create order detail for order id: {} , with time in travel: {}", id, approximateLeadTime);
+    }
+
+    private double calculateMaxShiftHours(String path) {
+        double shiftHours = pathDetailsService.getShiftHours(parser.parseStringToLongList(path));
+
+        long untilEndOfMonth = timeService.calculateTimeUntilEndOfMonth();
+        if(shiftHours > untilEndOfMonth) {
+            shiftHours = (double) untilEndOfMonth;
+        }
+        return shiftHours;
+    }
+
+    private void fillDrivers(List<Driver> drivers, long orderId) {
+        String truckId = orderDAO.findOrderById(orderId).getDesignatedTruck().getTruckId();
+        OrderDetails orderDetails = orderDAO.findOrderDetails(orderId);
+        Truck truck = orderDAO.findTruckEntityById(truckId);
+        for(Driver driver: drivers) {
+            driver.setCurrentTruck(truck);
+            driver.setOrderDetails(orderDetails);
+        }
+    }
+
 }

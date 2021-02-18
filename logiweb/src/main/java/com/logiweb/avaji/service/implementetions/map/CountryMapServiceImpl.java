@@ -1,6 +1,7 @@
 package com.logiweb.avaji.service.implementetions.map;
 
 import com.logiweb.avaji.dtos.RoadDTO;
+import com.logiweb.avaji.entity.model.City;
 import com.logiweb.avaji.service.api.map.CountryMapService;
 import com.logiweb.avaji.dao.CountryMapDAO;
 import com.logiweb.avaji.dtos.CityDTO;
@@ -35,6 +36,11 @@ public class CountryMapServiceImpl implements CountryMapService {
     @Override
     public String readCityNameByCode(long code) {
         return countryMapDAO.findCityByCode(code).getCityName();
+    }
+
+    @Override
+    public City findCityByCode(long currentCityCode) {
+        return countryMapDAO.findCityByCode(currentCityCode);
     }
 
 }

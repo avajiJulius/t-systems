@@ -15,4 +15,11 @@ public class OrderInfo {
     public void setLastOrders(List<Order> lastOrders) {
         this.lastOrders.addAll(lastOrders);
     }
+
+    @Override
+    public String toString() {
+        return "OrderInfo{" +
+                "lastOrders=" + lastOrders +
+                '}';
+    }
 }

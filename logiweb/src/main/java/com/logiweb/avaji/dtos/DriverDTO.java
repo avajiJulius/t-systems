@@ -71,6 +71,23 @@ public class DriverDTO {
         this.cityName = cityName;
     }
 
+    public DriverDTO(String email, String password,
+                     String firstName, String lastName, long cityCode) {
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.cityCode = cityCode;
+    }
+
+    public DriverDTO(String firstName, String lastName,
+                     double hoursWorked, long cityCode) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.hoursWorked = hoursWorked;
+        this.cityCode = cityCode;
+    }
+
     public DriverDTO(long id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;

@@ -12,9 +12,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -92,12 +89,7 @@ public class PathDetailsServiceImpl implements PathDetailsService {
         return shiftHours;
     }
 
-    @Override
-    public long calculateTimeUntilEndOfMonth() {
-        LocalDateTime to = LocalDateTime.now().withHour(0).with(TemporalAdjusters.firstDayOfNextMonth());
-        LocalDateTime from = LocalDateTime.now();
-        return from.until(to, ChronoUnit.HOURS);
-    }
+
 
     @Override
     public Path getPath(List<WaypointDTO> waypoints) {

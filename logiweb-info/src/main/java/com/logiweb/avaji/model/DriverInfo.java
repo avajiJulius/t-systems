@@ -6,6 +6,15 @@ public class DriverInfo {
     private int availableNumber;
     private int unavailableNumber;
 
+    public DriverInfo() {
+    }
+
+    public DriverInfo(int totalNumber, int availableNumber, int unavailableNumber) {
+        this.totalNumber = totalNumber;
+        this.availableNumber = availableNumber;
+        this.unavailableNumber = unavailableNumber;
+    }
+
     public int getTotalNumber() {
         return totalNumber;
     }
@@ -28,5 +37,14 @@ public class DriverInfo {
 
     public void setUnavailableNumber(int unavailableNumber) {
         this.unavailableNumber = unavailableNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "DriverInfo{" +
+                "totalNumber=" + totalNumber +
+                ", availableNumber=" + availableNumber +
+                ", unavailableNumber=" + unavailableNumber +
+                '}';
     }
 }

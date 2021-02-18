@@ -1,5 +1,8 @@
 package com.logiweb.avaji.service;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -13,6 +16,8 @@ import javax.jms.Queue;
 @LocalBean
 public class InitializeService {
 
+    private static final Logger logger = LogManager.getLogger(InitializeService.class);
+
     @Inject
     @JMSConnectionFactory("java:/RemoteJmsXA")
     @JMSPasswordCredential(userName = "amq", password = "amq")
@@ -23,5 +28,6 @@ public class InitializeService {
 
     public void init() {
         context.createProducer().send(queue, "START");
+        logger.info("Send init message");
     }
 }

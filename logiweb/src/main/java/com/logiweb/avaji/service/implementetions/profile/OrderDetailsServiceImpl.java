@@ -75,21 +75,6 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
         return orderDetails;
     }
 
-    private void setCargoAvailableForAction(OrderDetailsDTO orderDetails, List<WaypointDTO> waypoints) {
-        List<WaypointDTO> actionWaypoint = waypoints.stream()
-                .filter(w -> w.getCityCode() == orderDetails.getRemainingPath().getFirst().getCityCode())
-                .collect(Collectors.toList());
-
-        List<Cargo> loadCargo = actionWaypoint.stream()
-                .filter(w -> w.getCargoStatus() == CargoStatus.PREPARED && w.getType() == WaypointType.LOADING)
-                .map(waypoint -> new Cargo(waypoint.getCargoId(), waypoint.getCargoTitle())).collect(Collectors.toList());
-        List<Cargo> unloadCargo = actionWaypoint.stream()
-                .filter(w -> w.getCargoStatus() == CargoStatus.SHIPPED && w.getType() == WaypointType.UNLOADING)
-                .map(waypoint -> new Cargo(waypoint.getCargoId(), waypoint.getCargoTitle())).collect(Collectors.toList());
-        orderDetails.setLoadCargo(loadCargo);
-        orderDetails.setUnloadCargo(unloadCargo);
-    }
-
 
     @Override
     @Transactional
@@ -147,6 +132,21 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
         orderDetails.setRemainingPath(remainingPath);
 
         setNextCity(orderDetails, pathList);
+    }
+
+    private void setCargoAvailableForAction(OrderDetailsDTO orderDetails, List<WaypointDTO> waypoints) {
+        List<WaypointDTO> actionWaypoint = waypoints.stream()
+                .filter(w -> w.getCityCode() == orderDetails.getRemainingPath().getFirst().getCityCode())
+                .collect(Collectors.toList());
+
+        List<Cargo> loadCargo = actionWaypoint.stream()
+                .filter(w -> w.getCargoStatus() == CargoStatus.PREPARED && w.getType() == WaypointType.LOADING)
+                .map(waypoint -> new Cargo(waypoint.getCargoId(), waypoint.getCargoTitle())).collect(Collectors.toList());
+        List<Cargo> unloadCargo = actionWaypoint.stream()
+                .filter(w -> w.getCargoStatus() == CargoStatus.SHIPPED && w.getType() == WaypointType.UNLOADING)
+                .map(waypoint -> new Cargo(waypoint.getCargoId(), waypoint.getCargoTitle())).collect(Collectors.toList());
+        orderDetails.setLoadCargo(loadCargo);
+        orderDetails.setUnloadCargo(unloadCargo);
     }
 
     private void setNextCity(OrderDetailsDTO orderDetails, List<CityDTO> pathList) {
