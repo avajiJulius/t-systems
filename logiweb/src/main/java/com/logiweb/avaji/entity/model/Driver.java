@@ -1,6 +1,5 @@
 package com.logiweb.avaji.entity.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.logiweb.avaji.entity.enums.DriverStatus;
 import com.logiweb.avaji.entity.enums.Role;
@@ -96,12 +95,6 @@ public class Driver extends User {
     @JoinColumn(name = "order_details")
     @JsonManagedReference
     private OrderDetails orderDetails;
-
-//    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY,
-//            mappedBy = "driver")
-//    @Transient
-//    @JsonIgnore
-//    private WorkShift workShift;
 
     @ManyToMany
     @JoinTable(

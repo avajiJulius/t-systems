@@ -14,10 +14,24 @@ import java.util.List;
 
 public interface OrderService {
 
-
+    /**
+     * The <code>readOrdersPage</code> read orders dtos.
+     *
+     * @param pageNumber
+     * @param pageSize size of returned list
+     * @return list of order dtos from (pageNumber * pageSize) index of database
+     */
     List<OrderDTO> readOrdersPage(int pageNumber, int pageSize);
 
-    List<OrderDTO> readPastOrdersPage(int pageNumber, int page_size);
+
+    /**
+     * The <code>readPastOrdersPage</code> read past orders dtos.
+     *
+     * @param pageNumber
+     * @param pageSize size of returned list
+     * @return list of order dtos from (pageNumber * pageSize) index of database
+     */
+    List<OrderDTO> readPastOrdersPage(int pageNumber, int pageSize);
 
     /**
      * The <code>createOrderByWaypoints</code> create order entity by converting CreateWaypointsDTO
@@ -72,10 +86,18 @@ public interface OrderService {
      */
     void addDriversToOrder(List<Long> driversIds, long orderId);
 
-
+    /**
+     * The <code>getOrdersTotalNumbers</code> get total rows of all orderss
+     *
+     * @return total number of rows in database
+     */
     long getOrdersTotalNumbers();
 
-
+    /**
+     * The <code>getDriversTotalNumber</code> get total rows of all past orders
+     *
+     * @return total number of rows in database
+     */
     long getPastOrdersTotalNumbers();
 
 

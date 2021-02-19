@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "waypoints")
@@ -19,7 +20,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Waypoint {
+public class Waypoint implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -6,7 +6,6 @@ import com.logiweb.avaji.entity.model.WorkShift;
 import com.logiweb.avaji.exception.DriverNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;

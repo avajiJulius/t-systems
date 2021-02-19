@@ -1,7 +1,5 @@
 package com.logiweb.avaji.dao;
 
-import com.logiweb.avaji.dtos.DriverDTO;
-import com.logiweb.avaji.dtos.OrderDTO;
 import com.logiweb.avaji.dtos.TruckDTO;
 import com.logiweb.avaji.dtos.mq.*;
 import org.springframework.stereotype.Repository;
@@ -44,7 +42,7 @@ public class InformationDAO {
     public TruckInfo getTruckInformation() {
         List<TruckDTO> trucks = entityManager.createNamedQuery("Truck.findAllTrucks", TruckDTO.class).getResultList();
         int total = trucks.size();
-        long inUse = trucks.stream().filter(t -> t.isInUse()).count();
+        long inUse = trucks.stream().filter(TruckDTO::isInUse).count();
         long available = trucks.stream().filter(t -> t.isServiceable() && !t.isInUse()).count();
         long faulty = trucks.stream().filter(t -> !t.isServiceable()).count();
 

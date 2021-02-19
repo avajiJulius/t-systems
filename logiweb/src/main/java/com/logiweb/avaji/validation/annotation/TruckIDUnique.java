@@ -1,6 +1,5 @@
 package com.logiweb.avaji.validation.annotation;
 
-import com.logiweb.avaji.validation.EmailUniqueValidator;
 import com.logiweb.avaji.validation.TruckIDUniqueValidator;
 
 import javax.validation.Constraint;

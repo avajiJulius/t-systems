@@ -53,12 +53,6 @@ public class OrderDetailsDAO {
         return entityManager.find(OrderDetails.class, orderId);
     }
 
-//    @Transactional
-//    public void updateOnCompletedOrder(long orderId) {
-//        entityManager.createNamedQuery("Order.updateOnCompletedOrder")
-//                .setParameter("id", orderId).setParameter("date", LocalDateTime.now()).executeUpdate();
-//    }
-
     public void freeTruck(String truckId) {
         Truck truck = entityManager.find(Truck.class, truckId);
         truck.setInUse(false);

@@ -40,10 +40,11 @@ public class PathDetailsServiceImpl implements PathDetailsService {
             double unloadCapacity = 0.0;
 
             List<WaypointDTO> load = loadAvailable.stream()
-                    .filter(waypoint -> waypoint.getLoadCityCode() == code).collect(Collectors.toList());
+                    .filter(waypoint -> waypoint.getLoadCityCode() == code)
+                    .collect(Collectors.toList());
+
             if(!load.isEmpty()) {
-                loadCapacity += load.stream()
-                        .map(waypoint -> waypoint.getCargoWeight()).reduce((o1, o2) -> o1 + o2).get();
+                loadCapacity += calculateTempCapacity(load);
                 loadAvailable.removeAll(load);
                 unloadAvailable.addAll(load);
             }
@@ -55,11 +56,12 @@ public class PathDetailsServiceImpl implements PathDetailsService {
             }
 
             List<WaypointDTO> unload = unloadAvailable.stream()
-                    .filter(waypoint -> waypoint.getUnloadCityCode() == code).collect(Collectors.toList());
+                    .filter(waypoint -> waypoint.getUnloadCityCode() == code)
+                    .collect(Collectors.toList());
+
             if(!unload.isEmpty()) {
-                    unloadCapacity += unload.stream()
-                            .map(waypoint -> waypoint.getCargoWeight()).reduce((o1, o2) -> o1 + o2).get();
-                    unloadAvailable.removeAll(unload);
+                unloadCapacity += calculateTempCapacity(unload);
+                unloadAvailable.removeAll(unload);
             }
 
             capacity -= unloadCapacity;
@@ -74,10 +76,6 @@ public class PathDetailsServiceImpl implements PathDetailsService {
         return convertKilogramsToTons(maxCapacity);
     }
 
-
-    private double convertKilogramsToTons(double maxCapacity) {
-        return (maxCapacity / 1000);
-    }
 
     @Override
     public double getShiftHours(List<Long> path) {
@@ -123,6 +121,15 @@ public class PathDetailsServiceImpl implements PathDetailsService {
 
         return getNewPath(new Path(new ArrayList<>(), newStart, 0), available, new ArrayList<>());
 
+    }
+
+    private double convertKilogramsToTons(double maxCapacity) {
+        return (maxCapacity / 1000);
+    }
+
+    private double calculateTempCapacity(List<WaypointDTO> waypoints) {
+        return waypoints.stream().map(WaypointDTO::getCargoWeight)
+                .reduce(Double::sum).get();
     }
 
     private Path getNewPath(Path path, List<Path> available, List<Path> open) {

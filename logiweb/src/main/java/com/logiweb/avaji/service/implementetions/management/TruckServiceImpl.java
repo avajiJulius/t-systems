@@ -5,7 +5,6 @@ import com.logiweb.avaji.entity.model.Truck;
 import com.logiweb.avaji.dao.TruckDAO;
 import com.logiweb.avaji.service.api.management.TruckService;
 import com.logiweb.avaji.service.api.mq.InformationProducerService;
-import com.logiweb.avaji.service.api.validator.UniqueValidatorService;
 import com.logiweb.avaji.service.implementetions.utils.Mapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

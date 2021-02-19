@@ -24,10 +24,10 @@ public class GlobalExceptionHandler {
         return "exceptions/403";
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public String pageException(Exception exception) {
-//        logger.error(exception.getMessage());
-//        return "exceptions/500";
-//    }
+    @ExceptionHandler(Exception.class)
+    public String pageException(Exception exception) {
+        logger.error(exception.getMessage());
+        return "exceptions/500";
+    }
 
 }

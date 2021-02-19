@@ -13,7 +13,6 @@ import com.logiweb.avaji.entity.model.Cargo;
 import com.logiweb.avaji.entity.model.Driver;
 import com.logiweb.avaji.entity.model.OrderDetails;
 import com.logiweb.avaji.entity.model.PastOrder;
-import com.logiweb.avaji.exception.ShiftValidationException;
 import com.logiweb.avaji.service.api.mq.InformationProducerService;
 import com.logiweb.avaji.service.api.path.PathDetailsService;
 import com.logiweb.avaji.service.implementetions.utils.PathParser;
@@ -82,7 +81,11 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 
     @Override
     @Transactional
-    public void updateOrderByCargoStatus(long driverId, List<Long> cargoIds) throws ShiftValidationException {
+    public void updateOrderByCargoStatus(long driverId, List<Long> cargoIds){
+        if (cargoIds.isEmpty()) {
+            return;
+        }
+
         shiftDetailsService.changeShiftDetails(driverId, DriverStatus.LOAD_UNLOAD_WORK);
 
         updateCargo(cargoIds);
@@ -101,7 +104,7 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
         }
     }
 
-    private void createPastOrder(long orderId, long driverId) throws ShiftValidationException {
+    private void createPastOrder(long orderId, long driverId) {
         OrderDetailsDTO orderDetails = orderDetailsDAO.findOrderDetails(driverId);
         List<Driver> drivers = orderDAO.findDriversEntitiesByOrderId(orderId);
 
@@ -127,8 +130,15 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 
     @Override
     @Transactional
-    public void changeCity(long orderId) {
+    public void changeCity(long driverId, long orderId) {
         OrderDetails orderDetails = orderDetailsDAO.findOrderDetailsEntity(orderId);
+
+        shiftDetailsService.changeShiftDetails(driverId, DriverStatus.DRIVING);
+        orderDAO.findDriversByOrderId(orderId).stream()
+                .map(DriverDTO::getId)
+                .filter(id -> id != driverId)
+                .forEach(id -> shiftDetailsService.changeShiftDetails(id, DriverStatus.SECOND_DRIVER));
+
 
         List<Long> path = parser.parseStringToLongList(orderDetails.getRemainingPath());
 
@@ -153,15 +163,16 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 
     private void setCoDrivers(OrderDetailsDTO orderDetails, long driverId) {
         List<DriverDTO> coDrivers = orderDAO.findDriversByOrderId(orderDetails.getId())
-                .stream().filter(d -> d.getId() != driverId).collect(Collectors.toList());
+                .stream().filter(d -> d.getId() != driverId)
+                .collect(Collectors.toList());
+
         orderDetails.setCoDrivers(coDrivers);
     }
 
     private void setRemainingPath(OrderDetailsDTO orderDetails) {
-        Deque<CityDTO> remainingPath = new ArrayDeque<>();
-
         List<CityDTO> pathList = parser.pathStringToCityDTOList(orderDetails.getRemainingPathString());
-        remainingPath.addAll(pathList);
+
+        Deque<CityDTO> remainingPath = new ArrayDeque<>(pathList);
 
         orderDetails.setRemainingPath(remainingPath);
 
@@ -175,10 +186,13 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 
         List<Cargo> loadCargo = actionWaypoint.stream()
                 .filter(w -> w.getCargoStatus() == CargoStatus.PREPARED && w.getType() == WaypointType.LOADING)
-                .map(waypoint -> new Cargo(waypoint.getCargoId(), waypoint.getCargoTitle())).collect(Collectors.toList());
+                .map(waypoint -> new Cargo(waypoint.getCargoId(), waypoint.getCargoTitle()))
+                .collect(Collectors.toList());
         List<Cargo> unloadCargo = actionWaypoint.stream()
                 .filter(w -> w.getCargoStatus() == CargoStatus.SHIPPED && w.getType() == WaypointType.UNLOADING)
-                .map(waypoint -> new Cargo(waypoint.getCargoId(), waypoint.getCargoTitle())).collect(Collectors.toList());
+                .map(waypoint -> new Cargo(waypoint.getCargoId(), waypoint.getCargoTitle()))
+                .collect(Collectors.toList());
+
         orderDetails.setLoadCargo(loadCargo);
         orderDetails.setUnloadCargo(unloadCargo);
     }

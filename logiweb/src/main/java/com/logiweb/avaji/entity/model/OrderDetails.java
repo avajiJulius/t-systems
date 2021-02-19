@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ query = "select new com.logiweb.avaji.dtos.OrderDetailsDTO(" +
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderDetails {
+public class OrderDetails implements Serializable {
     @Id
     @Column(name = "id")
     private long id;

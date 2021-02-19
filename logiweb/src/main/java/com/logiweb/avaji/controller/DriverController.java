@@ -17,7 +17,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/drivers")
 public class DriverController {
 
-    private final int PAGE_SIZE = 5;
+    private static final int PAGE_SIZE = 5;
+    private static final String MAIN_REDIRECT = "redirect:/drivers";
 
     private final DriverService driverService;
     private final CountryMapService mapService;
@@ -75,7 +76,7 @@ public class DriverController {
         } else {
             attributes.addFlashAttribute("error", "Driver not created");
         }
-        return "redirect:/drivers";
+        return MAIN_REDIRECT;
     }
 
     @GetMapping("/{id}/edit")
@@ -97,7 +98,7 @@ public class DriverController {
             return "drivers/edit";
         }
         driverService.updateDriver(id, editDriver);
-        return "redirect:/drivers";
+        return MAIN_REDIRECT;
     }
 
     @DeleteMapping("/{id}")
@@ -109,6 +110,6 @@ public class DriverController {
         } else {
             attributes.addFlashAttribute("error", "Truck not deleted");
         }
-        return "redirect:/drivers";
+        return MAIN_REDIRECT;
     }
 }

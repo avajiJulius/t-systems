@@ -13,8 +13,8 @@ public class WaypointDTO {
     private interface Create{}
 
 
-    private final WaypointType load = WaypointType.LOADING;
-    private final WaypointType unload = WaypointType.UNLOADING;
+    private static final WaypointType load = WaypointType.LOADING;
+    private static final WaypointType unload = WaypointType.UNLOADING;
 
     private long loadCityCode;
     private long unloadCityCode;

@@ -16,7 +16,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/trucks")
 public class TruckController {
 
-    private final int PAGE_SIZE = 5;
+    private static final int PAGE_SIZE = 5;
+    private static final String MAIN_REDIRECT = "redirect:/trucks";
 
     private final TruckService truckService;
     private final CountryMapService mapService;
@@ -70,7 +71,7 @@ public class TruckController {
         } else {
             attributes.addFlashAttribute("error", "Truck not created");
         }
-        return "redirect:/trucks";
+        return MAIN_REDIRECT;
     }
 
     @GetMapping("/{id}/edit")
@@ -92,7 +93,7 @@ public class TruckController {
             return "trucks/edit";
         }
         truckService.updateTruck(id, editTruck);
-        return "redirect:/trucks";
+        return MAIN_REDIRECT;
     }
 
     @DeleteMapping("/{id}")
@@ -104,7 +105,7 @@ public class TruckController {
         } else {
             attributes.addFlashAttribute("error", "Truck not deleted");
         }
-        return "redirect:/trucks";
+        return MAIN_REDIRECT;
 
     }
 

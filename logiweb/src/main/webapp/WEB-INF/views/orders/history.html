@@ -46,12 +46,12 @@
             </div>
             <div class="col-sm-1">
                 <span th:each="i : ${#numbers.sequence(1, totalPages)}">
-                    <a th:if="${currentPage != i}" th:href="@{/orders/page/{number}(number=${i})}">[[${i}]]</a>
+                    <a th:if="${currentPage != i}" th:href="@{/orders/past/page/{number}(number=${i})}">[[${i}]]</a>
                     <span th:unless="${currentPage != i}">[[${i}]]</span>
                 </span>
             </div>
             <div class="col-sm-1">
-                <a th:if="${currentPage < totalPages}" th:href="@{/orders/page/{number}(number=${totalPages})}">Last</a>
+                <a th:if="${currentPage < totalPages}" th:href="@{/orders/past/page/{number}(number=${totalPages})}">Last</a>
                 <span th:unless="${currentPage < totalPages}">Last</span>
             </div>
         </div>

@@ -1,10 +1,8 @@
 package com.logiweb.avaji.service.implementetions.profile;
 
-import com.logiweb.avaji.dao.DriverDAO;
 import com.logiweb.avaji.dao.ShiftDetailsDAO;
 import com.logiweb.avaji.dtos.ShiftDetailsDTO;
 import com.logiweb.avaji.entity.enums.DriverStatus;
-import com.logiweb.avaji.entity.model.Driver;
 import com.logiweb.avaji.exception.ShiftValidationException;
 import com.logiweb.avaji.service.api.mq.InformationProducerService;
 import com.logiweb.avaji.service.api.profile.ShiftDetailsService;
@@ -23,14 +21,11 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
 
     private final ShiftDetailsDAO shiftDetailsDAO;
     private final InformationProducerService informationService;
-    private final DriverDAO driverDAO;
 
     @Autowired
-    public ShiftDetailsServiceImpl(ShiftDetailsDAO shiftDetailsDAO, InformationProducerService informationService,
-                                   DriverDAO driverDAO) {
+    public ShiftDetailsServiceImpl(ShiftDetailsDAO shiftDetailsDAO, InformationProducerService informationService) {
         this.shiftDetailsDAO = shiftDetailsDAO;
         this.informationService = informationService;
-        this.driverDAO = driverDAO;
     }
 
     @Override
@@ -40,7 +35,7 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
 
     @Override
     @Transactional
-    public ShiftDetailsDTO changeShiftDetails(long id, DriverStatus driverStatus) throws ShiftValidationException {
+    public ShiftDetailsDTO changeShiftDetails(long id, DriverStatus driverStatus) {
         ShiftDetailsDTO shiftDetails = shiftDetailsDAO.findShiftDetails(id);
 
         updateShiftDetails(shiftDetails, driverStatus);
@@ -52,7 +47,7 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
 
     @Override
     @Transactional
-    public void finishShift(long id) throws ShiftValidationException {
+    public void finishShift(long id){
         ShiftDetailsDTO shiftDetails = shiftDetailsDAO.findShiftDetails(id);
 
         if(shiftDetails.isShiftActive() && shiftDetails.getDriverStatus() != DriverStatus.REST) {
@@ -67,7 +62,7 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
         shiftDetailsDAO.updateWorkedHours(id, hoursWorked);
     }
 
-    private void updateShiftDetails(ShiftDetailsDTO shiftDetails, DriverStatus status) throws ShiftValidationException {
+    private void updateShiftDetails(ShiftDetailsDTO shiftDetails, DriverStatus status) {
         setParametersToShiftDetails(shiftDetails, status);
 
         if(!shiftAndDriverStatusValid(shiftDetails.isShiftActive(), shiftDetails.getDriverStatus())) {

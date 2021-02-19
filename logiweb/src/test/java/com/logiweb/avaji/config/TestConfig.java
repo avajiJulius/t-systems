@@ -152,13 +152,8 @@ public class TestConfig {
     }
 
     @Bean
-    public DriverDAO driverDAO() {
-            return Mockito.mock(DriverDAO.class);
-    }
-
-    @Bean
     public ShiftDetailsServiceImpl shiftDetailsService() {
-        return new ShiftDetailsServiceImpl(shiftDetailsDAO(), informationProducerService(), driverDAO());
+        return new ShiftDetailsServiceImpl(shiftDetailsDAO(), informationProducerService());
     }
 
     @Bean

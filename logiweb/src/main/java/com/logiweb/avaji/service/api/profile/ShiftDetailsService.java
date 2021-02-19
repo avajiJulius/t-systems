@@ -3,10 +3,8 @@ package com.logiweb.avaji.service.api.profile;
 
 import com.logiweb.avaji.dtos.ShiftDetailsDTO;
 import com.logiweb.avaji.entity.enums.DriverStatus;
-import com.logiweb.avaji.entity.model.Driver;
 import com.logiweb.avaji.exception.ShiftValidationException;
 
-import java.util.List;
 
 
 /**
@@ -24,7 +22,7 @@ public interface ShiftDetailsService {
      * @return updated ShiftDetailsDTO
      * @throws ShiftValidationException if DriverStatus and shift activity have conflict.
      */
-    ShiftDetailsDTO changeShiftDetails(long id, DriverStatus status) throws ShiftValidationException;
+    ShiftDetailsDTO changeShiftDetails(long id, DriverStatus status);
 
     /**
      * Read shift details by driver id
@@ -41,7 +39,7 @@ public interface ShiftDetailsService {
      * @param id by finding Shift Details
      * @throws ShiftValidationException if DriverStatus and shift activity have conflict.
      */
-    void finishShift(long id) throws ShiftValidationException;
+    void finishShift(long id);
 
     /**
      * Update hours worked for driver

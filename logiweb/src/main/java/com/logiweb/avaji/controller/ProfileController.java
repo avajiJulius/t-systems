@@ -8,7 +8,6 @@ import com.logiweb.avaji.service.api.profile.OrderDetailsService;
 import com.logiweb.avaji.service.api.profile.ShiftDetailsService;
 import com.logiweb.avaji.entity.enums.DriverStatus;
 import com.logiweb.avaji.entity.model.User;
-import com.logiweb.avaji.exception.ShiftValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -21,6 +20,8 @@ import java.security.Principal;
 @Controller
 @RequestMapping("/profile")
 public class ProfileController {
+
+    private static final String MAIN_REDIRECT = "redirect:/profile";
 
     private final ShiftDetailsService shiftDetailsService;
     private final OrderDetailsService orderDetailsService;
@@ -39,44 +40,55 @@ public class ProfileController {
     public String getProfile(Principal principal,
                                  Model model) {
         User user = userDAO.findUserByEmail(principal.getName());
+
         model.addAttribute("driverStatus", DriverStatus.values());
         model.addAttribute("orderDetails", orderDetailsService.readOrderDetails(user.getId()));
         model.addAttribute("shiftDetails", shiftDetailsService.readShiftDetails(user.getId()));
         model.addAttribute("cargoIds", new CargoChangeDTO());
+
         return "profile";
     }
 
     @PatchMapping("/shift")
     @PreAuthorize("hasAuthority('driver:write')")
     public String updateShiftDetails(@ModelAttribute("shiftDetails") ShiftDetailsDTO shiftDetails,
-                                     Principal principal) throws ShiftValidationException {
+                                     Principal principal) {
+
         User user = userDAO.findUserByEmail(principal.getName());
 
         shiftDetailsService.changeShiftDetails(user.getId(), shiftDetails.getDriverStatus());
-        return "redirect:/profile";
+
+        return MAIN_REDIRECT;
     }
 
     @PatchMapping("/cargo")
     @PreAuthorize("hasAuthority('driver:write')")
     public String updateCargoStatus(@ModelAttribute("cargoIds") CargoChangeDTO cargoIds,
-                                    Principal principal) throws ShiftValidationException {
+                                    Principal principal) {
+
         User user = userDAO.findUserByEmail(principal.getName());
+
         orderDetailsService.updateOrderByCargoStatus(user.getId(), cargoIds.getIds());
-        return "redirect:/profile";
+
+        return MAIN_REDIRECT;
     }
 
     @GetMapping("/{id}/changeCity")
     @PreAuthorize("hasAuthority('driver:write')")
     public String updateRemainingPath(@PathVariable("id") long orderId, Principal principal,
                                       RedirectAttributes attributes) {
+
         User user = userDAO.findUserByEmail(principal.getName());
         OrderDetailsDTO orderDetails = orderDetailsService.readOrderDetails(user.getId());
+
         if (!orderDetails.getLoadCargo().isEmpty() || !orderDetails.getUnloadCargo().isEmpty()) {
             attributes.addFlashAttribute("message", "Complete load/unload actions");
-            return "redirect:/profile";
+            return MAIN_REDIRECT;
         }
-        orderDetailsService.changeCity(orderId);
-        return "redirect:/profile";
+
+        orderDetailsService.changeCity(user.getId(), orderId);
+
+        return MAIN_REDIRECT;
     }
 
 }

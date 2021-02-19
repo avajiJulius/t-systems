@@ -4,7 +4,6 @@ import com.logiweb.avaji.entity.model.Path;
 import com.logiweb.avaji.dtos.WaypointDTO;
 import org.springframework.stereotype.Service;
 
-import java.time.Clock;
 import java.util.List;
 
 /**

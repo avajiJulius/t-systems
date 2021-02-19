@@ -60,11 +60,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     private boolean createWorkShift(long id) {
-        boolean isSaved = driverDAO.saveWorkShift(id);
-        if(isSaved) {
-            return true;
-        }
-        return false;
+        return driverDAO.saveWorkShift(id);
     }
 
     @Override

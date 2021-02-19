@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 @Service
 public class PathParser {
 
+    private static final String DELIMITER = "-";
     private final CountryMapDAO countryMapDAO;
 
     @Autowired
@@ -43,7 +44,7 @@ public class PathParser {
         StringBuilder result = new StringBuilder();
         for (long code: path) {
             result.append(code);
-            result.append("-");
+            result.append(DELIMITER);
         }
         return result.toString();
     }
@@ -61,7 +62,7 @@ public class PathParser {
     public List<Long> parseStringToLongList(String path)  {
         List<Long> result;
         try {
-             result = Arrays.stream(path.split("-"))
+             result = Arrays.stream(path.split(DELIMITER))
                      .map(Long::parseLong).collect(Collectors.toList());
         } catch (Exception e) {
             throw new PathParseException("Cannot parse path");

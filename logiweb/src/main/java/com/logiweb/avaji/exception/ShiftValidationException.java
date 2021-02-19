@@ -1,6 +1,6 @@
 package com.logiweb.avaji.exception;
 
-public class ShiftValidationException extends Exception {
+public class ShiftValidationException extends RuntimeException {
 
     public ShiftValidationException() {
     }

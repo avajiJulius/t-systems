@@ -19,7 +19,7 @@ public class Order {
     }
 
     public String getStatus() {
-        return status;
+        return status.toLowerCase();
     }
 
     public void setStatus(String status) {
