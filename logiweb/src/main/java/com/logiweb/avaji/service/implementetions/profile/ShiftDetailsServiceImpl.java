@@ -1,8 +1,10 @@
 package com.logiweb.avaji.service.implementetions.profile;
 
+import com.logiweb.avaji.dao.DriverDAO;
 import com.logiweb.avaji.dao.ShiftDetailsDAO;
 import com.logiweb.avaji.dtos.ShiftDetailsDTO;
 import com.logiweb.avaji.entity.enums.DriverStatus;
+import com.logiweb.avaji.entity.model.Driver;
 import com.logiweb.avaji.exception.ShiftValidationException;
 import com.logiweb.avaji.service.api.mq.InformationProducerService;
 import com.logiweb.avaji.service.api.profile.ShiftDetailsService;
@@ -21,11 +23,14 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
 
     private final ShiftDetailsDAO shiftDetailsDAO;
     private final InformationProducerService informationService;
+    private final DriverDAO driverDAO;
 
     @Autowired
-    public ShiftDetailsServiceImpl(ShiftDetailsDAO shiftDetailsDAO, InformationProducerService informationService) {
+    public ShiftDetailsServiceImpl(ShiftDetailsDAO shiftDetailsDAO, InformationProducerService informationService,
+                                   DriverDAO driverDAO) {
         this.shiftDetailsDAO = shiftDetailsDAO;
         this.informationService = informationService;
+        this.driverDAO = driverDAO;
     }
 
     @Override
@@ -40,25 +45,21 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
 
         updateShiftDetails(shiftDetails, driverStatus);
         informationService.updateDriverInformation();
+        informationService.sendInformation();
 
         return shiftDetailsDAO.findShiftDetails(id);
     }
 
     @Override
     @Transactional
-    public void finishShiftOfCompletedOrder(long id) throws ShiftValidationException {
+    public void finishShift(long id) throws ShiftValidationException {
         ShiftDetailsDTO shiftDetails = shiftDetailsDAO.findShiftDetails(id);
 
         if(shiftDetails.isShiftActive() && shiftDetails.getDriverStatus() != DriverStatus.REST) {
             updateShiftDetails(shiftDetails, DriverStatus.REST);
         }
 
-        shiftDetailsDAO.updateShiftDetailsOnCompletedOrder(id);
-
         logger.info("Driver by id {} finish shift of completed order", id);
-        informationService.updateDriverInformation();
-        informationService.updateTruckInformation();
-
     }
 
     @Override

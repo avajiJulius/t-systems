@@ -1,5 +1,7 @@
 package com.logiweb.avaji.entity.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.logiweb.avaji.entity.enums.DriverStatus;
 import com.logiweb.avaji.entity.enums.Role;
 import lombok.AllArgsConstructor;
@@ -7,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "drivers")
@@ -25,6 +29,13 @@ import javax.persistence.*;
         query = "update Driver d set d.hoursWorked = 0")
 @NamedQuery(name = "Driver.findDriversByOrderId",
         query = "select new com.logiweb.avaji.dtos.DriverDTO(d.id, d.firstName, d.lastName) from Driver d " +
+                "where d.currentTruck.truckId = " +
+                "(select o.designatedTruck.truckId from Order o where o.id = :id)")
+@NamedQuery(name = "Driver.findPastOrderDrivers",
+        query = "select new com.logiweb.avaji.dtos.DriverDTO(d.id, d.firstName, d.lastName) " +
+                "from Driver d join d.pastOrders o where o.id = :id")
+@NamedQuery(name = "Driver.findDriversEntitiesByOrderId",
+        query = "select d from Driver d " +
                 "where d.currentTruck.truckId = " +
                 "(select o.designatedTruck.truckId from Order o where o.id = :id)")
 @NamedQuery(name = "Driver.findInfoDriversByOrderId",
@@ -57,30 +68,47 @@ query = "select count(d.id)" +
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Driver extends User{
+public class Driver extends User {
 
     @Column(name = "first_name")
     private String firstName;
+
     @Column(name = "last_name")
     private String lastName;
+
     @Column(name = "hours_worked")
     private double hoursWorked;
+
     @Column(name = "driver_status")
     @Enumerated(value = EnumType.STRING)
     private DriverStatus driverStatus;
+
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn(name = "city_code")
     private City currentCity;
+
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn(name = "truck_id")
+    @JsonManagedReference
     private Truck currentTruck;
 
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn(name = "order_details")
+    @JsonManagedReference
     private OrderDetails orderDetails;
 
-    @OneToOne(mappedBy = "driver")
-    private WorkShift workShift;
+//    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY,
+//            mappedBy = "driver")
+//    @Transient
+//    @JsonIgnore
+//    private WorkShift workShift;
+
+    @ManyToMany
+    @JoinTable(
+            name = "past_shifts",
+            joinColumns = @JoinColumn(name = "driver_id"),
+            inverseJoinColumns = @JoinColumn(name = "id"))
+    private List<PastOrder> pastOrders = new ArrayList<>();
 
     public static class Builder {
         private Driver newDriver;

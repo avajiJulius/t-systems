@@ -41,6 +41,8 @@ public class TruckServiceImpl implements TruckService {
         if (isSaved) {
             logger.info("Create truck by id: {}", truck.getTruckId());
             producerService.updateTruckInformation();
+
+            producerService.sendInformation();
             return true;
         }
         return false;
@@ -78,6 +80,8 @@ public class TruckServiceImpl implements TruckService {
 
         logger.info("Update truck by id: {}", truckId);
         producerService.updateTruckInformation();
+
+        producerService.sendInformation();
     }
 
 
@@ -87,6 +91,8 @@ public class TruckServiceImpl implements TruckService {
         if(result) {
             logger.info("Delete truck by id: {}", truckID);
             producerService.updateTruckInformation();
+
+            producerService.sendInformation();
             return true;
         }
         return false;

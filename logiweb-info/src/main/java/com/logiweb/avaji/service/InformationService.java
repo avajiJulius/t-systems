@@ -21,7 +21,7 @@ public class InformationService {
     private  Information information;
 
     @Inject
-    BeanManager beanManager;
+    private BeanManager beanManager;
 
     public Information getInformation() {
         return information;

@@ -52,6 +52,8 @@ public class DriverServiceImpl implements DriverService {
             logger.info("Create work shift for driver with id: {}", driver.getId());
 
             producerService.updateDriverInformation();
+
+            producerService.sendInformation();
             return true;
         }
         return false;
@@ -77,6 +79,8 @@ public class DriverServiceImpl implements DriverService {
         logger.info("Update driver by id: {}", driver.getId());
 
         producerService.updateDriverInformation();
+
+        producerService.sendInformation();
     }
 
     @Override
@@ -86,6 +90,7 @@ public class DriverServiceImpl implements DriverService {
             logger.info("Delete driver by id: {}", driverID);
             producerService.updateDriverInformation();
 
+            producerService.sendInformation();
             return true;
         }
         return false;
@@ -110,6 +115,8 @@ public class DriverServiceImpl implements DriverService {
     public void updateDrivers(List<Driver> drivers) {
         driverDAO.updateDrivers(drivers);
         producerService.updateDriverInformation();
+
+        producerService.sendInformation();
     }
 
 

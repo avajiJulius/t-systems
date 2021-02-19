@@ -37,28 +37,21 @@ public class InformationProducerServiceImpl implements InformationProducerServic
     }
 
     @Override
-    @Async
     public void updateTruckInformation() {
         informationDTO.setTruckInfo(informationService.getTruckInformation());
-        sendInformation();
     }
 
     @Override
-    @Async
     public void updateOrderInformation() {
         informationDTO.setOrderInfo(informationService.getOrderInformation());
-        sendInformation();
     }
 
     @Override
-    @Async
     public void updateDriverInformation() {
         informationDTO.setDriverInfo(informationService.getDriverInformation());
-        sendInformation();
     }
 
     @Override
-    @Async
     public void sendInformation() {
         jmsTemplate.convertAndSend("driverTopic", informationDTO);
     }

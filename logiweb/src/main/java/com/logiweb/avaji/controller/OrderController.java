@@ -61,6 +61,24 @@ public class OrderController {
         return "orders/list";
     }
 
+    @GetMapping("/past")
+    @PreAuthorize("hasAuthority('employee:read')")
+    public String getAllPastOrders(Model model) {
+        return getPastOrdersPage(1, model);
+    }
+
+    @GetMapping("/past/page/{number}")
+    @PreAuthorize("hasAuthority('employee:read')")
+    public String getPastOrdersPage(@PathVariable("number") int pageNumber,
+                                Model model) {
+        long totalNumber = orderService.getPastOrdersTotalNumbers();
+        int totalPages = (int) Math.ceil((double) totalNumber / PAGE_SIZE);
+        model.addAttribute("orders", orderService.readPastOrdersPage(pageNumber, PAGE_SIZE));
+        model.addAttribute("totalItems", totalNumber);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("currentPage", pageNumber);
+        return "orders/history";
+    }
 
     @GetMapping("/{id}/cargo")
     @PreAuthorize("hasAuthority('employee:read')")

@@ -1,5 +1,6 @@
 package com.logiweb.avaji.entity.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,19 +23,26 @@ public class OrderDetails {
     @Id
     @Column(name = "id")
     private long id;
+
     @MapsId
-    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @OneToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.LAZY)
     @JoinColumn(name = "id", referencedColumnName = "id")
     private Order order;
+
     @Version
     @Column(name = "version")
     private int version;
+
     @Column(name = "remaining_path")
     private String remainingPath;
+
     @Column(name = "remaining_working_time")
     private double remainingWorkingTime;
 
-    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "orderDetails")
+    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY,
+            mappedBy = "orderDetails")
+    @JsonBackReference
+    @Transient
     private List<Driver> drivers = new ArrayList<>();
 
     @Override

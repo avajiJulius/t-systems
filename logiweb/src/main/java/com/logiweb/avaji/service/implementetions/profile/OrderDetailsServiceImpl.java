@@ -7,9 +7,12 @@ import com.logiweb.avaji.dao.OrderDetailsDAO;
 import com.logiweb.avaji.dtos.*;
 import com.logiweb.avaji.entity.enums.CargoStatus;
 import com.logiweb.avaji.entity.enums.DriverStatus;
+import com.logiweb.avaji.entity.enums.OrderStatus;
 import com.logiweb.avaji.entity.enums.WaypointType;
 import com.logiweb.avaji.entity.model.Cargo;
+import com.logiweb.avaji.entity.model.Driver;
 import com.logiweb.avaji.entity.model.OrderDetails;
+import com.logiweb.avaji.entity.model.PastOrder;
 import com.logiweb.avaji.exception.ShiftValidationException;
 import com.logiweb.avaji.service.api.mq.InformationProducerService;
 import com.logiweb.avaji.service.api.path.PathDetailsService;
@@ -22,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
@@ -86,11 +90,39 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
         long orderId = orderDetailsDAO.findOrderIdOfDriverId(driverId);
 
         if(orderIsComplete(orderId)) {
-            orderDetailsDAO.updateOnCompletedOrder(orderId);
+            createPastOrder(orderId, driverId);
+
+            orderDAO.deleteOrder(orderId);
 
             logger.info("Order by id {} is completed", orderId);
             informationService.updateOrderInformation();
+
+            informationService.sendInformation();
         }
+    }
+
+    private void createPastOrder(long orderId, long driverId) throws ShiftValidationException {
+        OrderDetailsDTO orderDetails = orderDetailsDAO.findOrderDetails(driverId);
+        List<Driver> drivers = orderDAO.findDriversEntitiesByOrderId(orderId);
+
+        PastOrder pastOrder = new PastOrder(orderId, OrderStatus.COMPLETED,
+                orderDetails.getPath(), orderDetails.getMaxCapacity(), orderDetails.getTruckId(),
+                LocalDateTime.now(), drivers);
+        orderDAO.savePastOrder(pastOrder);
+
+        for(Driver driver : drivers) {
+            shiftDetailsService.finishShift(driver.getId());
+            driver.setCurrentTruck(null);
+            driver.setOrderDetails(null);
+            driver.getPastOrders().add(pastOrder);
+        }
+
+        orderDetailsDAO.freeTruck(orderDetails.getTruckId());
+
+        orderDAO.savePastOrder(pastOrder);
+
+        informationService.updateTruckInformation();
+        informationService.updateDriverInformation();
     }
 
     @Override
@@ -114,6 +146,8 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 
         informationService.updateDriverInformation();
         informationService.updateTruckInformation();
+
+        informationService.sendInformation();
     }
 
 

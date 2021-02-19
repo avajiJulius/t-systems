@@ -21,6 +21,12 @@ public class OrderDAO {
         return query.getResultList();
     }
 
+    public List<OrderDTO> findPastOrdersPage(int indexFrom, int pageSize) {
+        TypedQuery<OrderDTO> query = entityManager.createNamedQuery("Order.findAllPastOrders", OrderDTO.class)
+                .setFirstResult(indexFrom).setMaxResults(pageSize);
+        return query.getResultList();
+    }
+
     public Order findOrderById(long orderId) {
         TypedQuery<Order> query = entityManager.createNamedQuery("Order.findOrderById", Order.class)
                 .setParameter("orderId", orderId);
@@ -38,6 +44,9 @@ public class OrderDAO {
     }
 
     public void deleteOrder(long orderId) {
+        OrderDetails orderDetails = entityManager.find(OrderDetails.class, orderId);
+        entityManager.remove(orderDetails);
+
         Order order = entityManager.find(Order.class, orderId);
         entityManager.remove(order);
     }
@@ -106,4 +115,26 @@ public class OrderDAO {
     public long countOrders() {
         return entityManager.createNamedQuery("Order.countOrders", Long.class).getSingleResult();
     }
+
+    public void savePastOrder(PastOrder pastOrder) {
+        entityManager.persist(pastOrder);
+        entityManager.flush();
+    }
+
+    public List<Driver> findDriversEntitiesByOrderId(long orderId) {
+        TypedQuery<Driver> query = entityManager.createNamedQuery("Driver.findDriversEntitiesByOrderId", Driver.class)
+                .setParameter("id", orderId);
+        return query.getResultList();
+    }
+
+
+    public long countPastOrders() {
+        return entityManager.createNamedQuery("Order.countPastOrders", Long.class).getSingleResult();
+    }
+
+    public List<DriverDTO> findPastOrderDrivers(long orderId) {
+        return entityManager.createNamedQuery("Driver.findPastOrderDrivers", DriverDTO.class)
+                .setParameter("id", orderId).getResultList();
+    }
+
 }

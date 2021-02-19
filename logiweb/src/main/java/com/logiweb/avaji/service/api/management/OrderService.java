@@ -17,6 +17,7 @@ public interface OrderService {
 
     List<OrderDTO> readOrdersPage(int pageNumber, int pageSize);
 
+    List<OrderDTO> readPastOrdersPage(int pageNumber, int page_size);
 
     /**
      * The <code>createOrderByWaypoints</code> create order entity by converting CreateWaypointsDTO
@@ -73,6 +74,9 @@ public interface OrderService {
 
 
     long getOrdersTotalNumbers();
+
+
+    long getPastOrdersTotalNumbers();
 
 
 }

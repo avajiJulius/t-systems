@@ -1,3 +1,5 @@
+drop table if exists past_shifts;
+drop table if exists orders_history;
 drop table if exists waypoints;
 drop table if exists cargo;
 drop table if exists work_shifts;
@@ -42,7 +44,7 @@ create table trucks (
 create table orders (
     id bigserial,
     version int,
-    completed boolean default false,
+    status varchar(30),
     path varchar,
     truck_id varchar(7) default null,
     max_capacity double precision,
@@ -59,7 +61,6 @@ create table order_details (
     primary key (id),
     foreign key (id) references orders(id)
 );
-
 
 create table users (
     id bigserial,
@@ -116,6 +117,24 @@ create table waypoints (
     foreign key (city_code) references cities(city_code),
     foreign key (order_id) references orders(id),
     foreign key (cargo_id) references cargo(id)
+);
+
+create table orders_history (
+    id bigint,
+    status varchar(30),
+    path varchar,
+    truck_id varchar(7),
+    max_capacity double precision,
+    last_edit_date timestamp,
+    primary key (id)
+);
+
+create table past_shifts (
+    id bigint,
+    driver_id bigint,
+    primary key (id, driver_id),
+    foreign key (id) references orders_history(id),
+    foreign key (driver_id) references drivers(id)
 );
 
 insert into cities(city_name) values ('Saint-Petersburg'), ('Moscow'), ('Nizhniy-Novgorod'),

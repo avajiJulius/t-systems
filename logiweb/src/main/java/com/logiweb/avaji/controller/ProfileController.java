@@ -79,15 +79,4 @@ public class ProfileController {
         return "redirect:/profile";
     }
 
-
-    @PatchMapping("/finish")
-    @PreAuthorize("hasAuthority('driver:write')")
-    public String finishShiftOfCompletedOrder(Principal principal) throws ShiftValidationException {
-        User user = userDAO.findUserByEmail(principal.getName());
-
-        shiftDetailsService.finishShiftOfCompletedOrder(user.getId());
-        return "redirect:/profile";
-    }
-
-
 }

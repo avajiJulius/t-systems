@@ -26,12 +26,14 @@ public class InformationListener implements MessageListener {
     private static final Logger logger = LogManager.getLogger(InformationListener.class);
 
     @Inject
-    InformationService informationService;
+    private InformationService informationService;
 
     @Override
     public void onMessage(Message message) {
         try {
             String jsonDetails = ((TextMessage) message).getText();
+
+            System.out.println(jsonDetails);
 
             ObjectMapper mapper = new ObjectMapper();
             Information information = mapper.readValue(jsonDetails, Information.class);

@@ -101,4 +101,12 @@ public class Mapper {
                 .withCurrentCity(countryMapService.findCityByCode(driverDTO.getCityCode()))
                 .build();
     }
+
+    public List<DriverDTO> driversToDTOs(List<Driver> drivers) {
+        List<DriverDTO> result = new ArrayList<>();
+        for (Driver driver : drivers) {
+            result.add(new DriverDTO(driver.getId(), driver.getFirstName(), driver.getLastName()));
+        }
+        return result;
+    }
 }
