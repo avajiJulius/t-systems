@@ -29,13 +29,12 @@ public class PathDetailsServiceImpl implements PathDetailsService {
 
     @Override
     public double getMaxCapacityInTons(List<Long> citiesCodes, List<WaypointDTO> waypoints) {
-        List<WaypointDTO> loadAvailable = new ArrayList<>();
-        loadAvailable.addAll(waypoints);
+        List<WaypointDTO> loadAvailable = new ArrayList<>(waypoints);
         List<WaypointDTO> unloadAvailable = new ArrayList<>();
         double maxCapacity = 0;
         double capacity = 0;
 
-        for (long code: citiesCodes) {
+        for (long code : citiesCodes) {
             double loadCapacity = 0.0;
             double unloadCapacity = 0.0;
 
@@ -43,7 +42,7 @@ public class PathDetailsServiceImpl implements PathDetailsService {
                     .filter(waypoint -> waypoint.getLoadCityCode() == code)
                     .collect(Collectors.toList());
 
-            if(!load.isEmpty()) {
+            if (!load.isEmpty()) {
                 loadCapacity += calculateTempCapacity(load);
                 loadAvailable.removeAll(load);
                 unloadAvailable.addAll(load);

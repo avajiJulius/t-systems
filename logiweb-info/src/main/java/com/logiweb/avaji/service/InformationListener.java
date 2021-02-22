@@ -31,14 +31,15 @@ public class InformationListener implements MessageListener {
     @Override
     public void onMessage(Message message) {
         try {
+            logger.info("Receive information message ");
             String jsonDetails = ((TextMessage) message).getText();
+
+            System.out.println(jsonDetails);
 
             ObjectMapper mapper = new ObjectMapper();
             Information information = mapper.readValue(jsonDetails, Information.class);
 
             informationService.updateInformation(information);
-
-
         } catch (JMSException e) {
             logger.error("JMS exception");
             throw new MessageProcessingException("Cannot process message because jms exception");

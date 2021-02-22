@@ -43,7 +43,7 @@ public class Waypoint implements Serializable {
     @JoinColumn(name = "order_id")
     private Order waypointOrder;
 
-    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "cargo_id")
     private Cargo waypointCargo;
 

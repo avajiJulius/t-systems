@@ -44,10 +44,15 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     public boolean createDriver(DriverDTO driverDTO) {
         Driver driver = mapper.createDriverFromDto(driverDTO);
-        boolean isSaved = driverDAO.saveDriver(driver);
-        boolean isCreated = createWorkShift(driver.getId());
 
-        if(isSaved && isCreated) {
+        driverDAO.saveDriver(driver);
+        driverDAO.saveWorkShift(driver.getId());
+
+
+        boolean driverIsSaved = driverDAO.containsDriver(driver.getId());
+        boolean workShiftIsSaved = driverDAO.containsWorkShift(driver.getId());
+
+        if(driverIsSaved && workShiftIsSaved) {
             logger.info("Create driver by id: {}", driver.getId());
             logger.info("Create work shift for driver with id: {}", driver.getId());
 
@@ -59,9 +64,6 @@ public class DriverServiceImpl implements DriverService {
         return false;
     }
 
-    private boolean createWorkShift(long id) {
-        return driverDAO.saveWorkShift(id);
-    }
 
     @Override
     public void updateDriver(long driverId,DriverDTO updatedDriver) {
@@ -81,8 +83,10 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public boolean deleteDriver(long driverID) {
-        boolean isDeleted = driverDAO.deleteDriver(driverID);
-        if(isDeleted) {
+        driverDAO.deleteDriver(driverID);
+
+        boolean isExist = driverDAO.containsDriver(driverID);
+        if(!isExist) {
             logger.info("Delete driver by id: {}", driverID);
             producerService.updateDriverInformation();
 

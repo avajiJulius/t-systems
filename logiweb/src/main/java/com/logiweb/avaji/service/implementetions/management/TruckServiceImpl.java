@@ -36,7 +36,9 @@ public class TruckServiceImpl implements TruckService {
     public boolean createTruck(TruckDTO truckDTO) {
         Truck truck = converter.dtoToTruck(truckDTO);
 
-        boolean isSaved = truckDAO.saveTruck(truck);
+        truckDAO.saveTruck(truck);
+        boolean isSaved = truckDAO.containsTruck(truck.getTruckId());
+
         if (isSaved) {
             logger.info("Create truck by id: {}", truck.getTruckId());
             producerService.updateTruckInformation();
@@ -86,8 +88,10 @@ public class TruckServiceImpl implements TruckService {
 
     @Override
     public boolean deleteTruck(String truckID) {
-        boolean result = truckDAO.deleteTruck(truckID);
-        if(result) {
+        truckDAO.deleteTruck(truckID);
+        boolean isExist = truckDAO.containsTruck(truckID);
+
+        if(!isExist) {
             logger.info("Delete truck by id: {}", truckID);
             producerService.updateTruckInformation();
 

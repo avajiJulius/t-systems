@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
@@ -28,10 +29,9 @@ public class TruckDAO {
     }
 
 
-    public boolean saveTruck(Truck truck) {
+    public void saveTruck(Truck truck) {
         entityManager.persist(truck);
         entityManager.flush();
-        return entityManager.contains(truck);
     }
 
     public TruckDTO findTruckByOrderId(long orderId) {
@@ -44,10 +44,9 @@ public class TruckDAO {
         entityManager.merge(truck);
     }
 
-    public boolean deleteTruck(String id) {
+    public void deleteTruck(String id) {
         Truck truck = entityManager.find(Truck.class, id);
         entityManager.remove(truck);
-        return !entityManager.contains(truck);
     }
 
 
@@ -61,5 +60,9 @@ public class TruckDAO {
 
     public long countTrucks() {
         return entityManager.createNamedQuery("Truck.countTrucks", Long.class).getSingleResult();
+    }
+
+    public boolean containsTruck(String truckId) {
+        return Optional.ofNullable(entityManager.find(Truck.class, truckId)).isPresent();
     }
 }

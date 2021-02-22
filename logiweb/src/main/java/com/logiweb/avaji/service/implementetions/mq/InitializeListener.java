@@ -10,7 +10,7 @@ import javax.jms.MessageListener;
 @Component
 public class InitializeListener implements MessageListener {
 
-    private InformationProducerService producerService;
+    private final InformationProducerService producerService;
 
     @Autowired
     public InitializeListener(InformationProducerService producerService) {
