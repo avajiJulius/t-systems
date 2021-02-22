@@ -1,6 +1,13 @@
+html,
+body {
+    height: 100%;
+}
+body {
+    display: grid;
+    width: 100%;
+    font-family: Inconsolata, monospace;
+}
 .content-table{
-    font-family: Comic Sans MS, Comic Sans, cursive;
-    color: #ffffff;
     border-collapse:collapse;
     margin: 25px 0;
     font-size: 0.8em;
