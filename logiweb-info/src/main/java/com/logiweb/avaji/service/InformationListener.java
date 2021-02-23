@@ -34,8 +34,6 @@ public class InformationListener implements MessageListener {
             logger.info("Receive information message ");
             String jsonDetails = ((TextMessage) message).getText();
 
-            System.out.println(jsonDetails);
-
             ObjectMapper mapper = new ObjectMapper();
             Information information = mapper.readValue(jsonDetails, Information.class);
 

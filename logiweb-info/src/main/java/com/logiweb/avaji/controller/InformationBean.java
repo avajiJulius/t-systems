@@ -36,12 +36,12 @@ public class InformationBean implements Serializable {
     @PostConstruct
     private void init() {
         initializeService.init();
-        load();
         logger.info("Application Initialize");
     }
 
     public void load() {
         information = informationService.getInformation();
+        logger.info(information.toString());
     }
 
     public void onUpdate(@Observes InformationUpdateEvent event) {
