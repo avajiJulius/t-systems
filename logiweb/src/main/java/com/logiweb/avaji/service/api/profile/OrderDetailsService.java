@@ -31,12 +31,14 @@ public interface OrderDetailsService {
      * @param cargoIds which will be changed
      * @throws ShiftValidationException if DriverStatus and shift active status have conflict
      */
-    void updateOrderByCargoStatus(long driverId, List<Long> cargoIds) throws ShiftValidationException;
+    void updateOrderByCargoStatus(long driverId, List<Long> cargoIds);
 
     /**
      * Change city to next by calculate remaining path and calculate worked hours for drivers;
      *
      * @param orderId
+     * @param driverId
+     *
      */
-    void changeCity(long orderId);
+    void changeCity(long driverId, long orderId);
 }

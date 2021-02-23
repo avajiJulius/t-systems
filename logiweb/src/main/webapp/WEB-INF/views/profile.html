@@ -28,9 +28,6 @@
                 </select>
                 <button th:if="${orderDetails?.completed == false}" type="submit" class="btn btn-outline-primary">Change</button>
             </form>
-            <form th:method="PATCH" th:action="@{/profile/finish}">
-                <button th:if="${orderDetails?.completed == true}" type="submit" class="btn btn-outline-primary">Finish</button>
-            </form>
         </div>
     </div>
     <div class="row gx-5">
@@ -98,7 +95,6 @@
         </div>
         <div class="col" th:if="${orderDetails}">
             <div class="p-3 border bg-light">
-                <p th:if="${orderDetails.completed}">Order is completed</p>
                 <table class="table table-bordered border-4 border-dark">
                     <tr>
                         <th>Order ID</th>

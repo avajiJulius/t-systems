@@ -6,7 +6,6 @@ import com.logiweb.avaji.entity.model.WorkShift;
 import com.logiweb.avaji.exception.DriverNotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
@@ -30,10 +29,9 @@ public class DriverDAO {
         return query.getResultList();
     }
 
-    public boolean saveDriver(Driver driver) {
+    public void saveDriver(Driver driver) {
         entityManager.persist(driver);
         entityManager.flush();
-        return entityManager.contains(driver);
     }
 
     public void updateDriver(Driver updatedDriver) {
@@ -48,7 +46,7 @@ public class DriverDAO {
     }
 
 
-    public boolean deleteDriver(long driverId) {
+    public void deleteDriver(long driverId) {
         Driver driver = Optional.ofNullable(entityManager.find(Driver.class, driverId))
                 .<DriverNotFoundException>orElseThrow(()  -> {
                     logger.error("Driver with ID {} not found", driverId);
@@ -57,23 +55,18 @@ public class DriverDAO {
         WorkShift workShift = entityManager.find(WorkShift.class, driverId);
         entityManager.remove(workShift);
         entityManager.remove(driver);
-        if(!entityManager.contains(driver)) {
-            return !entityManager.contains(workShift);
-        }
-        return false;
     }
 
 
 
 
 
-    public boolean saveWorkShift(long id) {
+    public void saveWorkShift(long id) {
         Driver driver = entityManager.find(Driver.class, id);
         WorkShift workShift = new WorkShift();
         workShift.setDriver(driver);
         entityManager.persist(workShift);
         entityManager.flush();
-        return entityManager.contains(workShift);
     }
 
     public DriverDTO findDriverById(long id) {
@@ -94,5 +87,13 @@ public class DriverDAO {
 
     public long countDrivers() {
         return entityManager.createNamedQuery("Driver.countDrivers", Long.class).getSingleResult();
+    }
+
+    public boolean containsDriver(long driverID) {
+        return Optional.ofNullable(entityManager.find(Driver.class, driverID)).isPresent();
+    }
+
+    public boolean containsWorkShift(long id) {
+        return Optional.ofNullable(entityManager.find(WorkShift.class, id)).isPresent();
     }
 }

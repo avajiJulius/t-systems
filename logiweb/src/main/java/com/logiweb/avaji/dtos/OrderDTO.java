@@ -1,5 +1,6 @@
 package com.logiweb.avaji.dtos;
 
+import com.logiweb.avaji.entity.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,18 +15,17 @@ import java.util.List;
 public class OrderDTO {
     private long orderId;
     private int version;
-    private boolean completed;
+    private OrderStatus status;
     private String truckId;
     private int shiftSize;
     private double maxCapacity;
     private List<DriverDTO> drivers = new ArrayList<>();
     private String prettyPath;
 
-    public OrderDTO(long orderId, int version, boolean completed,
-                    String truckId, double maxCapacity, String prettyPath) {
+    public OrderDTO(long orderId, OrderStatus status, String truckId,
+                    double maxCapacity, String prettyPath) {
         this.orderId = orderId;
-        this.version = version;
-        this.completed = completed;
+        this.status = status;
         this.truckId = truckId;
         this.maxCapacity = maxCapacity;
         this.prettyPath = prettyPath;

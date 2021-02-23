@@ -17,7 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -25,8 +24,8 @@ import java.util.List;
 @RequestMapping("/orders")
 public class OrderController {
 
-    private final int PAGE_SIZE = 5;
-    private CreateWaypointsDTO dtoBefore;
+    private static final int PAGE_SIZE = 5;
+    private static final String MAIN_REDIRECT = "redirect:/orders";
 
     private final OrderService orderService;
     private final CargoService cargoService;
@@ -61,6 +60,24 @@ public class OrderController {
         return "orders/list";
     }
 
+    @GetMapping("/past")
+    @PreAuthorize("hasAuthority('employee:read')")
+    public String getAllPastOrders(Model model) {
+        return getPastOrdersPage(1, model);
+    }
+
+    @GetMapping("/past/page/{number}")
+    @PreAuthorize("hasAuthority('employee:read')")
+    public String getPastOrdersPage(@PathVariable("number") int pageNumber,
+                                Model model) {
+        long totalNumber = orderService.getPastOrdersTotalNumbers();
+        int totalPages = (int) Math.ceil((double) totalNumber / PAGE_SIZE);
+        model.addAttribute("orders", orderService.readPastOrdersPage(pageNumber, PAGE_SIZE));
+        model.addAttribute("totalItems", totalNumber);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("currentPage", pageNumber);
+        return "orders/history";
+    }
 
     @GetMapping("/{id}/cargo")
     @PreAuthorize("hasAuthority('employee:read')")
@@ -98,7 +115,7 @@ public class OrderController {
         }
         orderService.createOrderByWaypoints(new Order(), waypoints);
 
-        return "redirect:/orders";
+        return MAIN_REDIRECT;
     }
 
     @GetMapping("/{id}/trucks")
@@ -115,7 +132,7 @@ public class OrderController {
     public String addTruckToOrder(@PathVariable("orderId") long orderId,
                                   @PathVariable("truckId") String truckId) {
         orderService.addTruckToOrder(truckId, orderId);
-        return "redirect:/orders";
+        return MAIN_REDIRECT;
     }
 
     @GetMapping("/{id}/drivers")
@@ -137,6 +154,6 @@ public class OrderController {
             throw new ShiftSizeExceedException("Shift size exceed");
         }
         orderService.addDriversToOrder(driversIds.getIds(), orderId);
-        return "redirect:/orders";
+        return MAIN_REDIRECT;
     }
 }

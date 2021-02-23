@@ -26,7 +26,19 @@ public interface CountryMapService {
      */
     List<RoadDTO> readAllRoads();
 
+    /**
+     * Read city name by city code
+     *
+     * @param code
+     * @return city name
+     */
     String readCityNameByCode(long code);
 
+    /**
+     * Read City entity of currentCityCode
+     *
+     * @param currentCityCode
+     * @return city entity
+     */
     City findCityByCode(long currentCityCode);
 }

@@ -10,10 +10,7 @@
 <body>
 <nav th:replace="fragments/navbar.html :: navigation"></nav>
 <div align="center">
-    <h1>Order List</h1>
-    <form action="#" th:action="@{/orders/new/1}" method="GET">
-        <button type="submit" class="btn btn-outline-primary">Create Order</button>
-    </form>
+    <h1>Order History</h1>
     <table class="table table-bordered border-4 border-dark">
 
         <thead class="thead-light">
@@ -24,7 +21,6 @@
             <th scope="col"> Maximum Capacity</th>
             <th scope="col"> Truck</th>
             <th scope="col"> Drivers in Shift</th>
-            <th scope="col"> Cargo</th>
         </tr>
         </thead>
 
@@ -34,29 +30,12 @@
             <td th:text="${order.status.status}"/>
             <td th:text="${order.prettyPath}"/>
             <td th:text="${order.maxCapacity}"></td>
+            <td th:text="${order.truckId}"/>
             <td>
-                <span th:text="${order?.truckId}" />
-                <a class="btn btn-outline-secondary" th:href="@{/orders/{id}/trucks(id=${order.orderId})}"
-                   th:if="${order.truckId == null}">Choose Truck</a>
+                <ul th:each="driver : ${order?.drivers}">
+                    <li th:text="${'#' + driver.id + ':' + driver.lastName + ' ' + driver.firstName}"></li>
+                </ul>
             </td>
-            <td>
-                <div th:if="${order.truckId == null}">
-                    <a class="btn btn-outline-secondary"
-                       th:href="@{/orders/{id}/trucks(id=${order.orderId})}">Choose Truck</a>
-                </div>
-                <div th:unless="${order.truckId == null}">
-                    <div th:if="${order?.drivers.size() == order.shiftSize}" >
-                        <ul th:each="driver : ${order?.drivers}">
-                            <li th:text="${'#' + driver.id + ':' + driver.lastName + ' ' + driver.firstName}"></li>
-                        </ul>
-                    </div>
-                    <div th:unless="${order?.drivers.size() == order.shiftSize}">
-                        <a class="btn btn-outline-secondary"
-                           th:href="@{/orders/{id}/drivers(id=${order.orderId})}" th:text="${order.shiftSize}"></a>
-                    </div>
-                </div>
-            </td>
-            <td><a class="btn btn-outline-secondary" th:href="@{/orders/{id}/cargo(id=${order.orderId})}">Go to Cargo</a></td>
         </tr>
         </tbody>
     </table>
@@ -67,12 +46,12 @@
             </div>
             <div class="col-sm-1">
                 <span th:each="i : ${#numbers.sequence(1, totalPages)}">
-                    <a th:if="${currentPage != i}" th:href="@{/orders/page/{number}(number=${i})}">[[${i}]]</a>
+                    <a th:if="${currentPage != i}" th:href="@{/orders/past/page/{number}(number=${i})}">[[${i}]]</a>
                     <span th:unless="${currentPage != i}">[[${i}]]</span>
                 </span>
             </div>
             <div class="col-sm-1">
-                <a th:if="${currentPage < totalPages}" th:href="@{/orders/page/{number}(number=${totalPages})}">Last</a>
+                <a th:if="${currentPage < totalPages}" th:href="@{/orders/past/page/{number}(number=${totalPages})}">Last</a>
                 <span th:unless="${currentPage < totalPages}">Last</span>
             </div>
         </div>

@@ -7,7 +7,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -31,35 +30,31 @@ public class InformationProducerServiceImpl implements InformationProducerServic
 
     @PostConstruct
     private void init() {
+        logger.info("Information producer init");
         if (informationDTO == null) {
             informationDTO = informationService.getFullInformation();
         }
+        sendInformation();
     }
 
     @Override
-    @Async
     public void updateTruckInformation() {
         informationDTO.setTruckInfo(informationService.getTruckInformation());
-        sendInformation();
     }
 
     @Override
-    @Async
     public void updateOrderInformation() {
         informationDTO.setOrderInfo(informationService.getOrderInformation());
-        sendInformation();
     }
 
     @Override
-    @Async
     public void updateDriverInformation() {
         informationDTO.setDriverInfo(informationService.getDriverInformation());
-        sendInformation();
     }
 
     @Override
-    @Async
     public void sendInformation() {
         jmsTemplate.convertAndSend("driverTopic", informationDTO);
+        logger.info("Information message send");
     }
 }

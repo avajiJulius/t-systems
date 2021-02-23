@@ -5,7 +5,7 @@ import java.util.List;
 public class Order {
 
     private long orderId;
-    private boolean completed;
+    private String status;
     private String truckId;
     private String path;
     private List<Driver> drivers;
@@ -18,12 +18,12 @@ public class Order {
         this.orderId = orderId;
     }
 
-    public boolean isCompleted() {
-        return completed;
+    public String getStatus() {
+        return status.toLowerCase();
     }
 
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getTruckId() {

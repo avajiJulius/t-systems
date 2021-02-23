@@ -26,19 +26,18 @@ public class InformationListener implements MessageListener {
     private static final Logger logger = LogManager.getLogger(InformationListener.class);
 
     @Inject
-    InformationService informationService;
+    private InformationService informationService;
 
     @Override
     public void onMessage(Message message) {
         try {
+            logger.info("Receive information message ");
             String jsonDetails = ((TextMessage) message).getText();
 
             ObjectMapper mapper = new ObjectMapper();
             Information information = mapper.readValue(jsonDetails, Information.class);
 
             informationService.updateInformation(information);
-
-
         } catch (JMSException e) {
             logger.error("JMS exception");
             throw new MessageProcessingException("Cannot process message because jms exception");

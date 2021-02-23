@@ -35,30 +35,26 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
 
     @Override
     @Transactional
-    public ShiftDetailsDTO changeShiftDetails(long id, DriverStatus driverStatus) throws ShiftValidationException {
+    public ShiftDetailsDTO changeShiftDetails(long id, DriverStatus driverStatus) {
         ShiftDetailsDTO shiftDetails = shiftDetailsDAO.findShiftDetails(id);
 
         updateShiftDetails(shiftDetails, driverStatus);
         informationService.updateDriverInformation();
+        informationService.sendInformation();
 
         return shiftDetailsDAO.findShiftDetails(id);
     }
 
     @Override
     @Transactional
-    public void finishShiftOfCompletedOrder(long id) throws ShiftValidationException {
+    public void finishShift(long id){
         ShiftDetailsDTO shiftDetails = shiftDetailsDAO.findShiftDetails(id);
 
         if(shiftDetails.isShiftActive() && shiftDetails.getDriverStatus() != DriverStatus.REST) {
             updateShiftDetails(shiftDetails, DriverStatus.REST);
         }
 
-        shiftDetailsDAO.updateShiftDetailsOnCompletedOrder(id);
-
         logger.info("Driver by id {} finish shift of completed order", id);
-        informationService.updateDriverInformation();
-        informationService.updateTruckInformation();
-
     }
 
     @Override
@@ -66,7 +62,7 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
         shiftDetailsDAO.updateWorkedHours(id, hoursWorked);
     }
 
-    private void updateShiftDetails(ShiftDetailsDTO shiftDetails, DriverStatus status) throws ShiftValidationException {
+    private void updateShiftDetails(ShiftDetailsDTO shiftDetails, DriverStatus status) {
         setParametersToShiftDetails(shiftDetails, status);
 
         if(!shiftAndDriverStatusValid(shiftDetails.isShiftActive(), shiftDetails.getDriverStatus())) {

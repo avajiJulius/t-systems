@@ -1,12 +1,14 @@
 package com.logiweb.avaji.entity.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,29 +55,42 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Truck {
+public class Truck implements Serializable {
+
     @Id
     @Column(name = "id")
     private String truckId;
+
     @Version
     @Column(name = "version")
     private int version;
+
     @Column(name= "shift_size")
     private int shiftSize;
+
     @Column(name = "capacity")
     private double capacity;
+
     @Column(name = "serviceable")
     private boolean serviceable;
+
     @Column(name = "in_use")
     private boolean inUse;
+
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn(name = "city_code")
     private City currentCity;
+
     @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY,
             mappedBy = "designatedTruck")
+    @JsonIgnore
+    @Transient
     private Order currentOrder;
+
     @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY,
             mappedBy = "currentTruck")
+    @JsonBackReference
+    @Transient
     private List<Driver> drivers = new ArrayList<>();
 
     @Override
@@ -87,7 +102,6 @@ public class Truck {
                 ", capacity=" + capacity +
                 ", serviceable=" + serviceable +
                 ", currentCity=" + currentCity +
-                ", currentOrder=" + currentOrder +
                 '}';
     }
 }

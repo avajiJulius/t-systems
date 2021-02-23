@@ -2,6 +2,7 @@ package com.logiweb.avaji.dao;
 
 import com.logiweb.avaji.dtos.OrderDetailsDTO;
 import com.logiweb.avaji.entity.model.OrderDetails;
+import com.logiweb.avaji.entity.model.Truck;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
@@ -52,10 +53,9 @@ public class OrderDetailsDAO {
         return entityManager.find(OrderDetails.class, orderId);
     }
 
-    @Transactional
-    public void updateOnCompletedOrder(long orderId) {
-        entityManager.createNamedQuery("Order.updateOnCompletedOrder")
-                .setParameter("id", orderId).setParameter("date", LocalDateTime.now()).executeUpdate();
+    public void freeTruck(String truckId) {
+        Truck truck = entityManager.find(Truck.class, truckId);
+        truck.setInUse(false);
+        entityManager.merge(truck);
     }
-
 }

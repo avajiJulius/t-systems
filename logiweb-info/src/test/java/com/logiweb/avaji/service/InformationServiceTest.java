@@ -1,6 +1,5 @@
 package com.logiweb.avaji.service;
 
-import com.logiweb.avaji.controller.InformationBean;
 import com.logiweb.avaji.exception.MessageProcessingException;
 import com.logiweb.avaji.model.DriverInfo;
 import com.logiweb.avaji.model.Information;
@@ -15,6 +14,8 @@ import javax.jms.JMSException;
 import javax.jms.TextMessage;
 
 
+import java.lang.reflect.Field;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -24,11 +25,16 @@ class InformationServiceTest {
     private InformationListener listener;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws NoSuchFieldException, IllegalAccessException {
+        Field beanManager = InformationService.class.getDeclaredField("beanManager");
+        Field informationService = InformationListener.class.getDeclaredField("informationService");
+        beanManager.setAccessible(true);
+        informationService.setAccessible(true);
+
         this.service = new InformationService();
-        this.service.beanManager = mock(BeanManager.class);
+        beanManager.set(service, mock(BeanManager.class));
         this.listener = new InformationListener();
-        this.listener.informationService = service;
+        informationService.set(listener, service);
     }
 
     @Test

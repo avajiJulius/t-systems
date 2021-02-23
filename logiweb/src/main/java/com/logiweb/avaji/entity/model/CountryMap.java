@@ -1,5 +1,6 @@
 package com.logiweb.avaji.entity.model;
 
+import com.logiweb.avaji.dtos.CityDTO;
 import com.logiweb.avaji.dtos.RoadDTO;
 import com.logiweb.avaji.service.api.map.CountryMapService;
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +24,9 @@ public class CountryMap {
     @Autowired
     public CountryMap(CountryMapService mapService) {
         this.countryMapService = mapService;
-        this.cities.addAll(mapService.readAllCities().stream().map(c -> c.getCityCode()).collect(Collectors.toSet()));
+        this.cities.addAll(mapService.readAllCities().stream()
+                .map(CityDTO::getCityCode)
+                .collect(Collectors.toSet()));
         this.roads.addAll(mapService.readAllRoads());
         logger.info("Create country map");
     }

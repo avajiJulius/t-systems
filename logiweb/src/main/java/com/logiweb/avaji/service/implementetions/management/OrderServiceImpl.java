@@ -3,6 +3,7 @@ package com.logiweb.avaji.service.implementetions.management;
 import com.logiweb.avaji.dao.CargoDAO;
 import com.logiweb.avaji.dtos.*;
 import com.logiweb.avaji.dao.OrderDAO;
+import com.logiweb.avaji.entity.enums.OrderStatus;
 import com.logiweb.avaji.entity.model.*;
 import com.logiweb.avaji.service.api.management.DriverService;
 import com.logiweb.avaji.service.api.mq.InformationProducerService;
@@ -63,8 +64,29 @@ public class OrderServiceImpl implements OrderService {
         return orderPage;
     }
 
+    @Override
+    public List<OrderDTO> readPastOrdersPage(int pageNumber, int pageSize) {
+        int indexFrom = 0;
+        if(pageNumber != 1) {
+            indexFrom = (pageNumber - 1) * pageSize;
+        }
+        List<OrderDTO> ordersPage = orderDAO.findPastOrdersPage(indexFrom, pageSize);
+
+        fillPastOrders(ordersPage);
+
+        return ordersPage;
+    }
+
+    private void fillPastOrders(List<OrderDTO> ordersPage) {
+        for(OrderDTO orderDTO : ordersPage) {
+            orderDTO.setDrivers(orderDAO.findPastOrderDrivers(orderDTO.getOrderId()));
+            orderDTO.setPrettyPath(parser.toPrettyPath(orderDTO.getPrettyPath()));
+        }
+    }
+
 
     @Override
+    @Transactional
     public void createOrderByWaypoints(Order order, CreateWaypointsDTO dto) {
         List<Waypoint> waypoints = converter.dtoToWaypoints(dto, order);
         orderDAO.saveWaypoints(waypoints);
@@ -83,6 +105,8 @@ public class OrderServiceImpl implements OrderService {
         createOrderDetails(id, path);
 
         producerService.updateOrderInformation();
+
+        producerService.sendInformation();
     }
 
 
@@ -101,6 +125,8 @@ public class OrderServiceImpl implements OrderService {
         logger.info("Delete order by id: {}", orderId);
 
         producerService.updateOrderInformation();
+
+        producerService.sendInformation();
     }
 
 
@@ -130,6 +156,8 @@ public class OrderServiceImpl implements OrderService {
 
         producerService.updateOrderInformation();
         producerService.updateTruckInformation();
+
+        producerService.sendInformation();
     }
 
     @Override
@@ -155,6 +183,8 @@ public class OrderServiceImpl implements OrderService {
         logger.info("Add driver to order by id: {}", orderId);
 
         producerService.updateOrderInformation();
+
+        producerService.sendInformation();
     }
 
 
@@ -162,6 +192,12 @@ public class OrderServiceImpl implements OrderService {
     public long getOrdersTotalNumbers() {
         return orderDAO.countOrders();
     }
+
+    @Override
+    public long getPastOrdersTotalNumbers() {
+        return orderDAO.countPastOrders();
+    }
+
 
     private void fillOrders(List<OrderDTO> orderPage) {
         for (OrderDTO orderDTO : orderPage) {
@@ -174,10 +210,12 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+
     private void fillOrder(Order order, Map<String, Object> pathDetails) {
         order.setPath((String) pathDetails.get("path"));
         order.setMaxCapacity((Double) pathDetails.get("capacity"));
         order.setLastEditDate(LocalDateTime.now());
+        order.setStatus(OrderStatus.UNCOMPLETED);
     }
 
     private Map<String, Object> calculatePathDetails(List<Long> path, List<WaypointDTO> waypointsDTO) {

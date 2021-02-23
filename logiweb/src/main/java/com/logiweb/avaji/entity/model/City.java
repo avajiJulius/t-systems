@@ -23,10 +23,12 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class City{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "city_code")
     private long cityCode;
+
     @Column(name = "city_name")
     private String cityName;
 

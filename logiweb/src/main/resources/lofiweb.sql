@@ -1,3 +1,5 @@
+drop table if exists past_shifts;
+drop table if exists orders_history;
 drop table if exists waypoints;
 drop table if exists cargo;
 drop table if exists work_shifts;
@@ -42,7 +44,7 @@ create table trucks (
 create table orders (
     id bigserial,
     version int,
-    completed boolean default false,
+    status varchar(30),
     path varchar,
     truck_id varchar(7) default null,
     max_capacity double precision,
@@ -59,7 +61,6 @@ create table order_details (
     primary key (id),
     foreign key (id) references orders(id)
 );
-
 
 create table users (
     id bigserial,
@@ -118,6 +119,24 @@ create table waypoints (
     foreign key (cargo_id) references cargo(id)
 );
 
+create table orders_history (
+    id bigint,
+    status varchar(30),
+    path varchar,
+    truck_id varchar(7),
+    max_capacity double precision,
+    last_edit_date timestamp,
+    primary key (id)
+);
+
+create table past_shifts (
+    id bigint,
+    driver_id bigint,
+    primary key (id, driver_id),
+    foreign key (id) references orders_history(id),
+    foreign key (driver_id) references drivers(id)
+);
+
 insert into cities(city_name) values ('Saint-Petersburg'), ('Moscow'), ('Nizhniy-Novgorod'),
                                     ('Kazan'), ('Rostov-na-Donu'), ('Samara'),
                                      ('Volgograd'), ('Ufa'), ('Perm'),
@@ -141,7 +160,10 @@ values (1,2,5),(1,3,7),(1,9,12),
 insert into trucks(id, shift_size, capacity, serviceable, city_code, version)
 values ('AB12345', 2, 30, true, 1, 0), ('BA12345', 2, 26, false, 11, 0),
        ('GH12345', 3, 46, true, 4, 0), ('MK12345', 2, 25, false, 7, 0),
-       ('CD12345', 1, 27, true, 3, 0), ('DC12345', 1, 21, true, 5, 0);
+       ('CD12345', 1, 27, true, 3, 0), ('DC12345', 1, 21, true, 5, 0),
+       ('HI12345', 2, 40, true, 11, 0), ('IR12345', 2, 22, false, 3, 0),
+       ('ML12345', 3, 36, true, 7, 0), ('KQ12345', 2, 35, false, 9, 0),
+       ('OP12345', 1, 25, true, 6, 0), ('JE12345', 1, 31, true, 8, 0);;
 
 insert into users(version, email, password, enable, role)
 values (0,'alex.m@gmail.com', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true, 'DRIVER'),
@@ -154,6 +176,16 @@ values (0,'alex.m@gmail.com', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJO
        (0,'boris.m@gmail.com', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true,'DRIVER'),
        (0,'petr.z@gmail.com', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true,'DRIVER'),
        (0,'nadeshda.b@gmail.com', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true,'DRIVER'),
+       (0,'evgeni.n@gmail.com', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true, 'DRIVER'),
+       (0,'ksenia.b@gmail.com', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC',  true,'DRIVER'),
+       (0,'temur.f@gmail.com', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true,'DRIVER'),
+       (0,'maria.e@gmail.com', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true,'DRIVER'),
+       (0,'nelia.t@gmail.com', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true,'DRIVER'),
+       (0,'boris.p@gmail.com', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true, 'DRIVER'),
+       (0,'yana.m@gmail.com', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC',  true,'DRIVER'),
+       (0,'zoyz.k@gmail.com', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true,'DRIVER'),
+       (0,'ilya.k@gmail.com', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true,'DRIVER'),
+       (0,'yakov.p@gmail.com', '$2y$12$AvXxA6mEE6cDVFsyWGHg/.W1Ot1OHA18F15dwRjjJOQbqeOGdVDEC', true,'DRIVER'),
        (0,'admin1@gmail.com', '$2y$12$81QxgdqO0B8Tb8Qo61urdudm7G38VRU8MYV0iFdGkiRrD9wbRar3a', true,'EMPLOYEE'),
        (0,'admin2@gmail.com', '$2y$12$81QxgdqO0B8Tb8Qo61urdudm7G38VRU8MYV0iFdGkiRrD9wbRar3a', true,'EMPLOYEE');
 
@@ -168,20 +200,38 @@ values (1, 'Alex', 'Matushkin', '160', 'REST', 1, null ),
        (7, 'Roman', 'Litvinov', '130', 'REST', 7, null),
        (8 ,'Boris', 'Mayakovsky', '121', 'REST', 7, null ),
        (9, 'Petr', 'Zvonov', '96', 'REST', 11, null),
-       (10, 'Nadeshda', 'Babkina', '17', 'REST', 12, null);
+       (10, 'Nadeshda', 'Babkina', '17', 'REST', 12, null),
+       (11, 'Evgeni', 'Novikov', '160', 'REST', 1, null ),
+       (12, 'Ksenia', 'Berova', '66', 'REST', 6, null),
+       (13 ,'Temur', 'Ferdeshenfov', '11', 'REST', 4, null ),
+       (14, 'Maria', 'Epanchina', '175', 'REST', 5, null),
+       (15, 'Nelia', 'Trumova', '0', 'REST', 8, null),
+       (16, 'Boris', 'Pivo', '0', 'REST', 9, null ),
+       (17, 'Yana', 'Mironove', '130', 'REST', 10, null),
+       (18 ,'Zoya', 'Kosmademyamskaya', '121', 'REST', 4, null ),
+       (19, 'Ilya', 'Kolesnikiv', '96', 'REST', 6, null),
+       (20, 'Yakov', 'Petrushin', '17', 'REST', 12, null);
 
 insert into work_shifts(id, active)
 values (1, false),(2, false),(3, false),
        (4, false),(5, false),(6, false),
        (7, false),(8, false),(9, false),
-       (10, false);
+       (10, false),(11, false),(12, false),
+       (13, false),(14, false),(15, false),
+       (16, false),(17, false),(18, false),
+       (19, false),(20, false);
 
 insert into cargo(title, weight, cargo_status, version)
 values ('Titanium', 12000, 'PREPARED', 0), ('Wood', 6300, 'PREPARED', 0), ('Clay', 8700, 'PREPARED', 0),
        ('Magnesite', 5900, 'PREPARED',0), ('Gravel', 10600, 'PREPARED', 0), ('Sand', 6100, 'PREPARED', 0),
        ('Dolomite', 2200, 'PREPARED', 0), ('Gypsum', 700, 'PREPARED', 0), ('Calcareous Tuffs', 1500, 'PREPARED', 0),
        ('Quartzite', 3200, 'PREPARED',0), ('Marble', 8600, 'PREPARED', 0), ('Granite', 8700, 'PREPARED', 0),
-       ('Lead', 9100, 'PREPARED', 0), ('Tin', 4800, 'PREPARED', 0), ('SUPER HEAVY FOR TEST', 90000000, 'PREPARED', 0);
+       ('Lead', 9100, 'PREPARED', 0), ('Tin', 4800, 'PREPARED', 0), ('SUPER HEAVY FOR TEST', 90000000, 'PREPARED', 0),
+        ('Glass', 14000, 'PREPARED', 0), ('Cacao', 5900, 'PREPARED', 0), ('Milk', 8700, 'PREPARED', 0),
+       ('Plastic', 4500, 'PREPARED',0), ('Pizza', 600, 'PREPARED', 0), ('Cola', 3100, 'PREPARED', 0),
+       ('Air', 6500, 'PREPARED', 0), ('Books', 7700, 'PREPARED', 0), ('Sprite', 8500, 'PREPARED', 0),
+       ('Stones', 3100, 'PREPARED',0), ('Chocolate', 6600, 'PREPARED', 0), ('Lemon Tree', 4700, 'PREPARED', 0),
+       ('Apples', 3100, 'PREPARED', 0), ('Lemons', 4800, 'PREPARED', 0), ('Mario', 900, 'PREPARED', 0);
 
 
 

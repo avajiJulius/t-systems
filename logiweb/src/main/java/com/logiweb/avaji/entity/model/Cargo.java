@@ -31,13 +31,17 @@ public class Cargo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long cargoId;
+
     @Version
     @Column(name = "version")
     private int version;
+
     @Column(name = "title")
     private String cargoTitle;
+
     @Column(name = "weight")
     private double cargoWeight;
+
     @Column(name = "cargo_status")
     @Enumerated(value = EnumType.STRING)
     private CargoStatus cargoStatus;

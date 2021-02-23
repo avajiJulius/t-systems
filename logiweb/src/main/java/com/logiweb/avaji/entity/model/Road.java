@@ -2,7 +2,6 @@ package com.logiweb.avaji.entity.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -28,16 +27,20 @@ query = "select count(r) from Road r " +
 @NoArgsConstructor
 @AllArgsConstructor
 public class Road {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "road_id")
     private long roadId;
+
     @ManyToOne
     @JoinColumn(name = "city_a_code")
     private City cityA;
+
     @ManyToOne
     @JoinColumn(name = "city_b_code")
     private City cityB;
+
     @Column(name = "distance_in_hours")
     private double distanceInHours;
 

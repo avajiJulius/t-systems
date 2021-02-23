@@ -18,10 +18,10 @@ public class InformationService {
 
     private static final Logger logger = LogManager.getLogger(InformationService.class);
 
-    private  Information information;
+    private static Information information;
 
     @Inject
-    BeanManager beanManager;
+    private BeanManager beanManager;
 
     public Information getInformation() {
         return information;
@@ -29,7 +29,7 @@ public class InformationService {
 
     public void updateInformation(Information information) {
         this.information = information;
-        logger.debug("Information is updated");
+        logger.info("Information is updated");
         beanManager.fireEvent(new InformationUpdateEvent());
     }
 }

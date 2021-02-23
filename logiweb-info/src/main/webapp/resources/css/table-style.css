@@ -1,22 +1,41 @@
-.order-table{
+html,
+body {
+    height: 100%;
+}
+body {
+    display: grid;
+    width: 100%;
+    font-family: Inconsolata, monospace;
+}
+.content-table{
     border-collapse:collapse;
+    margin: 25px 0;
+    font-size: 0.8em;
+    min-width: 500px;
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0,0,0,0);
 }
 
-.order-table-header{
+.content-table-header {
     text-align:center;
-    background:none repeat scroll 0 0 #E5E5E5;
+    background-color: #474747;
     border-bottom:1px solid #BBBBBB;
-    padding:16px;
+    padding:20px;
 }
 
-.order-table-odd-row{
+.content-table-odd-row {
     text-align:center;
-    background:none repeat scroll 0 0 #FFFFFF;
-    border-top:1px solid #BBBBBB;
+    color: #1a1a1a;
+    padding: 20px;
+    border-bottom:1px solid #BBBBBB;
 }
 
-.order-table-even-row{
+
+.content-table-even-row {
     text-align:center;
-    background:none repeat scroll 0 0 #F9F9F9;
-    border-top:1px solid #BBBBBB;
+    color: #1a1a1a;
+    padding: 20px;
+    background-color: #f3f3f3;
+    border-bottom:1px solid #BBBBBB;
 }

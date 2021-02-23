@@ -5,7 +5,6 @@ import com.logiweb.avaji.entity.model.Truck;
 import com.logiweb.avaji.dao.TruckDAO;
 import com.logiweb.avaji.service.api.management.TruckService;
 import com.logiweb.avaji.service.api.mq.InformationProducerService;
-import com.logiweb.avaji.service.api.validator.UniqueValidatorService;
 import com.logiweb.avaji.service.implementetions.utils.Mapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,10 +36,14 @@ public class TruckServiceImpl implements TruckService {
     public boolean createTruck(TruckDTO truckDTO) {
         Truck truck = converter.dtoToTruck(truckDTO);
 
-        boolean isSaved = truckDAO.saveTruck(truck);
+        truckDAO.saveTruck(truck);
+        boolean isSaved = truckDAO.containsTruck(truck.getTruckId());
+
         if (isSaved) {
             logger.info("Create truck by id: {}", truck.getTruckId());
             producerService.updateTruckInformation();
+
+            producerService.sendInformation();
             return true;
         }
         return false;
@@ -78,15 +81,21 @@ public class TruckServiceImpl implements TruckService {
 
         logger.info("Update truck by id: {}", truckId);
         producerService.updateTruckInformation();
+
+        producerService.sendInformation();
     }
 
 
     @Override
     public boolean deleteTruck(String truckID) {
-        boolean result = truckDAO.deleteTruck(truckID);
-        if(result) {
+        truckDAO.deleteTruck(truckID);
+        boolean isExist = truckDAO.containsTruck(truckID);
+
+        if(!isExist) {
             logger.info("Delete truck by id: {}", truckID);
             producerService.updateTruckInformation();
+
+            producerService.sendInformation();
             return true;
         }
         return false;

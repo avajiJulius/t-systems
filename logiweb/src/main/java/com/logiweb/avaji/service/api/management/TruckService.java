@@ -18,6 +18,13 @@ public interface TruckService {
      */
     boolean createTruck(TruckDTO truckDto);
 
+    /**
+     * The <code>readTrucksPage</code> read trucks dtos
+     *
+     * @param pageNumber
+     * @param pageSize size of returned list of dtos
+     * @return list with size(pageSize) of trucks dtos from (pageNumber * pageSize) index from database
+     */
     List<TruckDTO> readTrucksPage(int pageNumber, int pageSize);
 
     /**
@@ -54,6 +61,11 @@ public interface TruckService {
      */
     boolean deleteTruck(String truckID);
 
+    /**
+     * The <code>getTrucksTotalNumbers</code> get total rows of all trucks
+     *
+     * @return total number of rows in database
+     */
     long getTrucksTotalNumbers();
 
 }

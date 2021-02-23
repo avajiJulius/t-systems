@@ -12,8 +12,16 @@ import java.util.List;
  */
 public interface DriverService {
 
+    /**
+     * The <code>readDriversPage</code> read Driver dtos
+     *
+     * @param pageNumber number
+     * @param pageSize number of drivers was found
+     * @return list of Driver dtos with list size <code>pageSize</code> and start place from database
+     * <code>(pageNumber * pageSize)</code>
+     */
 
-    List<DriverDTO> readDriversPage(int pageNumber, int page_size);
+    List<DriverDTO> readDriversPage(int pageNumber, int pageSize);
 
 
     /**
@@ -53,9 +61,27 @@ public interface DriverService {
      */
     DriverDTO readDriverById(long id);
 
+    /**
+     * The <code>getDriversTotalNumber</code> get total rows of all drivers
+     *
+     * @return total number of rows in database
+     */
     long getDriversTotalNumber();
 
+
+    /**
+     * The <code>readDriversByIds</code> get drivers entities of ids
+     *
+     * @param driversIds
+     * @return drivers entities
+     */
     List<Driver> readDriversByIds(List<Long> driversIds);
 
+
+    /**
+     * The <code>updateDrivers</code> update all drivers
+     *
+     * @param drivers updated drivers entities
+     */
     void updateDrivers(List<Driver> drivers);
 }

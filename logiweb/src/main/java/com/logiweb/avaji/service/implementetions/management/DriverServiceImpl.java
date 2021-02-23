@@ -44,26 +44,26 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     public boolean createDriver(DriverDTO driverDTO) {
         Driver driver = mapper.createDriverFromDto(driverDTO);
-        boolean isSaved = driverDAO.saveDriver(driver);
-        boolean isCreated = createWorkShift(driver.getId());
 
-        if(isSaved && isCreated) {
+        driverDAO.saveDriver(driver);
+        driverDAO.saveWorkShift(driver.getId());
+
+
+        boolean driverIsSaved = driverDAO.containsDriver(driver.getId());
+        boolean workShiftIsSaved = driverDAO.containsWorkShift(driver.getId());
+
+        if(driverIsSaved && workShiftIsSaved) {
             logger.info("Create driver by id: {}", driver.getId());
             logger.info("Create work shift for driver with id: {}", driver.getId());
 
             producerService.updateDriverInformation();
+
+            producerService.sendInformation();
             return true;
         }
         return false;
     }
 
-    private boolean createWorkShift(long id) {
-        boolean isSaved = driverDAO.saveWorkShift(id);
-        if(isSaved) {
-            return true;
-        }
-        return false;
-    }
 
     @Override
     public void updateDriver(long driverId,DriverDTO updatedDriver) {
@@ -77,15 +77,20 @@ public class DriverServiceImpl implements DriverService {
         logger.info("Update driver by id: {}", driver.getId());
 
         producerService.updateDriverInformation();
+
+        producerService.sendInformation();
     }
 
     @Override
     public boolean deleteDriver(long driverID) {
-        boolean isDeleted = driverDAO.deleteDriver(driverID);
-        if(isDeleted) {
+        driverDAO.deleteDriver(driverID);
+
+        boolean isExist = driverDAO.containsDriver(driverID);
+        if(!isExist) {
             logger.info("Delete driver by id: {}", driverID);
             producerService.updateDriverInformation();
 
+            producerService.sendInformation();
             return true;
         }
         return false;
@@ -110,6 +115,8 @@ public class DriverServiceImpl implements DriverService {
     public void updateDrivers(List<Driver> drivers) {
         driverDAO.updateDrivers(drivers);
         producerService.updateDriverInformation();
+
+        producerService.sendInformation();
     }
 
 

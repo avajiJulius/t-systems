@@ -7,10 +7,12 @@ import com.logiweb.avaji.dao.OrderDetailsDAO;
 import com.logiweb.avaji.dtos.*;
 import com.logiweb.avaji.entity.enums.CargoStatus;
 import com.logiweb.avaji.entity.enums.DriverStatus;
+import com.logiweb.avaji.entity.enums.OrderStatus;
 import com.logiweb.avaji.entity.enums.WaypointType;
 import com.logiweb.avaji.entity.model.Cargo;
+import com.logiweb.avaji.entity.model.Driver;
 import com.logiweb.avaji.entity.model.OrderDetails;
-import com.logiweb.avaji.exception.ShiftValidationException;
+import com.logiweb.avaji.entity.model.PastOrder;
 import com.logiweb.avaji.service.api.mq.InformationProducerService;
 import com.logiweb.avaji.service.api.path.PathDetailsService;
 import com.logiweb.avaji.service.implementetions.utils.PathParser;
@@ -22,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
@@ -78,7 +81,11 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 
     @Override
     @Transactional
-    public void updateOrderByCargoStatus(long driverId, List<Long> cargoIds) throws ShiftValidationException {
+    public void updateOrderByCargoStatus(long driverId, List<Long> cargoIds){
+        if (cargoIds.isEmpty()) {
+            return;
+        }
+
         shiftDetailsService.changeShiftDetails(driverId, DriverStatus.LOAD_UNLOAD_WORK);
 
         updateCargo(cargoIds);
@@ -86,17 +93,52 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
         long orderId = orderDetailsDAO.findOrderIdOfDriverId(driverId);
 
         if(orderIsComplete(orderId)) {
-            orderDetailsDAO.updateOnCompletedOrder(orderId);
+            createPastOrder(orderId, driverId);
+
+            orderDAO.deleteOrder(orderId);
 
             logger.info("Order by id {} is completed", orderId);
             informationService.updateOrderInformation();
+
+            informationService.sendInformation();
         }
+    }
+
+    private void createPastOrder(long orderId, long driverId) {
+        OrderDetailsDTO orderDetails = orderDetailsDAO.findOrderDetails(driverId);
+        List<Driver> drivers = orderDAO.findDriversEntitiesByOrderId(orderId);
+
+        PastOrder pastOrder = new PastOrder(orderId, OrderStatus.COMPLETED,
+                orderDetails.getPath(), orderDetails.getMaxCapacity(), orderDetails.getTruckId(),
+                LocalDateTime.now(), drivers);
+        orderDAO.savePastOrder(pastOrder);
+
+        for(Driver driver : drivers) {
+            shiftDetailsService.finishShift(driver.getId());
+            driver.setCurrentTruck(null);
+            driver.setOrderDetails(null);
+            driver.getPastOrders().add(pastOrder);
+        }
+
+        orderDetailsDAO.freeTruck(orderDetails.getTruckId());
+
+        orderDAO.savePastOrder(pastOrder);
+
+        informationService.updateTruckInformation();
+        informationService.updateDriverInformation();
     }
 
     @Override
     @Transactional
-    public void changeCity(long orderId) {
+    public void changeCity(long driverId, long orderId) {
         OrderDetails orderDetails = orderDetailsDAO.findOrderDetailsEntity(orderId);
+
+        shiftDetailsService.changeShiftDetails(driverId, DriverStatus.DRIVING);
+        orderDAO.findDriversByOrderId(orderId).stream()
+                .map(DriverDTO::getId)
+                .filter(id -> id != driverId)
+                .forEach(id -> shiftDetailsService.changeShiftDetails(id, DriverStatus.SECOND_DRIVER));
+
 
         List<Long> path = parser.parseStringToLongList(orderDetails.getRemainingPath());
 
@@ -114,20 +156,23 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 
         informationService.updateDriverInformation();
         informationService.updateTruckInformation();
+
+        informationService.sendInformation();
     }
 
 
     private void setCoDrivers(OrderDetailsDTO orderDetails, long driverId) {
         List<DriverDTO> coDrivers = orderDAO.findDriversByOrderId(orderDetails.getId())
-                .stream().filter(d -> d.getId() != driverId).collect(Collectors.toList());
+                .stream().filter(d -> d.getId() != driverId)
+                .collect(Collectors.toList());
+
         orderDetails.setCoDrivers(coDrivers);
     }
 
     private void setRemainingPath(OrderDetailsDTO orderDetails) {
-        Deque<CityDTO> remainingPath = new ArrayDeque<>();
-
         List<CityDTO> pathList = parser.pathStringToCityDTOList(orderDetails.getRemainingPathString());
-        remainingPath.addAll(pathList);
+
+        Deque<CityDTO> remainingPath = new ArrayDeque<>(pathList);
 
         orderDetails.setRemainingPath(remainingPath);
 
@@ -141,10 +186,13 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 
         List<Cargo> loadCargo = actionWaypoint.stream()
                 .filter(w -> w.getCargoStatus() == CargoStatus.PREPARED && w.getType() == WaypointType.LOADING)
-                .map(waypoint -> new Cargo(waypoint.getCargoId(), waypoint.getCargoTitle())).collect(Collectors.toList());
+                .map(waypoint -> new Cargo(waypoint.getCargoId(), waypoint.getCargoTitle()))
+                .collect(Collectors.toList());
         List<Cargo> unloadCargo = actionWaypoint.stream()
                 .filter(w -> w.getCargoStatus() == CargoStatus.SHIPPED && w.getType() == WaypointType.UNLOADING)
-                .map(waypoint -> new Cargo(waypoint.getCargoId(), waypoint.getCargoTitle())).collect(Collectors.toList());
+                .map(waypoint -> new Cargo(waypoint.getCargoId(), waypoint.getCargoTitle()))
+                .collect(Collectors.toList());
+
         orderDetails.setLoadCargo(loadCargo);
         orderDetails.setUnloadCargo(unloadCargo);
     }

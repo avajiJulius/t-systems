@@ -14,8 +14,8 @@
 
 
         <h1>Order Information</h1>
-        <h:dataTable id="order" value="#{informationBean.information.orderInfo.lastOrders}" var="order" styleClass="order-table"
-                     headerClass="order-table-header" rowClasses="order-table-odd-row,order-table-even-row">
+        <h:dataTable id="order" value="#{informationBean.information.orderInfo.lastOrders}" var="order" styleClass="content-table"
+                     headerClass="content-table-header" rowClasses="content-table-odd-row,content-table-even-row">
 
             <h:column>
                 <f:facet name="header">#</f:facet>
@@ -23,8 +23,8 @@
             </h:column>
 
             <h:column>
-                <f:facet name="header">Completed Status</f:facet>
-                #{order.completed}
+                <f:facet name="header">Status</f:facet>
+                #{order.status}
             </h:column>
 
             <h:column>
@@ -49,8 +49,8 @@
         </h:dataTable>
 
         <h1>Truck Information</h1>
-        <h:dataTable id="truck" value="#{informationBean.information.truckInfo}" var="truckInfo" styleClass="order-table"
-                     headerClass="order-table-header" rowClasses="order-table-odd-row,order-table-even-row">
+        <h:dataTable id="truck" value="#{informationBean.information.truckInfo}" var="truckInfo" styleClass="content-table"
+                     headerClass="content-table-header" rowClasses="content-table-odd-row,content-table-even-row">
 
             <h:column>
                 <f:facet name="header">Total</f:facet>
@@ -75,8 +75,8 @@
         </h:dataTable>
 
         <h1>Driver Information</h1>
-        <h:dataTable id="driver" value="#{informationBean.information.driverInfo}" var="driverInfo" styleClass="order-table"
-                     headerClass="order-table-header" rowClasses="order-table-odd-row,order-table-even-row">
+        <h:dataTable id="driver" value="#{informationBean.information.driverInfo}" var="driverInfo" styleClass="content-table"
+                     headerClass="content-table-header" rowClasses="content-table-odd-row,content-table-even-row">
 
             <h:column>
                 <f:facet name="header">Total</f:facet>

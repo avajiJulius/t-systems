@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "waypoints")
@@ -19,25 +20,30 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Waypoint {
+public class Waypoint implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "waypoint_id")
     private long waypointId;
+
     @Version
     @Column(name = "version")
     private int version;
+
     @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     @JoinColumn(name = "city_code")
     private City waypointCity;
+
     @Column(name = "type")
     @Enumerated(value = EnumType.STRING)
     private WaypointType waypointType;
+
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order waypointOrder;
-    @OneToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+
+    @OneToOne(cascade = {CascadeType.REFRESH, CascadeType.REMOVE}, fetch = FetchType.LAZY)
     @JoinColumn(name = "cargo_id")
     private Cargo waypointCargo;
 

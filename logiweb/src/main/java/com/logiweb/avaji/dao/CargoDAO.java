@@ -39,4 +39,5 @@ public class CargoDAO {
                 .setParameter("id", cargoId);
         return query.getSingleResult();
     }
+
 }

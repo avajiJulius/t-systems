@@ -151,8 +151,6 @@ public class TestConfig {
         return mock;
     }
 
-
-
     @Bean
     public ShiftDetailsServiceImpl shiftDetailsService() {
         return new ShiftDetailsServiceImpl(shiftDetailsDAO(), informationProducerService());
@@ -186,6 +184,7 @@ public class TestConfig {
         return new DateTimeService(scheduleDAO());
     }
 
+    @Bean
     public CountryMapService countryMapService() {
         CountryMapService mock = Mockito.mock(CountryMapService.class);
         Mockito.when(mock.findCityByCode(anyLong())).thenAnswer(new Answer<Object>() {
