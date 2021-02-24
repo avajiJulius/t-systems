@@ -92,11 +92,13 @@ public class DriverController {
     public String editDriver(@PathVariable("id") long id,
                             @ModelAttribute("driver") @Validated(DriverDTO.Update.class) DriverDTO editDriver,
                             BindingResult result, Model model) {
+
         if (result.hasErrors()) {
             model.addAttribute("driver", driverService.readDriverById(id));
             model.addAttribute("cities", mapService.readAllCities());
             return "drivers/edit";
         }
+
         driverService.updateDriver(id, editDriver);
         return MAIN_REDIRECT;
     }
@@ -105,11 +107,13 @@ public class DriverController {
     @PreAuthorize("hasAuthority('employee:write')")
     public String deleteDriver(@PathVariable("id") long id,  RedirectAttributes attributes) {
         boolean isDeleted = driverService.deleteDriver(id);
+
         if(isDeleted) {
             attributes.addFlashAttribute("message", "Success delete truck with ID: " + id);
         } else {
             attributes.addFlashAttribute("error", "Truck not deleted");
         }
+
         return MAIN_REDIRECT;
     }
 }

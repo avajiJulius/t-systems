@@ -98,8 +98,8 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
             orderDAO.deleteOrder(orderId);
 
             logger.info("Order by id {} is completed", orderId);
-            informationService.updateOrderInformation();
 
+            informationService.updateOrderInformation();
             informationService.sendInformation();
         }
     }
@@ -109,12 +109,14 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
         List<Driver> drivers = orderDAO.findDriversEntitiesByOrderId(orderId);
 
         PastOrder pastOrder = new PastOrder(orderId, OrderStatus.COMPLETED,
-                orderDetails.getPath(), orderDetails.getMaxCapacity(), orderDetails.getTruckId(),
-                LocalDateTime.now(), drivers);
+                orderDetails.getPath(), orderDetails.getMaxCapacity(),
+                orderDetails.getTruckId(), LocalDateTime.now(), drivers);
+
         orderDAO.savePastOrder(pastOrder);
 
         for(Driver driver : drivers) {
             shiftDetailsService.finishShift(driver.getId());
+
             driver.setCurrentTruck(null);
             driver.setOrderDetails(null);
             driver.getPastOrders().add(pastOrder);
@@ -134,6 +136,7 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
         OrderDetails orderDetails = orderDetailsDAO.findOrderDetailsEntity(orderId);
 
         shiftDetailsService.changeShiftDetails(driverId, DriverStatus.DRIVING);
+
         orderDAO.findDriversByOrderId(orderId).stream()
                 .map(DriverDTO::getId)
                 .filter(id -> id != driverId)
@@ -147,6 +150,7 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 
         double newRemainingHours = pathDetailsService.getShiftHours(path);
         double workedHours = orderDetails.getRemainingWorkingTime() - newRemainingHours;
+
         shiftDetailsService.updateWorkedHours(orderId, workedHours);
 
         orderDetails.setRemainingPath(parser.parseLongListToString(path));
@@ -156,7 +160,6 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
 
         informationService.updateDriverInformation();
         informationService.updateTruckInformation();
-
         informationService.sendInformation();
     }
 
@@ -188,6 +191,7 @@ public class OrderDetailsServiceImpl implements OrderDetailsService {
                 .filter(w -> w.getCargoStatus() == CargoStatus.PREPARED && w.getType() == WaypointType.LOADING)
                 .map(waypoint -> new Cargo(waypoint.getCargoId(), waypoint.getCargoTitle()))
                 .collect(Collectors.toList());
+
         List<Cargo> unloadCargo = actionWaypoint.stream()
                 .filter(w -> w.getCargoStatus() == CargoStatus.SHIPPED && w.getType() == WaypointType.UNLOADING)
                 .map(waypoint -> new Cargo(waypoint.getCargoId(), waypoint.getCargoTitle()))

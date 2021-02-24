@@ -28,6 +28,7 @@ public class InitializeService {
 
     public void init() {
         context.createProducer().send(queue, "START");
+
         logger.info("Send init message");
     }
 }

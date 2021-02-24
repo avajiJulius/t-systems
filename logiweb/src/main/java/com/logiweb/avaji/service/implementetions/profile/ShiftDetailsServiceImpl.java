@@ -39,6 +39,7 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
         ShiftDetailsDTO shiftDetails = shiftDetailsDAO.findShiftDetails(id);
 
         updateShiftDetails(shiftDetails, driverStatus);
+
         informationService.updateDriverInformation();
         informationService.sendInformation();
 
@@ -71,6 +72,7 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
         }
 
         shiftDetailsDAO.updateShiftDetails(shiftDetails);
+
         logger.info("Shift details of id {} updated", shiftDetails.getId());
     }
 
@@ -81,6 +83,7 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
         if (activeDriverStatus != shiftDetails.isShiftActive()) {
             updateWorkShift(shiftDetails, activeDriverStatus);
         }
+
         shiftDetails.setDriverStatus(status);
     }
 
@@ -102,9 +105,6 @@ public class ShiftDetailsServiceImpl implements ShiftDetailsService {
     public boolean shiftAndDriverStatusValid(boolean active, DriverStatus status) {
         return !active ? status.ordinal() == 0 : status.ordinal() > 0;
     }
-
-
-
 
 }
 

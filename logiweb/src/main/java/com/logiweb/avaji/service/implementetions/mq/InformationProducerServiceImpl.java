@@ -31,9 +31,11 @@ public class InformationProducerServiceImpl implements InformationProducerServic
     @PostConstruct
     private void init() {
         logger.info("Information producer init");
+
         if (informationDTO == null) {
             informationDTO = informationService.getFullInformation();
         }
+
         sendInformation();
     }
 

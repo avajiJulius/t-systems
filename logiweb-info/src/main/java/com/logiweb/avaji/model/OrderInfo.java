@@ -1,10 +1,11 @@
 package com.logiweb.avaji.model;
 
+import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 
-public class OrderInfo {
+public class OrderInfo implements Serializable {
 
     private Deque<Order> lastOrders = new ArrayDeque<>();
 

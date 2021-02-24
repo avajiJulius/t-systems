@@ -40,7 +40,7 @@ public interface OrderService {
      * @param order for set path and waypoints into it.
      * @param dto CreateWaypointDTO
      */
-    void createOrderByWaypoints(Order order, CreateWaypointsDTO dto) throws LoadAndUnloadValidateException;
+    void createOrderByWaypoints(Order order, CreateWaypointsDTO dto);
 
     void setCargoWeight(List<WaypointDTO> waypointsDTO);
 

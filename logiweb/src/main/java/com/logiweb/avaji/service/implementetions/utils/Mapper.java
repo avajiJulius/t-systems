@@ -80,6 +80,12 @@ public class Mapper {
     }
 
 
+    /**
+     * Convert DTO on creation to driver entity
+     *
+     * @param driverDTO of creation
+     * @return driver entity
+     */
     public Driver createDriverFromDto(DriverDTO driverDTO) {
         return new Driver.Builder()
                 .withVersion(0).withEmail(driverDTO.getEmail())
@@ -92,6 +98,13 @@ public class Mapper {
                 .build();
     }
 
+    /**
+     * Convert DTO on update to driver entity
+     *
+     * @param driver that updated
+     * @param driverDTO
+     * @return driver entity
+     */
     public Driver updateDriverFromDto(Driver driver, DriverDTO driverDTO) {
         return new Driver.Builder(driver)
                 .withFirstName(driverDTO.getFirstName())

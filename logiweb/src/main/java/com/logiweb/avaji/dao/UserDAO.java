@@ -18,6 +18,7 @@ public class UserDAO {
     public User findUserByEmail(String email) {
         TypedQuery<User> query = entityManager.createNamedQuery("User.findUserByEmail", User.class)
                 .setParameter("email", email);
+
         return query.getSingleResult();
     }
 }

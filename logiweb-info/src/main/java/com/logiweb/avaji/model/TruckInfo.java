@@ -1,7 +1,9 @@
 package com.logiweb.avaji.model;
 
 
-public class TruckInfo {
+import java.io.Serializable;
+
+public class TruckInfo implements Serializable {
     private int totalNumber;
     private int availableNumber;
     private int inUseNumber;

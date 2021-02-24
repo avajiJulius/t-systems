@@ -37,7 +37,9 @@ public class AppConfigDispatcherServletInitializer extends AbstractAnnotationCon
     @Override
     protected FrameworkServlet createDispatcherServlet(WebApplicationContext servletAppContext) {
         DispatcherServlet dispatcherServlet = new DispatcherServlet(servletAppContext);
+
         dispatcherServlet.setThrowExceptionIfNoHandlerFound(true);
+
         return dispatcherServlet;
     }
 

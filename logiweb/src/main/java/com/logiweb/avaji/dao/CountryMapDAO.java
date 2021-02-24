@@ -19,6 +19,7 @@ public class CountryMapDAO {
 
     public List<CityDTO> findAllCities() {
         TypedQuery<CityDTO> query = entityManager.createNamedQuery("City.findAllCities", CityDTO.class);
+
         return query.getResultList();
     }
 
@@ -29,6 +30,7 @@ public class CountryMapDAO {
 
     public List<RoadDTO> findAllRoads() {
         TypedQuery<RoadDTO> query = entityManager.createNamedQuery("Road.findAllRoads", RoadDTO.class);
+
         return query.getResultList();
     }
 }

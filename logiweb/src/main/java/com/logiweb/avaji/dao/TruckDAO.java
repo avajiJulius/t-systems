@@ -19,12 +19,14 @@ public class TruckDAO {
     public List<TruckDTO> findTrucksPage(int indexFrom, int pageSize) {
         TypedQuery<TruckDTO> query = entityManager.createNamedQuery("Truck.findAllTrucks", TruckDTO.class)
                 .setFirstResult(indexFrom).setMaxResults(pageSize);
+
         return query.getResultList();
     }
 
     public TruckDTO findTruckById(String id) {
         TypedQuery<TruckDTO> query = entityManager.createNamedQuery("Truck.findTruckById", TruckDTO.class)
                 .setParameter("id", id);
+
         return query.getSingleResult();
     }
 
@@ -37,6 +39,7 @@ public class TruckDAO {
     public TruckDTO findTruckByOrderId(long orderId) {
         TypedQuery<TruckDTO> query = entityManager.createNamedQuery("Truck.findTruckByOrderId", TruckDTO.class)
                 .setParameter("id", orderId);
+
         return query.getSingleResult();
     }
 
@@ -53,6 +56,7 @@ public class TruckDAO {
     public long countDriversOfTruck(String truckId) {
         TypedQuery<Long> query = entityManager.createNamedQuery("Driver.countDriversOfTruck", Long.class)
                 .setParameter("id", truckId);
+
         return query.getSingleResult();
     }
 

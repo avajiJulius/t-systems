@@ -19,12 +19,7 @@ public class TruckIDUniqueValidator implements ConstraintValidator<TruckIDUnique
     }
 
     @Override
-    public void initialize(TruckIDUnique constraintAnnotation) {
-    }
-
-    @Override
     public boolean isValid(String truckId, ConstraintValidatorContext constraintValidatorContext) {
-        long result = validatorDAO.checkIdUnique(truckId);
-        return (result == 0);
+        return validatorDAO.checkIdUnique(truckId) == 0;
     }
 }

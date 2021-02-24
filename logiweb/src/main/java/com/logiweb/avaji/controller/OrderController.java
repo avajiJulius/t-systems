@@ -51,12 +51,15 @@ public class OrderController {
     @PreAuthorize("hasAuthority('employee:read')")
     public String getOrdersPage(@PathVariable("number") int pageNumber,
                                  Model model) {
+
         long totalNumber = orderService.getOrdersTotalNumbers();
         int totalPages = (int) Math.ceil((double) totalNumber / PAGE_SIZE);
+
         model.addAttribute("orders", orderService.readOrdersPage(pageNumber, PAGE_SIZE));
         model.addAttribute("totalItems", totalNumber);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("currentPage", pageNumber);
+
         return "orders/list";
     }
 
@@ -70,12 +73,15 @@ public class OrderController {
     @PreAuthorize("hasAuthority('employee:read')")
     public String getPastOrdersPage(@PathVariable("number") int pageNumber,
                                 Model model) {
+
         long totalNumber = orderService.getPastOrdersTotalNumbers();
         int totalPages = (int) Math.ceil((double) totalNumber / PAGE_SIZE);
+
         model.addAttribute("orders", orderService.readPastOrdersPage(pageNumber, PAGE_SIZE));
         model.addAttribute("totalItems", totalNumber);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("currentPage", pageNumber);
+
         return "orders/history";
     }
 
@@ -83,8 +89,11 @@ public class OrderController {
     @PreAuthorize("hasAuthority('employee:read')")
     public String getCargoByOrder(Model model,
                                   @PathVariable(name = "id") long orderId) {
+
         List<Cargo> cargoList = cargoService.readCargoByOrderId(orderId);
+
         model.addAttribute("cargoList", cargoList);
+
         return "orders/cargo";
     }
 
@@ -94,25 +103,30 @@ public class OrderController {
     public String getOrderForm(@PathVariable(name = "quantity") Integer quantity,
                                Model model) {
         CreateWaypointsDTO waypointForm = new CreateWaypointsDTO();
+
         for (int i = 0; i < quantity; i++) {
             waypointForm.addWaypointDto(new WaypointDTO());
         }
+
         model.addAttribute("cities", countryMapService.readAllCities());
         model.addAttribute("cargo", cargoService.readAllFreeCargo());
         model.addAttribute("form", waypointForm);
+
         return "orders/create";
     }
 
     @PostMapping()
     @PreAuthorize("hasAuthority('employee:write')")
     public String createOrder(@ModelAttribute(name = "form") @Validated CreateWaypointsDTO waypoints,
-                              BindingResult result, Model model) throws LoadAndUnloadValidateException {
+                              BindingResult result, Model model) {
         if(result.hasErrors()) {
             model.addAttribute("cities", countryMapService.readAllCities());
             model.addAttribute("cargo", cargoService.readAllFreeCargo());
             model.addAttribute("form", waypoints);
+
             return "orders/create";
         }
+
         orderService.createOrderByWaypoints(new Order(), waypoints);
 
         return MAIN_REDIRECT;
@@ -122,8 +136,10 @@ public class OrderController {
     @PreAuthorize("hasAuthority('employee:read')")
     public String getTrucksForOrder(@PathVariable("id") long orderId,
                                     Model model) {
+
         model.addAttribute("trucks", orderService.readTrucksForOrder(orderId));
         model.addAttribute("orderId", orderId);
+
         return "orders/trucks";
     }
 
@@ -132,6 +148,7 @@ public class OrderController {
     public String addTruckToOrder(@PathVariable("orderId") long orderId,
                                   @PathVariable("truckId") String truckId) {
         orderService.addTruckToOrder(truckId, orderId);
+
         return MAIN_REDIRECT;
     }
 
@@ -153,7 +170,9 @@ public class OrderController {
         if(driversIds.getIds().size() > truckService.calculateFreeSpaceInShift(orderId)) {
             throw new ShiftSizeExceedException("Shift size exceed");
         }
+
         orderService.addDriversToOrder(driversIds.getIds(), orderId);
+
         return MAIN_REDIRECT;
     }
 }

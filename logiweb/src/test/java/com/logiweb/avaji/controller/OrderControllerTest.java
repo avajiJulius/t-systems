@@ -2,6 +2,9 @@ package com.logiweb.avaji.controller;
 
 import com.logiweb.avaji.config.AppConfig;
 import com.logiweb.avaji.config.TestPersistenceConfig;
+import com.logiweb.avaji.dtos.CreateWaypointsDTO;
+import com.logiweb.avaji.dtos.WaypointDTO;
+import com.logiweb.avaji.entity.model.Order;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +20,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @SpringJUnitWebConfig({AppConfig.class, TestPersistenceConfig.class})
@@ -43,6 +48,7 @@ class OrderControllerTest {
 
                 .andExpect(view().name("orders/list"));
     }
+
 
 
 }

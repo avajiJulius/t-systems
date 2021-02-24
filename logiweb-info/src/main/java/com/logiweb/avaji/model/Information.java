@@ -1,6 +1,8 @@
 package com.logiweb.avaji.model;
 
-public class Information {
+import java.io.Serializable;
+
+public class Information implements Serializable {
 
     private OrderInfo orderInfo;
     private TruckInfo truckInfo;

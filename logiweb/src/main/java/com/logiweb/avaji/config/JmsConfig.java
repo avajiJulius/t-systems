@@ -47,11 +47,6 @@ public class JmsConfig {
     }
 
     @Bean
-    public DestinationResolver destinationResolver() {
-        return new DynamicDestinationResolver();
-    }
-
-    @Bean
     public DefaultMessageListenerContainer messageListenerContainer() throws JMSException {
         DefaultMessageListenerContainer messageListenerContainer = new DefaultMessageListenerContainer();
         messageListenerContainer.setConnectionFactory(activeMQConnectionFactory());

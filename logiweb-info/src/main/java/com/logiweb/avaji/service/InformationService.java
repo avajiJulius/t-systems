@@ -18,7 +18,7 @@ public class InformationService {
 
     private static final Logger logger = LogManager.getLogger(InformationService.class);
 
-    private static Information information;
+    private Information information;
 
     @Inject
     private BeanManager beanManager;

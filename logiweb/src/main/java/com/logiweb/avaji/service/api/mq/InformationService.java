@@ -5,6 +5,11 @@ import com.logiweb.avaji.dtos.mq.InformationDTO;
 import com.logiweb.avaji.dtos.mq.OrderInfo;
 import com.logiweb.avaji.dtos.mq.TruckInfo;
 
+
+/**
+ * This service get Information, OrderInfo, TruckInfo or DriverInfo from database.
+ *
+ */
 public interface InformationService {
 
     /**

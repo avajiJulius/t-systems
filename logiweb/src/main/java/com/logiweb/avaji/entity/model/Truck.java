@@ -97,6 +97,15 @@ public class Truck implements Serializable {
         this.truckId = truckId;
     }
 
+    public Truck(String truckId, double capacity,
+                 boolean serviceable, boolean inUse, City currentCity) {
+        this.truckId = truckId;
+        this.capacity = capacity;
+        this.serviceable = serviceable;
+        this.inUse = inUse;
+        this.currentCity = currentCity;
+    }
+
     @Override
     public String toString() {
         return "Truck{" +

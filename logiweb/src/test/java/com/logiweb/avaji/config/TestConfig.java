@@ -6,10 +6,12 @@ import com.logiweb.avaji.entity.enums.CargoStatus;
 import com.logiweb.avaji.entity.enums.DriverStatus;
 import com.logiweb.avaji.entity.enums.OrderStatus;
 import com.logiweb.avaji.entity.model.*;
+import com.logiweb.avaji.service.api.management.DriverService;
 import com.logiweb.avaji.service.api.management.OrderService;
 import com.logiweb.avaji.service.api.map.CountryMapService;
 import com.logiweb.avaji.service.api.mq.InformationProducerService;
 import com.logiweb.avaji.service.api.path.PathDetailsService;
+import com.logiweb.avaji.service.implementetions.management.OrderServiceImpl;
 import com.logiweb.avaji.service.implementetions.path.PathDetailsServiceImpl;
 import com.logiweb.avaji.service.implementetions.profile.OrderDetailsServiceImpl;
 import com.logiweb.avaji.service.implementetions.profile.ShiftDetailsServiceImpl;
@@ -36,8 +38,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.*;
 
 @Configuration
 @Profile("test")
@@ -87,10 +88,27 @@ public class TestConfig {
             new City(10, "J")
     ).collect(Collectors.toList());
 
+    public List<Truck> trucks = Stream.of(
+            new Truck("XB12312", 15, true, false, new City(5, "E")),
+            new Truck("KI12312", 25, true, false, new City(5, "E")),
+            new Truck("AR12312", 35, true, false, new City(5, "E")),
+            new Truck("CB12312", 35, false, false, new City(5, "E")),
+            new Truck("MQ12312", 35, true, true, new City(5, "E"))
+    ).collect(Collectors.toList());
+
+    public List<DriverDTO> drivers = Stream.of(
+            new DriverDTO("Alex", "Matushkin", 170, 1L),
+            new DriverDTO("Polina", "Kuznetsova", 10, 1L),
+            new DriverDTO("Grigori", "Ivanov", 20, 1L),
+            new DriverDTO("Vasia", "Buben", 140, 1L)
+    ).collect(Collectors.toList());
+
     public List<Order> orderList = Stream.of(
-            new Order(OrderStatus.UNCOMPLETED, "1-2-3-4-", new Truck("MN12121"), 10, LocalDateTime.now()),
+            new Order(OrderStatus.UNCOMPLETED, "1-2-3-6-", new Truck("MN12121",15, true, false, new City(1, "A")), 10, LocalDateTime.now()),
             new Order(OrderStatus.UNCOMPLETED, "5-3-4-", new Truck("FG12122"), 20, LocalDateTime.now()),
-            new Order(OrderStatus.UNCOMPLETED, "7-8-3-1-", new Truck("KI12902"), 30, LocalDateTime.now())
+            new Order(OrderStatus.UNCOMPLETED, "7-8-3-1-", new Truck("KI12902",35, true, false, new City(2, "B")), 30, LocalDateTime.now()),
+            new Order(OrderStatus.UNCOMPLETED, "5-4-2-1-", null, 20, LocalDateTime.now()),
+            new Order(OrderStatus.UNCOMPLETED, "5-3-", null, 30, LocalDateTime.now())
     ).collect(Collectors.toList());
 
     public List<OrderDetails> orderDetailsEntities = Stream.of(
@@ -180,7 +198,46 @@ public class TestConfig {
 
     @Bean
     public OrderDAO orderDAO() {
-        return Mockito.mock(OrderDAO.class);
+        OrderDAO mock = Mockito.mock(OrderDAO.class);
+
+        when(mock.findOrderById(anyLong())).thenAnswer(invocation -> {
+            long id = invocation.getArgument(0);
+            int index = Integer.parseInt(String.valueOf(id)) - 1;
+            return orderList.get(index);
+        });
+
+        when(mock.findTrucksForOrder(anyDouble(), anyLong())).thenAnswer(invocation -> {
+            double capacity = invocation.getArgument(0);
+            long id = invocation.getArgument(1);
+            return trucks.stream()
+                    .filter(t -> t.getCapacity() >= capacity && t.getCurrentCity().getCityCode() == id
+                    && !t.isInUse() && t.isServiceable())
+                    .collect(Collectors.toList());
+        });
+
+        when(mock.findTruckByOrderId(anyLong())).thenAnswer(invocation -> {
+            long id = invocation.getArgument(0);
+            int index = Integer.parseInt(String.valueOf(id));
+            Order order = orderList.get(index - 1);
+            return order.getDesignatedTruck();
+        });
+
+        when(mock.findDriverForOrder(anyDouble(), anyLong())).thenAnswer(invocation -> {
+            double shiftHours = invocation.getArgument(0);
+            long cityCode = invocation.getArgument(1);
+            return drivers.stream()
+                    .filter(d -> d.getHoursWorked() + shiftHours < 172 && d.getCityCode() == cityCode)
+                    .collect(Collectors.toList());
+        });
+
+        when(mock.saveOrder(any(Order.class))).then(invocation -> {
+            Order order = invocation.getArgument(0);
+            int id = orderList.size() + 1;
+            order.setId(id);
+            orderList.add(order);
+            return null;
+        }).thenReturn((long) orderList.size());
+        return mock;
     }
 
     @Bean
@@ -342,8 +399,11 @@ public class TestConfig {
         return mock;
     }
 
+    @Bean
     public OrderService orderService() {
-        return Mockito.mock(OrderService.class);
+        return new OrderServiceImpl(orderDAO(), mapper(), pathDetailsService(), pathParser(),
+                Mockito.mock(DriverService.class),
+                cargoDAO(), informationProducerService(), timeService());
     }
 
     @Bean

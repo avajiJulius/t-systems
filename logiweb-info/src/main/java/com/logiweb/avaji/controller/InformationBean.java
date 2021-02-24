@@ -22,7 +22,7 @@ public class InformationBean implements Serializable {
 
     private static final Logger logger = LogManager.getLogger(InformationBean.class);
 
-    private static Information information;
+    private Information information;
 
     @Inject
     private InformationService informationService;
@@ -41,7 +41,6 @@ public class InformationBean implements Serializable {
 
     public void load() {
         information = informationService.getInformation();
-        logger.info(information.toString());
     }
 
     public void onUpdate(@Observes InformationUpdateEvent event) {

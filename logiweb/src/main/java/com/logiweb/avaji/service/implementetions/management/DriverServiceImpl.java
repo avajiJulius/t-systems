@@ -34,9 +34,11 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public List<DriverDTO> readDriversPage(int pageNumber, int pageSize) {
         int indexFrom = 0;
+
         if(pageNumber != 1) {
             indexFrom = (pageNumber - 1) * pageSize;
         }
+
         return driverDAO.findDriversPage(indexFrom, pageSize);
     }
 
@@ -48,7 +50,6 @@ public class DriverServiceImpl implements DriverService {
         driverDAO.saveDriver(driver);
         driverDAO.saveWorkShift(driver.getId());
 
-
         boolean driverIsSaved = driverDAO.containsDriver(driver.getId());
         boolean workShiftIsSaved = driverDAO.containsWorkShift(driver.getId());
 
@@ -57,8 +58,8 @@ public class DriverServiceImpl implements DriverService {
             logger.info("Create work shift for driver with id: {}", driver.getId());
 
             producerService.updateDriverInformation();
-
             producerService.sendInformation();
+
             return true;
         }
         return false;
@@ -68,16 +69,17 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public void updateDriver(long driverId,DriverDTO updatedDriver) {
         Driver driver = driverDAO.findDriverEntity(driverId);
+
         updateDriver(mapper.updateDriverFromDto(driver, updatedDriver));
     }
 
     @Override
     public void updateDriver(Driver driver) {
         driverDAO.updateDriver(driver);
+
         logger.info("Update driver by id: {}", driver.getId());
 
         producerService.updateDriverInformation();
-
         producerService.sendInformation();
     }
 
@@ -88,9 +90,10 @@ public class DriverServiceImpl implements DriverService {
         boolean isExist = driverDAO.containsDriver(driverID);
         if(!isExist) {
             logger.info("Delete driver by id: {}", driverID);
-            producerService.updateDriverInformation();
 
+            producerService.updateDriverInformation();
             producerService.sendInformation();
+
             return true;
         }
         return false;
@@ -114,8 +117,8 @@ public class DriverServiceImpl implements DriverService {
     @Override
     public void updateDrivers(List<Driver> drivers) {
         driverDAO.updateDrivers(drivers);
-        producerService.updateDriverInformation();
 
+        producerService.updateDriverInformation();
         producerService.sendInformation();
     }
 
