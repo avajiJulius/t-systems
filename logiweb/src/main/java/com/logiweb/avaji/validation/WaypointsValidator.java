@@ -24,12 +24,6 @@ public class WaypointsValidator implements ConstraintValidator<WaypointsValid, L
         this.orderService = orderService;
     }
 
-
-    @Override
-    public void initialize(WaypointsValid constraintAnnotation) {
-
-    }
-
     @Override
     public boolean isValid(List<WaypointDTO> waypointDTOS, ConstraintValidatorContext constraintValidatorContext) {
         String message = "";

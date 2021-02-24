@@ -23,6 +23,7 @@ public class CargoDAO {
     public List<Cargo> findCargoByOrderId(long orderId) {
         TypedQuery<Cargo> query = entityManager.createNamedQuery("Cargo.findCargoByOrderId", Cargo.class)
                 .setParameter("orderId", orderId);
+
         return query.getResultList();
     }
 

@@ -33,9 +33,11 @@ public class InformationServiceImpl implements InformationService {
     @Override
     public OrderInfo getOrderInformation() {
         List<InfoOrderDTO> lastOrders = informationDAO.getOrderInformation().getLastOrders();
+
         for (InfoOrderDTO order : lastOrders) {
-            order.setDrivers(informationDAO.findDriversOfOrder(order.getOrderId()));
             String path = pathParser.toPrettyPath(order.getPath());
+
+            order.setDrivers(informationDAO.findDriversOfOrder(order.getOrderId()));
             order.setPath(path);
         }
 

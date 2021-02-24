@@ -37,13 +37,15 @@ public class TruckServiceImpl implements TruckService {
         Truck truck = converter.dtoToTruck(truckDTO);
 
         truckDAO.saveTruck(truck);
+
         boolean isSaved = truckDAO.containsTruck(truck.getTruckId());
 
         if (isSaved) {
             logger.info("Create truck by id: {}", truck.getTruckId());
-            producerService.updateTruckInformation();
 
+            producerService.updateTruckInformation();
             producerService.sendInformation();
+
             return true;
         }
         return false;
@@ -52,9 +54,11 @@ public class TruckServiceImpl implements TruckService {
     @Override
     public List<TruckDTO> readTrucksPage(int pageNumber, int pageSize) {
         int indexFrom = 0;
+
         if(pageNumber != 1) {
             indexFrom = (pageNumber - 1) * pageSize;
         }
+
         return truckDAO.findTrucksPage(indexFrom, pageSize);
     }
 
@@ -67,21 +71,24 @@ public class TruckServiceImpl implements TruckService {
     @Override
     public int calculateFreeSpaceInShift(long orderId) {
         TruckDTO truck = truckDAO.findTruckByOrderId(orderId);
+
         int currentSize = (int) truckDAO.countDriversOfTruck(truck.getTruckId());
         int size = truck.getShiftSize();
+
         return (size - currentSize);
     }
 
     @Override
     public void updateTruck(String truckId, TruckDTO updatedTruck) {
         updatedTruck.setTruckId(truckId);
+
         Truck truck = converter.dtoToTruck(updatedTruck);
 
         truckDAO.updateTruck(truck);
 
         logger.info("Update truck by id: {}", truckId);
-        producerService.updateTruckInformation();
 
+        producerService.updateTruckInformation();
         producerService.sendInformation();
     }
 
@@ -89,13 +96,15 @@ public class TruckServiceImpl implements TruckService {
     @Override
     public boolean deleteTruck(String truckID) {
         truckDAO.deleteTruck(truckID);
+
         boolean isExist = truckDAO.containsTruck(truckID);
 
         if(!isExist) {
             logger.info("Delete truck by id: {}", truckID);
-            producerService.updateTruckInformation();
 
+            producerService.updateTruckInformation();
             producerService.sendInformation();
+
             return true;
         }
         return false;

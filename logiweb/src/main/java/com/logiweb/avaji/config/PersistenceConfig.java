@@ -32,10 +32,12 @@ public class PersistenceConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em
                 = new LocalContainerEntityManagerFactoryBean();
+
         em.setDataSource(dataSource());
         em.setPackagesToScan("com.logiweb.avaji.entity.model");
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+
         em.setJpaVendorAdapter(vendorAdapter);
         em.setJpaProperties(additionalProperties());
 
@@ -45,10 +47,12 @@ public class PersistenceConfig {
     @Bean
     public DataSource dataSource(){
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
+
         dataSource.setDriverClassName(getProperty("jdbc.driverClassName"));
         dataSource.setUrl(getProperty("jdbc.url"));
         dataSource.setUsername(getProperty("jdbc.login"));
         dataSource.setPassword(getProperty("jdbc.password"));
+
         return dataSource;
     }
 
@@ -56,6 +60,7 @@ public class PersistenceConfig {
     @Bean
     public PlatformTransactionManager transactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
+
         transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
 
         return transactionManager;
@@ -68,8 +73,10 @@ public class PersistenceConfig {
 
     private Properties additionalProperties() {
         Properties properties = new Properties();
+
         properties.setProperty("hibernate.hbm2ddl.auto", getProperty("hibernate.hbm2ddl.auto"));
         properties.setProperty("hibernate.dialect", getProperty("hibernate.dialect"));
+
         return properties;
     }
 

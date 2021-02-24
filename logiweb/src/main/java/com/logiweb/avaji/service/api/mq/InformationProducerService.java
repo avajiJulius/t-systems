@@ -1,5 +1,11 @@
 package com.logiweb.avaji.service.api.mq;
 
+
+/**
+ * This service update Information by OrderInfo(about last 10 orders), TruckInfo and DriverInfo(numbers of trucks and drivers)
+ * and produce message by converting Information to json and send it to MQ Broker topic.
+ *
+ */
 public interface InformationProducerService {
 
     /**

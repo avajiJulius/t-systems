@@ -17,6 +17,7 @@ public class ScheduleDAO {
 
     public int refreshWorkedHours() {
         Query query = entityManager.createNamedQuery("Driver.refreshWorkedHours");
+
         return query.executeUpdate();
     }
 }

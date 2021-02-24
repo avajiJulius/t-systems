@@ -20,13 +20,7 @@ public class EmailUniqueValidator implements ConstraintValidator<EmailUnique, St
     }
 
     @Override
-    public void initialize(EmailUnique constraintAnnotation) {
-
-    }
-
-    @Override
     public boolean isValid(String email, ConstraintValidatorContext constraintValidatorContext) {
-        long result = validatorDAO.checkEmailUnique(email);
-        return (result == 0);
+        return validatorDAO.checkEmailUnique(email) == 0;
     }
 }

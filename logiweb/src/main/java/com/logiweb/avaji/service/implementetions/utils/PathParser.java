@@ -33,40 +33,49 @@ public class PathParser {
     public List<CityDTO> pathStringToCityDTOList(String path) {
         List<CityDTO> cities = new ArrayList<>();
         List<Long> codes = parseStringToLongList(path);
-        for(long code: codes) {
+
+        for(long code : codes) {
             City city = countryMapDAO.findCityByCode(code);
             cities.add(new CityDTO(city.getCityCode(), city.getCityName()));
         }
+
         return cities;
     }
 
     public String parseLongListToString(List<Long> path) {
         StringBuilder result = new StringBuilder();
-        for (long code: path) {
+
+        for (long code : path) {
             result.append(code);
             result.append(DELIMITER);
         }
+
         return result.toString();
     }
 
     public String toPrettyPath(String path) {
         List<Long> codes = parseStringToLongList(path);
         StringBuilder result = new StringBuilder();
-        for(long code: codes) {
+
+        for(long code : codes) {
             City city = countryMapDAO.findCityByCode(code);
             result.append(city.getCityName()).append(" - ");
         }
+
         return result.substring(0, result.length() - 3);
     }
 
     public List<Long> parseStringToLongList(String path)  {
         List<Long> result;
+
         try {
              result = Arrays.stream(path.split(DELIMITER))
-                     .map(Long::parseLong).collect(Collectors.toList());
+                     .map(Long::parseLong)
+                     .collect(Collectors.toList());
         } catch (Exception e) {
             throw new PathParseException("Cannot parse path");
         }
+
         return result;
     }
 }

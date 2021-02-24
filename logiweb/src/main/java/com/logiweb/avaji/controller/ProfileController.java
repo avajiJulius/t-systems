@@ -83,6 +83,7 @@ public class ProfileController {
 
         if (!orderDetails.getLoadCargo().isEmpty() || !orderDetails.getUnloadCargo().isEmpty()) {
             attributes.addFlashAttribute("message", "Complete load/unload actions");
+
             return MAIN_REDIRECT;
         }
 

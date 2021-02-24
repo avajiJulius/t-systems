@@ -15,12 +15,14 @@ public class ValidatorDAO {
     public long checkEmailUnique(String email) {
         TypedQuery<Long> query = entityManager.createNamedQuery("User.countUserByEmail", Long.class)
                 .setParameter("email", email);
+
         return query.getSingleResult();
     }
 
     public long checkIdUnique(String id) {
         TypedQuery<Long> query = entityManager.createNamedQuery("Truck.countTruckById", Long.class)
                 .setParameter("id", id);
+
         return query.getSingleResult();
     }
 }

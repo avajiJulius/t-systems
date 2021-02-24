@@ -30,17 +30,21 @@ public class InformationDAO {
     }
 
     public OrderInfo getOrderInformation() {
+        OrderInfo info = new OrderInfo();
+
         List<InfoOrderDTO> result = entityManager.createNamedQuery("Order.findAllInfoOrders", InfoOrderDTO.class)
                 .setFirstResult(0).setMaxResults(10).getResultList();
-        OrderInfo info = new OrderInfo();
+
         if (!result.isEmpty()) {
             info.setLastOrdersByList(result);
         }
+
         return info;
     }
 
     public TruckInfo getTruckInformation() {
         List<TruckDTO> trucks = entityManager.createNamedQuery("Truck.findAllTrucks", TruckDTO.class).getResultList();
+
         int total = trucks.size();
         long inUse = trucks.stream().filter(TruckDTO::isInUse).count();
         long available = trucks.stream().filter(t -> t.isServiceable() && !t.isInUse()).count();
@@ -57,6 +61,7 @@ public class InformationDAO {
     public List<InfoDriverDTO> findDriversOfOrder(long orderId) {
         TypedQuery<InfoDriverDTO> query = entityManager.createNamedQuery("Driver.findInfoDriversByOrderId", InfoDriverDTO.class)
                 .setParameter("id", orderId);
+
         return query.getResultList();
     }
 }

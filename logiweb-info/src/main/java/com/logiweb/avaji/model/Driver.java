@@ -1,6 +1,8 @@
 package com.logiweb.avaji.model;
 
-public class Driver {
+import java.io.Serializable;
+
+public class Driver implements Serializable {
 
     private long id;
     private String firstName;

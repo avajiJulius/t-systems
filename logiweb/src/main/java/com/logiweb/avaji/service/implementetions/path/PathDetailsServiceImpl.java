@@ -31,6 +31,7 @@ public class PathDetailsServiceImpl implements PathDetailsService {
     public double getMaxCapacityInTons(List<Long> citiesCodes, List<WaypointDTO> waypoints) {
         List<WaypointDTO> loadAvailable = new ArrayList<>(waypoints);
         List<WaypointDTO> unloadAvailable = new ArrayList<>();
+
         double maxCapacity = 0;
         double capacity = 0;
 
@@ -81,6 +82,7 @@ public class PathDetailsServiceImpl implements PathDetailsService {
         double shiftHours = 0.0;
         for (int i = 0; i < path.size() - 1; i++) {
             int index = i;
+
             shiftHours += countryMap.getDistanceBetween(path.get(index), path.get(index+1));
         }
         return shiftHours;
@@ -91,21 +93,27 @@ public class PathDetailsServiceImpl implements PathDetailsService {
     @Override
     public Path getPath(List<WaypointDTO> waypoints) {
         List<Path> available = new ArrayList<>();
+
         for(WaypointDTO waypoint : waypoints) {
             if (waypoint.getLoadCityCode() == waypoint.getUnloadCityCode()) {
+
                 available.add(new Path(new ArrayList<>(),
                         waypoint.getLoadCityCode(), Double.MAX_VALUE));
             } else {
+
                 available.add(new Path(new ArrayList<>(),
                         waypoint.getLoadCityCode(), waypoint.getUnloadCityCode(), Double.MAX_VALUE));
             }
         }
+
         long maxCounter = 0L;
         int index = 0;
 
         for (int i = 0; i < available.size(); i++) {
+
             long loadCode = available.get(i).getFirst();
             long count = available.stream().filter(p -> p.getFirst() == loadCode).count();
+
             if(count > maxCounter) {
                 maxCounter = count;
                 index = i;
@@ -114,6 +122,7 @@ public class PathDetailsServiceImpl implements PathDetailsService {
 
 
         long newStart = available.get(index).getFirst();
+
         available.stream().filter(a -> a.getFirst() == newStart).forEach(Path::removeFirst);
 
         logger.info("Create Path");
@@ -141,8 +150,10 @@ public class PathDetailsServiceImpl implements PathDetailsService {
 
         List<Long> connected = countryMap.findConnected(path.getLast());
         for (int i = 0; i < connected.size(); i++) {
+
             long loadCode = connected.get(i);
             long count = available.stream().filter(a -> a.getFirst() == loadCode).count();
+
             if(count > maxCounter) {
                 maxCounter = count;
                 index = i;
@@ -153,9 +164,10 @@ public class PathDetailsServiceImpl implements PathDetailsService {
             double minDist = Double.MAX_VALUE;
             index = 0;
 
-            for (long codes: connected) {
+            for (long codes : connected) {
                 open.add(createNewPath(path, path.getLast(), codes));
             }
+
             for (int i = 0; i < open.size(); i++) {
                 double dist = open.get(i).getDistance();
                 if(minDist > dist) {
@@ -170,7 +182,9 @@ public class PathDetailsServiceImpl implements PathDetailsService {
         }
 
         long newStart = connected.get(index);
+
         available.stream().filter(a -> a.getFirst() == newStart).forEach(Path::removeFirst);
+
         double distance = countryMap.getDistanceBetween(path.getLast(), newStart);
         path.add(newStart, distance);
 
@@ -188,10 +202,11 @@ public class PathDetailsServiceImpl implements PathDetailsService {
     }
 
     private Path createNewPath(Path path, long start, long goal) {
-        List<Long> newPath = new ArrayList<>();
-        newPath.addAll(path.getPath());
+        List<Long> newPath = new ArrayList<>(path.getPath());
+
         double distance = path.getDistance() +
                 countryMap.getDistanceBetween(start, goal);
+
         return new Path.Builder()
                 .withPath(newPath)
                 .add(goal)

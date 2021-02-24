@@ -26,7 +26,7 @@ class CountryMapServiceImplTest {
     }
 
     @Test
-    void findCityByCode() {
+    void readCityNameByCode() {
         String a = countryMapService.readCityNameByCode(1);
         String b = countryMapService.readCityNameByCode(2);
         String c = countryMapService.readCityNameByCode(3);

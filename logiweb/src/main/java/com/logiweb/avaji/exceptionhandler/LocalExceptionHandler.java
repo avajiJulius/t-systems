@@ -19,6 +19,7 @@ public class LocalExceptionHandler {
                                         Model model) {
         logger.error(exception.getMessage());
         model.addAttribute("message", exception.getMessage());
+
         return "exceptions/order";
     }
 
@@ -27,6 +28,7 @@ public class LocalExceptionHandler {
                                             Model model) {
         logger.error(exception.getMessage());
         model.addAttribute("message", exception.getMessage());
+
         return "redirect:/";
     }
 
@@ -36,6 +38,7 @@ public class LocalExceptionHandler {
                                                  RedirectAttributes attributes) {
         logger.error(exception.getMessage());
         attributes.addFlashAttribute("message", exception.getMessage());
+
         return "redirect:/orders/new";
     }
 
@@ -45,6 +48,7 @@ public class LocalExceptionHandler {
         logger.error(exception.getMessage());
         attributes.addFlashAttribute("message", exception.getMessage());
         String redirectPath = exception.getPathName() + "/new";
+
         return "redirect:/" + redirectPath;
     }
 
@@ -53,6 +57,7 @@ public class LocalExceptionHandler {
                                             Model model) {
         logger.error(exception.getMessage());
         model.addAttribute("message", exception.getMessage());
+
         return "exceptions/appointing";
     }
 
@@ -61,6 +66,7 @@ public class LocalExceptionHandler {
                                              Model model) {
         logger.error(exception.getMessage());
         model.addAttribute("message", exception.getMessage());
+
         return "exceptions/details";
     }
 }

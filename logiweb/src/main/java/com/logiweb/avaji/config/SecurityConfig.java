@@ -30,18 +30,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/", "/login","/logout").permitAll()
-                .anyRequest().authenticated()
+                    .antMatchers("/", "/login","/logout").permitAll()
+                    .anyRequest().authenticated()
                 .and()
-                .formLogin().loginPage("/login")
-                .defaultSuccessUrl("/")
+                    .formLogin().loginPage("/login")
+                    .defaultSuccessUrl("/")
                 .and()
-                .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))
-                .invalidateHttpSession(true)
-                .clearAuthentication(true)
-                .deleteCookies("JSESSIONID")
-                .logoutSuccessUrl("/");
+                    .logout()
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))
+                    .invalidateHttpSession(true)
+                    .clearAuthentication(true)
+                    .deleteCookies("JSESSIONID")
+                    .logoutSuccessUrl("/");
     }
 
     @Override
@@ -58,8 +58,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     protected DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+
         provider.setPasswordEncoder(passwordEncoder());
         provider.setUserDetailsService(userDetailsService);
+
         return provider;
     }
 

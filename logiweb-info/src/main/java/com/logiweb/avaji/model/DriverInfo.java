@@ -1,6 +1,8 @@
 package com.logiweb.avaji.model;
 
-public class DriverInfo {
+import java.io.Serializable;
+
+public class DriverInfo implements Serializable {
 
     private int totalNumber;
     private int availableNumber;

@@ -30,11 +30,13 @@ public class InformationListener implements MessageListener {
 
     @Override
     public void onMessage(Message message) {
+        ObjectMapper mapper = new ObjectMapper();
+
         try {
             logger.info("Receive information message ");
-            String jsonDetails = ((TextMessage) message).getText();
 
-            ObjectMapper mapper = new ObjectMapper();
+
+            String jsonDetails = ((TextMessage) message).getText();
             Information information = mapper.readValue(jsonDetails, Information.class);
 
             informationService.updateInformation(information);

@@ -24,28 +24,34 @@ public class OrderDetailsDAO {
     EntityManager entityManager;
 
     public OrderDetailsDTO findOrderDetails(long driverId) {
+        OrderDetailsDTO orderDetails = null;
+
         TypedQuery<OrderDetailsDTO> query = entityManager.createNamedQuery("OrderDetails.findOrderDetails", OrderDetailsDTO.class)
                 .setParameter("id", driverId);
-        OrderDetailsDTO orderDetails = null;
+
         try {
             orderDetails = query.getSingleResult();
         } catch (NoResultException e) {
             logger.info("No order details for driver with id {}", driverId);
         }
+
         return orderDetails;
     }
 
     public long findOrderIdOfDriverId(long driverId) {
         TypedQuery<Long> query = entityManager.createNamedQuery("Order.findOrderIdOfDriverId", Long.class)
                 .setParameter("id", driverId);
+
         return query.getSingleResult();
     }
 
     public void updateOrderDetails(OrderDetails updatedOrderDetails, long cityCode) {
         entityManager.createNamedQuery("Driver.updateDriverOnCityChange")
                 .setParameter("cityCode", cityCode).setParameter("id", updatedOrderDetails.getId()).executeUpdate();
+
         entityManager.createNamedQuery("Truck.updateTruckOnCityChange")
                 .setParameter("cityCode", cityCode).setParameter("id", updatedOrderDetails.getId()).executeUpdate();
+
         entityManager.merge(updatedOrderDetails);
     }
 
@@ -56,6 +62,7 @@ public class OrderDetailsDAO {
     public void freeTruck(String truckId) {
         Truck truck = entityManager.find(Truck.class, truckId);
         truck.setInUse(false);
+
         entityManager.merge(truck);
     }
 }

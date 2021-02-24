@@ -54,9 +54,11 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public List<OrderDTO> readOrdersPage(int pageNumber, int pageSize) {
         int indexFrom = 0;
+
         if(pageNumber != 1) {
             indexFrom = (pageNumber - 1) * pageSize;
         }
+
         List<OrderDTO> orderPage = orderDAO.findOrdersPage(indexFrom, pageSize);
 
         fillOrders(orderPage);
@@ -67,9 +69,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDTO> readPastOrdersPage(int pageNumber, int pageSize) {
         int indexFrom = 0;
+
         if(pageNumber != 1) {
             indexFrom = (pageNumber - 1) * pageSize;
         }
+
         List<OrderDTO> ordersPage = orderDAO.findPastOrdersPage(indexFrom, pageSize);
 
         fillPastOrders(ordersPage);
@@ -77,18 +81,12 @@ public class OrderServiceImpl implements OrderService {
         return ordersPage;
     }
 
-    private void fillPastOrders(List<OrderDTO> ordersPage) {
-        for(OrderDTO orderDTO : ordersPage) {
-            orderDTO.setDrivers(orderDAO.findPastOrderDrivers(orderDTO.getOrderId()));
-            orderDTO.setPrettyPath(parser.toPrettyPath(orderDTO.getPrettyPath()));
-        }
-    }
-
 
     @Override
     @Transactional
     public void createOrderByWaypoints(Order order, CreateWaypointsDTO dto) {
         List<Waypoint> waypoints = converter.dtoToWaypoints(dto, order);
+
         orderDAO.saveWaypoints(waypoints);
 
         List<WaypointDTO> waypointsDTO = dto.getWaypointsDto();
@@ -100,12 +98,12 @@ public class OrderServiceImpl implements OrderService {
         fillOrder(order, pathDetails);
 
         long id = orderDAO.saveOrder(order);
+
         logger.info("Create order by id: {} with max capacity {}", id, order.getMaxCapacity());
 
         createOrderDetails(id, path);
 
         producerService.updateOrderInformation();
-
         producerService.sendInformation();
     }
 
@@ -114,7 +112,8 @@ public class OrderServiceImpl implements OrderService {
     public void setCargoWeight(List<WaypointDTO> waypointsDTO) {
         for (WaypointDTO dto : waypointsDTO) {
              double weight = cargoDAO.findCargoWeightById(dto.getCargoId());
-            dto.setCargoWeight(weight);
+
+             dto.setCargoWeight(weight);
         }
     }
 
@@ -122,10 +121,10 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void deleteOrder(long orderId) {
         orderDAO.deleteOrder(orderId);
+
         logger.info("Delete order by id: {}", orderId);
 
         producerService.updateOrderInformation();
-
         producerService.sendInformation();
     }
 
@@ -152,11 +151,11 @@ public class OrderServiceImpl implements OrderService {
         order.setLastEditDate(LocalDateTime.now());
 
         orderDAO.updateOrder(order);
+
         logger.info("Add truck {} for order by id: {}", truckId, orderId);
 
         producerService.updateOrderInformation();
         producerService.updateTruckInformation();
-
         producerService.sendInformation();
     }
 
@@ -164,6 +163,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public List<DriverDTO> readDriversForOrder(long orderId) {
         long cityCode = orderDAO.findTruckByOrderId(orderId).getCurrentCity().getCityCode();
+
         String path = orderDAO.findOrderById(orderId).getPath();
 
         double shiftHours = calculateMaxShiftHours(path);
@@ -177,13 +177,14 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void addDriversToOrder(List<Long> driversIds, long orderId) {
         List<Driver> drivers = driverService.readDriversByIds(driversIds);
+
         fillDrivers(drivers, orderId);
 
         driverService.updateDrivers(drivers);
+
         logger.info("Add driver to order by id: {}", orderId);
 
         producerService.updateOrderInformation();
-
         producerService.sendInformation();
     }
 
@@ -198,14 +199,22 @@ public class OrderServiceImpl implements OrderService {
         return orderDAO.countPastOrders();
     }
 
+    private void fillPastOrders(List<OrderDTO> ordersPage) {
+        for(OrderDTO orderDTO : ordersPage) {
+            orderDTO.setDrivers(orderDAO.findPastOrderDrivers(orderDTO.getOrderId()));
+            orderDTO.setPrettyPath(parser.toPrettyPath(orderDTO.getPrettyPath()));
+        }
+    }
 
     private void fillOrders(List<OrderDTO> orderPage) {
         for (OrderDTO orderDTO : orderPage) {
             if(orderDTO.getTruckId() != null) {
                 orderDTO.setDrivers(orderDAO.findDriversByOrderId(orderDTO.getOrderId()));
+
                 orderDTO.setShiftSize(
                         orderDAO.findTruckByOrderId(orderDTO.getOrderId()).getShiftSize());
             }
+
             orderDTO.setPrettyPath(parser.toPrettyPath(orderDTO.getPrettyPath()));
         }
     }
@@ -229,7 +238,9 @@ public class OrderServiceImpl implements OrderService {
 
     private void createOrderDetails(long id, List<Long> path) {
         double approximateLeadTime = pathDetailsService.getShiftHours(path);
+
         orderDAO.saveOrderDetails(id, approximateLeadTime);
+
         logger.info("Create order detail for order id: {} , with time in travel: {}", id, approximateLeadTime);
     }
 
@@ -237,17 +248,21 @@ public class OrderServiceImpl implements OrderService {
         double shiftHours = pathDetailsService.getShiftHours(parser.parseStringToLongList(path));
 
         long untilEndOfMonth = timeService.calculateTimeUntilEndOfMonth();
+
         if(shiftHours > untilEndOfMonth) {
             shiftHours = (double) untilEndOfMonth;
         }
+
         return shiftHours;
     }
 
     private void fillDrivers(List<Driver> drivers, long orderId) {
         String truckId = orderDAO.findOrderById(orderId).getDesignatedTruck().getTruckId();
+
         OrderDetails orderDetails = orderDAO.findOrderDetails(orderId);
         Truck truck = orderDAO.findTruckEntityById(truckId);
-        for(Driver driver: drivers) {
+
+        for(Driver driver : drivers) {
             driver.setCurrentTruck(truck);
             driver.setOrderDetails(orderDetails);
         }

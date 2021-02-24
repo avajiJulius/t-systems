@@ -18,24 +18,28 @@ public class OrderDAO {
     public List<OrderDTO> findOrdersPage(int indexFrom, int pageSize) {
         TypedQuery<OrderDTO> query = entityManager.createNamedQuery("Order.findAllOrders", OrderDTO.class)
                 .setFirstResult(indexFrom).setMaxResults(pageSize);
+
         return query.getResultList();
     }
 
     public List<OrderDTO> findPastOrdersPage(int indexFrom, int pageSize) {
         TypedQuery<OrderDTO> query = entityManager.createNamedQuery("Order.findAllPastOrders", OrderDTO.class)
                 .setFirstResult(indexFrom).setMaxResults(pageSize);
+
         return query.getResultList();
     }
 
     public Order findOrderById(long orderId) {
         TypedQuery<Order> query = entityManager.createNamedQuery("Order.findOrderById", Order.class)
                 .setParameter("orderId", orderId);
+
         return query.getSingleResult();
     }
 
     public long saveOrder(Order savedOrder) {
         entityManager.persist(savedOrder);
         entityManager.flush();
+
         return savedOrder.getId();
     }
 
@@ -54,6 +58,7 @@ public class OrderDAO {
     public List<WaypointDTO> findWaypointsOfThisOrder(long orderId){
         TypedQuery<WaypointDTO> query = entityManager.createNamedQuery("Waypoint.findWaypointsOfThisOrder", WaypointDTO.class)
                 .setParameter("orderId", orderId);
+
         return query.getResultList();
     }
 
@@ -61,12 +66,14 @@ public class OrderDAO {
     public Truck findTruckByOrderId(long orderId) {
         TypedQuery<Truck> query = entityManager.createNamedQuery("Order.findTruckByOrderId", Truck.class)
                 .setParameter("orderId", orderId);
+
         return query.getSingleResult();
     }
 
     public List<TruckDTO> findTrucksForOrder(Double maxCapacity, long startCityCode) {
         TypedQuery<TruckDTO> query = entityManager.createNamedQuery("Truck.findTrucksForOrder", TruckDTO.class)
                 .setParameter("maxCapacity", maxCapacity).setParameter("startCode", startCityCode);
+
         return query.getResultList();
     }
 
@@ -74,12 +81,14 @@ public class OrderDAO {
     public List<DriverDTO> findDriverForOrder(Double shiftHours, long cityCode) {
         TypedQuery<DriverDTO> query = entityManager.createNamedQuery("Driver.findDriversForOrder", DriverDTO.class)
                 .setParameter("shiftHours", shiftHours).setParameter("cityCode", cityCode);
+
         return query.getResultList();
     }
 
     public List<DriverDTO> findDriversByOrderId(long orderId) {
         TypedQuery<DriverDTO> query = entityManager.createNamedQuery("Driver.findDriversByOrderId", DriverDTO.class)
                 .setParameter("id", orderId);
+
         return query.getResultList();
     }
 
@@ -91,6 +100,7 @@ public class OrderDAO {
 
     public void saveOrderDetails(long id, double approximateLeadTime) {
         Order order = entityManager.find(Order.class, id);
+
         OrderDetails orderDetails = new OrderDetails.Builder()
                 .withOrder(order)
                 .withRemainingPath(order.getPath())
@@ -124,6 +134,7 @@ public class OrderDAO {
     public List<Driver> findDriversEntitiesByOrderId(long orderId) {
         TypedQuery<Driver> query = entityManager.createNamedQuery("Driver.findDriversEntitiesByOrderId", Driver.class)
                 .setParameter("id", orderId);
+
         return query.getResultList();
     }
 

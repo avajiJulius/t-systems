@@ -40,10 +40,12 @@ public class TruckController {
                                 Model model) {
         long totalNumber = truckService.getTrucksTotalNumbers();
         int totalPages = (int) Math.ceil((double) totalNumber / PAGE_SIZE);
+
         model.addAttribute("truckList", truckService.readTrucksPage(pageNumber, PAGE_SIZE));
         model.addAttribute("totalItems", totalNumber);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("currentPage", pageNumber);
+
         return "trucks/list";
     }
 
@@ -52,6 +54,7 @@ public class TruckController {
     public String getTruckForm(@ModelAttribute("truck") TruckDTO truckDto, Model model) {
 
         model.addAttribute("cities", mapService.readAllCities());
+
         return "trucks/create";
     }
 
@@ -62,23 +65,28 @@ public class TruckController {
         if (result.hasErrors()) {
             model.addAttribute("truck", truckDto);
             model.addAttribute("cities", mapService.readAllCities());
+
             return "trucks/create";
         }
 
         boolean isCreated = truckService.createTruck(truckDto);
+
         if(isCreated) {
             attributes.addFlashAttribute("message", "Truck was successfully created");
         } else {
             attributes.addFlashAttribute("error", "Truck not created");
         }
+
         return MAIN_REDIRECT;
     }
 
     @GetMapping("/{id}/edit")
     @PreAuthorize("hasAuthority('employee:write')")
     public String getTruckEditForm(Model model, @PathVariable("id") String id) {
+
         model.addAttribute("cities", mapService.readAllCities());
         model.addAttribute("truck", truckService.readTruckById(id));
+
         return "trucks/edit";
     }
 
@@ -92,7 +100,9 @@ public class TruckController {
             model.addAttribute("cities", mapService.readAllCities());
             return "trucks/edit";
         }
+
         truckService.updateTruck(id, editTruck);
+
         return MAIN_REDIRECT;
     }
 
@@ -100,13 +110,14 @@ public class TruckController {
     @PreAuthorize("hasAuthority('employee:write')")
     public String deleteTruck(@PathVariable("id") String id, RedirectAttributes attributes) {
         boolean isDeleted = truckService.deleteTruck(id);
+
         if(isDeleted) {
             attributes.addFlashAttribute("message", "Success delete truck with ID: " + id);
         } else {
             attributes.addFlashAttribute("error", "Truck not deleted");
         }
-        return MAIN_REDIRECT;
 
+        return MAIN_REDIRECT;
     }
 
 }

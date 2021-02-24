@@ -29,15 +29,28 @@ public class DateTimeService {
         return calculateTimeUntilEndOfMonth(Clock.systemDefaultZone());
     }
 
+
+    /**
+     * Calculate time in hours until end of current <code>clock</code> month
+     *
+     * @param clock
+     * @return hours until end of mounth
+     */
     public long calculateTimeUntilEndOfMonth(Clock clock) {
         LocalDateTime to = LocalDateTime.now(clock).withHour(0).with(TemporalAdjusters.firstDayOfNextMonth());
         LocalDateTime from = LocalDateTime.now(clock);
         return from.until(to, ChronoUnit.HOURS);
     }
 
+    /**
+     * Set worked hours of all drivers to 0 in the end of month
+     *
+     * @return updated rows
+     */
     @Scheduled(cron = "0 0 0 1 */1 *")
     public int refreshWorkedHours() {
         int rowsChanged = scheduleDAO.refreshWorkedHours();
+
         logger.info("Worked Hours success refreshed on {} rows", rowsChanged);
 
         return rowsChanged;

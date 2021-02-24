@@ -85,7 +85,7 @@ class OrderDetailsServiceTest {
     }
 
     @Test
-    void givenDriverIDAndOrderID_thenRemainingPathAndRemainingTimeEqualsNewValues() {
+    void givenDriverIDAndOrderID_thenRemainingPathAndTimeEqualsNewValues() {
         orderDetailsService.changeCity(1, 1);
         OrderDetails orderDetailsEntity = orderDetailsDAO.findOrderDetailsEntity(1);
 

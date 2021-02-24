@@ -12,5 +12,4 @@ import java.util.List;
 @NoArgsConstructor
 public class AddedDriversDto {
     private List<Long> ids = new ArrayList<>();
-
 }
