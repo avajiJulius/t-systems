@@ -93,6 +93,10 @@ public class Truck implements Serializable {
     @Transient
     private List<Driver> drivers = new ArrayList<>();
 
+    public Truck(String truckId) {
+        this.truckId = truckId;
+    }
+
     @Override
     public String toString() {
         return "Truck{" +

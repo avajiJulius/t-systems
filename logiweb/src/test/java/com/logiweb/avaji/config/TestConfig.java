@@ -4,8 +4,8 @@ import com.logiweb.avaji.dao.*;
 import com.logiweb.avaji.dtos.*;
 import com.logiweb.avaji.entity.enums.CargoStatus;
 import com.logiweb.avaji.entity.enums.DriverStatus;
-import com.logiweb.avaji.entity.model.Cargo;
-import com.logiweb.avaji.entity.model.City;
+import com.logiweb.avaji.entity.enums.OrderStatus;
+import com.logiweb.avaji.entity.model.*;
 import com.logiweb.avaji.service.api.management.OrderService;
 import com.logiweb.avaji.service.api.map.CountryMapService;
 import com.logiweb.avaji.service.api.mq.InformationProducerService;
@@ -35,8 +35,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 
 @Configuration
 @Profile("test")
@@ -61,8 +62,11 @@ public class TestConfig {
             new Cargo(7,0,"B3",2.0, CargoStatus.PREPARED),
             new Cargo(8,0,"C1",3.0, CargoStatus.SHIPPED),
             new Cargo(9,0,"C2",3.0, CargoStatus.DELIVERED),
-            new Cargo(10,0,"D1",4.0, CargoStatus.DELIVERED)
+            new Cargo(10,0,"D1",4.0, CargoStatus.DELIVERED),
+            new Cargo(11,0,"E1",5.0, CargoStatus.SHIPPED)
     ).collect(Collectors.toList());
+
+
 
     List<ShiftDetailsDTO> shiftDetailsList = Stream.of(
             new ShiftDetailsDTO(1, DriverStatus.REST, false, null, null, 20),
@@ -83,11 +87,24 @@ public class TestConfig {
             new City(10, "J")
     ).collect(Collectors.toList());
 
+    public List<Order> orderList = Stream.of(
+            new Order(OrderStatus.UNCOMPLETED, "1-2-3-4-", new Truck("MN12121"), 10, LocalDateTime.now()),
+            new Order(OrderStatus.UNCOMPLETED, "5-3-4-", new Truck("FG12122"), 20, LocalDateTime.now()),
+            new Order(OrderStatus.UNCOMPLETED, "7-8-3-1-", new Truck("KI12902"), 30, LocalDateTime.now())
+    ).collect(Collectors.toList());
+
+    public List<OrderDetails> orderDetailsEntities = Stream.of(
+            new OrderDetails(1, orderList.get(0), "2-3-5-", 5.0),
+            new OrderDetails(2, orderList.get(1), "3-5-", 3.0),
+            new OrderDetails(3, orderList.get(2), "1-", 0.0)
+    ).collect(Collectors.toList());
+
     public List<OrderDetailsDTO> orderDetailsList = Stream.of(
-            new OrderDetailsDTO(1, "MN12121", "1-2-3-4-", "2-3-4-", 10.0, 5.0),
-            new OrderDetailsDTO(2, "FG12122", "5-3-4-", "3-4", 20.0, 3.0),
+            new OrderDetailsDTO(1, "MN12121", "1-2-3-4-", "2-3-5-", 10.0, 5.0),
+            new OrderDetailsDTO(2, "FG12122", "5-3-4-", "3-5-", 20.0, 3.0),
             new OrderDetailsDTO(3, "KI12902", "7-8-3-1-", "1-", 30.0, 0.0)
     ).collect(Collectors.toList());
+
 
     @Bean
     public EntityManagerFactory entityManagerFactory() {
@@ -115,6 +132,14 @@ public class TestConfig {
             }
         });
 
+        doAnswer(invocation -> {
+            Cargo cargo = invocation.getArgument(0);
+            int index = Integer.parseInt(String.valueOf(cargo.getCargoId())) - 1;
+            cargoList.remove(index);
+            cargoList.add(index, cargo);
+            return null;
+        }).when(mock).updateCargo(any(Cargo.class));
+
         return mock;
     }
 
@@ -126,9 +151,30 @@ public class TestConfig {
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                 Object[] arguments = invocationOnMock.getArguments();
                 int index = Integer.parseInt(String.valueOf(arguments[0])) - 1;
+                if(index > orderDetailsList.size() - 1) {
+                    return null;
+                }
                 return orderDetailsList.get(index);
             }
         });
+
+        Mockito.when(mock.findOrderIdOfDriverId(anyLong()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        Mockito.when(mock.findOrderDetailsEntity(anyLong())).thenAnswer(invocation -> {
+            long id = invocation.getArgument(0);
+            int index = Integer.parseInt(String.valueOf(id)) - 1;
+            return orderDetailsEntities.get(index);
+        });
+
+        doAnswer(invocation -> {
+            OrderDetails orderDetails = invocation.getArgument(0);
+            int index = Integer.parseInt(String.valueOf(orderDetails.getId()))-1;
+            orderDetailsEntities.remove(index);
+            orderDetailsEntities.add(index, orderDetails);
+            return null;
+        }).when(mock).updateOrderDetails(any(OrderDetails.class), anyLong());
+
         return mock;
     }
 
@@ -148,6 +194,13 @@ public class TestConfig {
                 return shiftDetailsList.get(index);
             }
         });
+        doAnswer(invocation -> {
+            ShiftDetailsDTO dto = invocation.getArgument(0);
+            int index = Integer.parseInt(String.valueOf(dto.getId())) - 1;
+            shiftDetailsList.remove(index);
+            shiftDetailsList.add(index, dto);
+            return null;
+        }).when(mock).updateShiftDetails(any(ShiftDetailsDTO.class));
         return mock;
     }
 
@@ -306,5 +359,10 @@ public class TestConfig {
     @Bean
     public TruckIDUniqueValidator idUniqueValidator() {
         return new TruckIDUniqueValidator(validatorDAO());
+    }
+
+    @Bean
+    public CountryMap countryMap() {
+        return new CountryMap(countryMapService());
     }
 }
