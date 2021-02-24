@@ -82,4 +82,11 @@ public class OrderDetails implements Serializable {
             return newOrderDetails;
         }
     }
+
+    public OrderDetails(long id, Order order, String remainingPath, double remainingWorkingTime) {
+        this.id = id;
+        this.order = order;
+        this.remainingPath = remainingPath;
+        this.remainingWorkingTime = remainingWorkingTime;
+    }
 }
