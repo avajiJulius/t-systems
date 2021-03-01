@@ -3,7 +3,6 @@ package com.logiweb.avaji.service.api.management;
 
 import com.logiweb.avaji.dtos.*;
 import com.logiweb.avaji.entity.model.Order;
-import com.logiweb.avaji.exception.LoadAndUnloadValidateException;
 
 import java.util.List;
 

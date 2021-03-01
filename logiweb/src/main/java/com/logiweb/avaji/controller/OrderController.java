@@ -10,7 +10,6 @@ import com.logiweb.avaji.service.api.management.CargoService;
 import com.logiweb.avaji.service.api.management.TruckService;
 import com.logiweb.avaji.service.api.map.CountryMapService;
 import com.logiweb.avaji.service.api.management.OrderService;
-import com.logiweb.avaji.exception.LoadAndUnloadValidateException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
